@@ -118,8 +118,8 @@
           <zeebe:taskDefinition type="humanTask" />
           <zeebe:ioMapping>
             <zeebe:input source="=&#34;Help: Is the benchmark ok? If not publish a message. If the benchmark is ok AND the benchmark was running for 7 days then set benchmarkOkay to true.&#34;" target="helpMessage" />
-            <zeebe:input source="=false" target="benchmarkOk" />
-            <zeebe:output source="=benchmarkOk" target="benchmarkOk" />
+            <zeebe:input source="=false" target="benchmarkOkay" />
+            <zeebe:output source="=benchmarkOkay" target="benchmarkOkay" />
           </zeebe:ioMapping>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1kfdbpw</bpmn:incoming>
