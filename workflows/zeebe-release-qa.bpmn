@@ -7,7 +7,7 @@
     <bpmn:subProcess id="Activity_1ir7h8r">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:input source="=false" target="benchmarkOkay" />
+          <zeebe:input source="=false" target="benchmarkFinished" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1mitkgo</bpmn:incoming>
@@ -16,15 +16,15 @@
       <bpmn:startEvent id="Event_16ez2b8">
         <bpmn:outgoing>Flow_0ssm0ua</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:intermediateCatchEvent id="Event_17mmpot" name="Next day 10 AM">
+      <bpmn:intermediateCatchEvent id="Event_17mmpot" name="Next day">
         <bpmn:incoming>Flow_1piytt9</bpmn:incoming>
         <bpmn:incoming>Flow_06sbjij</bpmn:incoming>
         <bpmn:outgoing>Flow_1ruj9tw</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_080tig2">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1S</bpmn:timeDuration>
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=today() + duration("P1D")</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
-      <bpmn:exclusiveGateway id="Gateway_0tk8fn5" name="Is Benchmark Okay?" default="Flow_1piytt9">
+      <bpmn:exclusiveGateway id="Gateway_0tk8fn5" name="Is Benchmark Finished?" default="Flow_1piytt9">
         <bpmn:incoming>Flow_0snv7m5</bpmn:incoming>
         <bpmn:outgoing>Flow_04xcg8q</bpmn:outgoing>
         <bpmn:outgoing>Flow_1piytt9</bpmn:outgoing>
@@ -68,8 +68,8 @@
           <zeebe:taskDefinition type="humanTask" />
           <zeebe:ioMapping>
             <zeebe:input source="=&#34;Help: Is the benchmark ok? If not publish a message. If the benchmark is ok AND the benchmark was running for 7 days then set benchmarkOkay to true.&#34;" target="helpMessage" />
-            <zeebe:input source="=false" target="benchmarkOkay" />
-            <zeebe:output source="=benchmarkOkay" target="benchmarkOkay" />
+            <zeebe:input source="=false" target="benchmarkFinished" />
+            <zeebe:output source="=benchmarkFinished" target="benchmarkFinished" />
           </zeebe:ioMapping>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1ruj9tw</bpmn:incoming>
@@ -93,12 +93,12 @@
       <bpmn:sequenceFlow id="Flow_0ssm0ua" sourceRef="Event_16ez2b8" targetRef="Activity_1f7zmxn" />
       <bpmn:sequenceFlow id="Flow_0gpm8q6" sourceRef="Activity_1w5oql8" targetRef="Gateway_1kpzd6i" />
       <bpmn:sequenceFlow id="Flow_0pjkse4" sourceRef="Gateway_1y4pnq0" targetRef="Activity_1w5oql8" />
-      <bpmn:sequenceFlow id="Flow_04xcg8q" name="Benchmark is okay for at least 7 days&#10;&#10;TODO(menski): fix condition" sourceRef="Gateway_0tk8fn5" targetRef="Gateway_1kpzd6i">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=benchmarkOkay</bpmn:conditionExpression>
+      <bpmn:sequenceFlow id="Flow_04xcg8q" name="Benchmark has finished after 7 days of running" sourceRef="Gateway_0tk8fn5" targetRef="Gateway_1kpzd6i">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=benchmarkFinished</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:sequenceFlow id="Flow_0snv7m5" sourceRef="Activity_05897l5" targetRef="Gateway_0tk8fn5" />
       <bpmn:sequenceFlow id="Flow_1ruj9tw" sourceRef="Event_17mmpot" targetRef="Activity_05897l5" />
-      <bpmn:sequenceFlow id="Flow_1piytt9" name="Benchmark is okay for less then 7 days" sourceRef="Gateway_0tk8fn5" targetRef="Event_17mmpot" />
+      <bpmn:sequenceFlow id="Flow_1piytt9" name="Benchmark should continue" sourceRef="Gateway_0tk8fn5" targetRef="Event_17mmpot" />
       <bpmn:sequenceFlow id="Flow_06sbjij" sourceRef="Activity_1444sd6" targetRef="Event_17mmpot" />
       <bpmn:sequenceFlow id="Flow_10sgu3r" sourceRef="Gateway_1y4pnq0" targetRef="Activity_1444sd6" />
       <bpmn:sequenceFlow id="Flow_1r9lwgg" sourceRef="Activity_03n7qml" targetRef="Gateway_1y4pnq0" />
@@ -170,7 +170,7 @@
         <di:waypoint x="1000" y="380" />
         <di:waypoint x="1000" y="298" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1098" y="330" width="87" height="40" />
+          <dc:Bounds x="1103" y="330" width="78" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ruj9tw_di" bpmnElement="Flow_1ruj9tw">
@@ -185,7 +185,7 @@
         <di:waypoint x="1315" y="280" />
         <di:waypoint x="1475" y="280" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1343" y="290" width="87" height="80" />
+          <dc:Bounds x="1348" y="290" width="77" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0pjkse4_di" bpmnElement="Flow_0pjkse4">
@@ -216,13 +216,13 @@
       <bpmndi:BPMNShape id="Event_17mmpot_di" bpmnElement="Event_17mmpot">
         <dc:Bounds x="982" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="961" y="232" width="79" height="14" />
+          <dc:Bounds x="979" y="232" width="44" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0tk8fn5_di" bpmnElement="Gateway_0tk8fn5" isMarkerVisible="true">
         <dc:Bounds x="1265" y="255" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1256" y="225" width="69" height="27" />
+          <dc:Bounds x="1257" y="225" width="68" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1y4pnq0_di" bpmnElement="Gateway_1y4pnq0">
@@ -258,7 +258,7 @@
       <bpmndi:BPMNShape id="Event_1gbo1nt_di" bpmnElement="Event_1gbo1nt">
         <dc:Bounds x="942" y="512" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="922" y="555" width="76" height="14" />
+          <dc:Bounds x="922" y="493" width="76" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

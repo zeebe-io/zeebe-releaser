@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_1lp7svp</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="Gateway_0u6a6i2" name="IS minor or alpha?" default="Flow_0a0t6bn">
+    <bpmn:exclusiveGateway id="Gateway_0u6a6i2" name="Is minor or alpha?" default="Flow_0a0t6bn">
       <bpmn:incoming>Flow_0dezeh0</bpmn:incoming>
       <bpmn:outgoing>Flow_0a0t6bn</bpmn:outgoing>
       <bpmn:outgoing>Flow_113e5gu</bpmn:outgoing>
@@ -145,7 +145,7 @@
       <bpmndi:BPMNShape id="Gateway_0u6a6i2_di" bpmnElement="Gateway_0u6a6i2" isMarkerVisible="true">
         <dc:Bounds x="575" y="93" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="573" y="69" width="56" height="27" />
+          <dc:Bounds x="557" y="69" width="89" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ostb7f_di" bpmnElement="Gateway_0p2s5ch" isMarkerVisible="true">
