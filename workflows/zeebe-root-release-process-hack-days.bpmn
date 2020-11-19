@@ -80,7 +80,7 @@
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
         <zeebe:ioMapping>
-          <zeebe:input source="=&#34;Help: define the releaseDate, releaseManager, releaseVersion and whether it is a minor version or not&#34;" target="helpMessage" />
+          <zeebe:input source="=&#34;Help: define the releaseDate, releaseManager, releaseVersion&#34;" target="helpMessage" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0erctpk</bpmn:incoming>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0" camunda:diagramRelationId="e2c97c47-3971-48d6-b4e5-13b9ddef7e0a">
-  <bpmn:process id="Process_8b81f96a-413a-4aaf-a1b1-5ee5116909fd" isExecutable="true">
+  <bpmn:process id="check-getting-started-guides-hack-days" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_1bojm9r</bpmn:outgoing>
     </bpmn:startEvent>
@@ -21,21 +21,21 @@
         <bpmn:outgoing>Flow_0mmhqp8</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:sequenceFlow id="Flow_0mmhqp8" sourceRef="Event_1qmp2c0" targetRef="Activity_1v7itf0" />
-      <bpmn:exclusiveGateway id="Gateway_0diquvi" name="Is minor or alpha?" default="Flow_06wdyja">
+      <bpmn:exclusiveGateway id="Gateway_0diquvi" name="Is minor or alpha?" default="Flow_12o4ijq">
         <bpmn:incoming>Flow_0ol3gv2</bpmn:incoming>
         <bpmn:outgoing>Flow_12o4ijq</bpmn:outgoing>
         <bpmn:outgoing>Flow_06wdyja</bpmn:outgoing>
       </bpmn:exclusiveGateway>
       <bpmn:sequenceFlow id="Flow_0ol3gv2" sourceRef="Activity_1v7itf0" targetRef="Gateway_0diquvi" />
-      <bpmn:sequenceFlow id="Flow_12o4ijq" name="minor" sourceRef="Gateway_0diquvi" targetRef="Activity_0s3vidf">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isMinor = true</bpmn:conditionExpression>
-      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_12o4ijq" name="minor" sourceRef="Gateway_0diquvi" targetRef="Activity_0s3vidf" />
       <bpmn:endEvent id="Event_10egvz7">
         <bpmn:incoming>Flow_10lja8m</bpmn:incoming>
         <bpmn:incoming>Flow_06wdyja</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_10lja8m" sourceRef="Activity_0s3vidf" targetRef="Event_10egvz7" />
-      <bpmn:sequenceFlow id="Flow_06wdyja" name="alpha" sourceRef="Gateway_0diquvi" targetRef="Event_10egvz7" />
+      <bpmn:sequenceFlow id="Flow_06wdyja" name="alpha" sourceRef="Gateway_0diquvi" targetRef="Event_10egvz7">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=contains(releaseVersion, "alpha")</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
       <bpmn:serviceTask id="Activity_1v7itf0" name="Try Guide">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="humanTask" />
@@ -58,7 +58,7 @@
     <bpmn:sequenceFlow id="Flow_0v9yzxh" sourceRef="Activity_1s8pv44" targetRef="Event_08kbb9j" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_8b81f96a-413a-4aaf-a1b1-5ee5116909fd">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="check-getting-started-guides-hack-days">
       <bpmndi:BPMNEdge id="Flow_0v9yzxh_di" bpmnElement="Flow_0v9yzxh">
         <di:waypoint x="1090" y="215" />
         <di:waypoint x="1182" y="215" />
