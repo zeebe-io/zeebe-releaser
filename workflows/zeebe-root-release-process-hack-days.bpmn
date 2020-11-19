@@ -5,190 +5,46 @@
       <bpmn:outgoing>Flow_04pzncy</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_04pzncy" sourceRef="StartEvent_1" targetRef="Gateway_0x9phop" />
-    <bpmn:sequenceFlow id="Flow_1o3bz8g" sourceRef="Activity_0y0m83g" targetRef="Activity_1x9t401" />
-    <bpmn:sequenceFlow id="Flow_1sttflc" sourceRef="Event_0xvetma" targetRef="Activity_0x9d02j" />
-    <bpmn:intermediateCatchEvent id="Event_0xvetma" name="Wait for Release Day - 7d">
-      <bpmn:incoming>Flow_0z95gnl</bpmn:incoming>
-      <bpmn:outgoing>Flow_1sttflc</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_1017ftp">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1S</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:intermediateCatchEvent>
-    <bpmn:callActivity id="Activity_0x9d02j" name="Release Zeebe Version" calledElement="Process_9ec5d388-4d23-4ce1-8eb4-884aed86bebc">
-      <bpmn:extensionElements>
-        <zeebe:calledElement processId="zeebe-release-process-hack-days" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1sttflc</bpmn:incoming>
-      <bpmn:outgoing>Flow_1sgp41g</bpmn:outgoing>
-    </bpmn:callActivity>
     <bpmn:exclusiveGateway id="Gateway_0x9phop">
       <bpmn:incoming>Flow_04pzncy</bpmn:incoming>
-      <bpmn:incoming>Flow_0leace6</bpmn:incoming>
-      <bpmn:outgoing>Flow_0erctpk</bpmn:outgoing>
+      <bpmn:incoming>Flow_1ve89do</bpmn:incoming>
+      <bpmn:outgoing>Flow_0m1fon6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0erctpk" sourceRef="Gateway_0x9phop" targetRef="Activity_0y0m83g" />
-    <bpmn:sequenceFlow id="Flow_0leace6" sourceRef="Gateway_0rbsixl" targetRef="Gateway_0x9phop" />
-    <bpmn:sequenceFlow id="Flow_1sgp41g" sourceRef="Activity_0x9d02j" targetRef="Gateway_1dkchue" />
-    <bpmn:parallelGateway id="Gateway_1dkchue">
-      <bpmn:incoming>Flow_1sgp41g</bpmn:incoming>
-      <bpmn:outgoing>Flow_1qzv18h</bpmn:outgoing>
-      <bpmn:outgoing>Flow_07y91am</bpmn:outgoing>
-      <bpmn:outgoing>Flow_00m4wq4</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_1qzv18h" sourceRef="Gateway_1dkchue" targetRef="Activity_19im7c4" />
-    <bpmn:sequenceFlow id="Flow_07y91am" sourceRef="Gateway_1dkchue" targetRef="Activity_0e5vu98" />
-    <bpmn:sequenceFlow id="Flow_00m4wq4" sourceRef="Gateway_1dkchue" targetRef="Activity_185hbfm" />
-    <bpmn:sequenceFlow id="Flow_0jl0tce" sourceRef="Activity_19im7c4" targetRef="Gateway_0rbsixl" />
-    <bpmn:parallelGateway id="Gateway_0rbsixl">
-      <bpmn:incoming>Flow_0jl0tce</bpmn:incoming>
-      <bpmn:incoming>Flow_0m0krzp</bpmn:incoming>
-      <bpmn:incoming>Flow_0j5vad7</bpmn:incoming>
-      <bpmn:outgoing>Flow_0leace6</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_0m0krzp" sourceRef="Activity_0e5vu98" targetRef="Gateway_0rbsixl" />
-    <bpmn:sequenceFlow id="Flow_0j5vad7" sourceRef="Activity_185hbfm" targetRef="Gateway_0rbsixl" />
-    <bpmn:serviceTask id="Activity_0e5vu98" name="Invite Team to celebrate the release">
+    <bpmn:sequenceFlow id="Flow_0m1fon6" sourceRef="Gateway_0x9phop" targetRef="Activity_07lr9dh" />
+    <bpmn:callActivity id="Activity_07lr9dh" name="Release">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="humanTask" />
+        <zeebe:calledElement processId="zeebe-full-release-process-hack-days" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_07y91am</bpmn:incoming>
-      <bpmn:outgoing>Flow_0m0krzp</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_19im7c4" name="Announce Release in zeebe, operate and cloud slack channel">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="humanTask" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1qzv18h</bpmn:incoming>
-      <bpmn:outgoing>Flow_0jl0tce</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_185hbfm" name="Announce Release in Slack and Forum">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="humanTask" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_00m4wq4</bpmn:incoming>
-      <bpmn:outgoing>Flow_0j5vad7</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0z95gnl" sourceRef="Activity_1x9t401" targetRef="Event_0xvetma" />
-    <bpmn:serviceTask id="Activity_1x9t401" name="Create Calendar Appointment">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="humanTask" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1o3bz8g</bpmn:incoming>
-      <bpmn:outgoing>Flow_0z95gnl</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0y0m83g" name="Get next Release Date, Manager and Version">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="humanTask" />
-        <zeebe:ioMapping>
-          <zeebe:input source="=&#34;Help: define the releaseDate, releaseManager, releaseVersion&#34;" target="helpMessage" />
-          <zeebe:input source="=&#34;01-01-1970&#34;" target="releaseDate" />
-          <zeebe:input source="=&#34;YOU&#34;" target="releaseManager" />
-          <zeebe:input source="=&#34;0.99.0-alpha1&#34;" target="releaseVersion" />
-          <zeebe:output source="=releaseDate" target="releaseDate" />
-          <zeebe:output source="=releaseManager" target="releaseManager" />
-          <zeebe:output source="=releaseVersion" target="releaseVersion" />
-        </zeebe:ioMapping>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0erctpk</bpmn:incoming>
-      <bpmn:outgoing>Flow_1o3bz8g</bpmn:outgoing>
-    </bpmn:serviceTask>
+      <bpmn:incoming>Flow_0m1fon6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ve89do</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1ve89do" sourceRef="Activity_07lr9dh" targetRef="Gateway_0x9phop" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-root-release-process-hack-days">
-      <bpmndi:BPMNEdge id="Flow_0z95gnl_di" bpmnElement="Flow_0z95gnl">
-        <di:waypoint x="590" y="260" />
-        <di:waypoint x="662" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0j5vad7_di" bpmnElement="Flow_0j5vad7">
-        <di:waypoint x="1140" y="150" />
-        <di:waypoint x="1230" y="150" />
-        <di:waypoint x="1230" y="235" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0m0krzp_di" bpmnElement="Flow_0m0krzp">
-        <di:waypoint x="1140" y="370" />
-        <di:waypoint x="1230" y="370" />
-        <di:waypoint x="1230" y="285" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jl0tce_di" bpmnElement="Flow_0jl0tce">
-        <di:waypoint x="1140" y="260" />
-        <di:waypoint x="1205" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_00m4wq4_di" bpmnElement="Flow_00m4wq4">
-        <di:waypoint x="950" y="235" />
-        <di:waypoint x="950" y="150" />
-        <di:waypoint x="1040" y="150" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07y91am_di" bpmnElement="Flow_07y91am">
-        <di:waypoint x="950" y="285" />
-        <di:waypoint x="950" y="370" />
-        <di:waypoint x="1040" y="370" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qzv18h_di" bpmnElement="Flow_1qzv18h">
-        <di:waypoint x="975" y="260" />
-        <di:waypoint x="1040" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1sgp41g_di" bpmnElement="Flow_1sgp41g">
-        <di:waypoint x="860" y="260" />
-        <di:waypoint x="925" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0leace6_di" bpmnElement="Flow_0leace6">
-        <di:waypoint x="1255" y="260" />
-        <di:waypoint x="1310" y="260" />
-        <di:waypoint x="1310" y="490" />
-        <di:waypoint x="250" y="490" />
-        <di:waypoint x="250" y="285" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0erctpk_di" bpmnElement="Flow_0erctpk">
-        <di:waypoint x="275" y="260" />
-        <di:waypoint x="330" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1sttflc_di" bpmnElement="Flow_1sttflc">
-        <di:waypoint x="698" y="260" />
-        <di:waypoint x="760" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1o3bz8g_di" bpmnElement="Flow_1o3bz8g">
-        <di:waypoint x="430" y="260" />
-        <di:waypoint x="490" y="260" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04pzncy_di" bpmnElement="Flow_04pzncy">
-        <di:waypoint x="188" y="260" />
-        <di:waypoint x="225" y="260" />
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="225" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m1fon6_di" bpmnElement="Flow_0m1fon6">
+        <di:waypoint x="275" y="120" />
+        <di:waypoint x="350" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ve89do_di" bpmnElement="Flow_1ve89do">
+        <di:waypoint x="450" y="120" />
+        <di:waypoint x="550" y="120" />
+        <di:waypoint x="550" y="270" />
+        <di:waypoint x="250" y="270" />
+        <di:waypoint x="250" y="145" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="152" y="242" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0kyvj07_di" bpmnElement="Event_0xvetma">
-        <dc:Bounds x="662" y="242" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="640" y="285" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_17x53eq_di" bpmnElement="Activity_0x9d02j">
-        <dc:Bounds x="760" y="220" width="100" height="80" />
+        <dc:Bounds x="152" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0x9phop_di" bpmnElement="Gateway_0x9phop" isMarkerVisible="true">
-        <dc:Bounds x="225" y="235" width="50" height="50" />
+        <dc:Bounds x="225" y="95" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0fohxah_di" bpmnElement="Gateway_1dkchue">
-        <dc:Bounds x="925" y="235" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_17cpee1_di" bpmnElement="Gateway_0rbsixl">
-        <dc:Bounds x="1205" y="235" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wph42u_di" bpmnElement="Activity_0e5vu98">
-        <dc:Bounds x="1040" y="330" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1t0ha64_di" bpmnElement="Activity_19im7c4">
-        <dc:Bounds x="1040" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0k9bfhk_di" bpmnElement="Activity_185hbfm">
-        <dc:Bounds x="1040" y="110" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1io9lsn_di" bpmnElement="Activity_1x9t401">
-        <dc:Bounds x="490" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0cjnlnr_di" bpmnElement="Activity_0y0m83g">
-        <dc:Bounds x="330" y="220" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0pl4yin_di" bpmnElement="Activity_07lr9dh">
+        <dc:Bounds x="350" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
