@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0" camunda:diagramRelationId="b55cd578-b9fe-4996-afb6-003d7eddf065">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0" camunda:diagramRelationId="b55cd578-b9fe-4996-afb6-003d7eddf065">
   <bpmn:process id="Process_10cdba50-9e90-42e4-a6e8-45c05660f206" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_1lp7svp</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="Gateway_0u6a6i2" name="Is minor or alpha?">
+    <bpmn:exclusiveGateway id="Gateway_0u6a6i2" name="Is minor or alpha?" default="Flow_113e5gu">
       <bpmn:incoming>Flow_0dezeh0</bpmn:incoming>
       <bpmn:outgoing>Flow_0a0t6bn</bpmn:outgoing>
       <bpmn:outgoing>Flow_113e5gu</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0dezeh0" sourceRef="Activity_0x2phfy" targetRef="Gateway_0u6a6i2" />
-    <bpmn:sequenceFlow id="Flow_0a0t6bn" name="minor" sourceRef="Gateway_0u6a6i2" targetRef="Activity_0rp1dhk" />
+    <bpmn:sequenceFlow id="Flow_0a0t6bn" name="minor" sourceRef="Gateway_0u6a6i2" targetRef="Activity_0rp1dhk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isMinor = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1lp7svp" sourceRef="StartEvent_1" targetRef="Activity_0x2phfy" />
     <bpmn:sequenceFlow id="Flow_1prqugn" sourceRef="Activity_0rp1dhk" targetRef="Activity_03uyfi0" />
     <bpmn:sequenceFlow id="Flow_1pem2iw" sourceRef="Activity_03uyfi0" targetRef="Gateway_0p2s5ch" />

@@ -79,6 +79,9 @@
     <bpmn:serviceTask id="Activity_0y0m83g" name="Get next Release Date, Manager and Version">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Help: define the releaseDate, releaseManager, releaseVersion and whether it is a minor version or not&#34;" target="helpMessage" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0erctpk</bpmn:incoming>
       <bpmn:outgoing>Flow_1o3bz8g</bpmn:outgoing>
