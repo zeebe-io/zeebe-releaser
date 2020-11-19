@@ -24,6 +24,9 @@
       <bpmn:outgoing>Flow_0vs7o2u</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_06mzquh" name="Generate Change log">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="humanTask" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0vs7o2u</bpmn:incoming>
       <bpmn:outgoing>Flow_07a2nie</bpmn:outgoing>
     </bpmn:serviceTask>
