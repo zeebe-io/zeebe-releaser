@@ -39,6 +39,11 @@
       <bpmn:outgoing>Flow_1f6dk1p</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:subProcess id="Activity_0m7s5h1">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:input source="=false" target="benchmarkOkay" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1hg2lc5</bpmn:incoming>
       <bpmn:incoming>Flow_0n41fax</bpmn:incoming>
       <bpmn:outgoing>Flow_02vmw7u</bpmn:outgoing>
