@@ -2,14 +2,14 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0" camunda:diagramRelationId="e2c97c47-3971-48d6-b4e5-13b9ddef7e0a">
   <bpmn:process id="check-getting-started-guides-hack-days" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=[&#34;Go&#34;, &#34;Java&#34;, &#34;Quick Start&#34;]" target="clients" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1bojm9r</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:subProcess id="Activity_1s8pv44">
-      <bpmn:extensionElements>
-        <zeebe:ioMapping>
-          <zeebe:input source="=[&#34;Go&#34;, &#34;Java&#34;, &#34;Quick Start&#34;]" target="clients" />
-        </zeebe:ioMapping>
-      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1bojm9r</bpmn:incoming>
       <bpmn:outgoing>Flow_0v9yzxh</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics>
