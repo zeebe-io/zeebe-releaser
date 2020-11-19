@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0tcrgne" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
-  <bpmn:process id="zeebe-full-release-process-hack-days" isExecutable="true">
+  <bpmn:process id="zeebe-release" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
@@ -98,14 +98,14 @@
     </bpmn:parallelGateway>
     <bpmn:callActivity id="Activity_0tz8d4l" name="Publish Release Artifacts" calledElement="Process_f07d26d3-e403-4ed8-8c4c-cad68494fdc5">
       <bpmn:extensionElements>
-        <zeebe:calledElement processId="publish-release-artifacts-hack-days" />
+        <zeebe:calledElement processId="publish-release-artifacts" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1nl9sdb</bpmn:incoming>
       <bpmn:outgoing>Flow_0t0pcng</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_05hh624" name="Merge and Clean-up Branches" calledElement="Process_10cdba50-9e90-42e4-a6e8-45c05660f206">
       <bpmn:extensionElements>
-        <zeebe:calledElement processId="merge-and-clean-up-branches-hack-days" />
+        <zeebe:calledElement processId="merge-and-clean-up-branches" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0t0pcng</bpmn:incoming>
       <bpmn:outgoing>Flow_1fqelgt</bpmn:outgoing>
@@ -181,7 +181,7 @@
     <bpmn:association id="Association_14y0ub4" sourceRef="Activity_0o036xm" targetRef="TextAnnotation_18ny6n0" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-full-release-process-hack-days">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release">
       <bpmndi:BPMNShape id="TextAnnotation_18ny6n0_di" bpmnElement="TextAnnotation_18ny6n0">
         <dc:Bounds x="1350" y="140" width="100" height="68" />
       </bpmndi:BPMNShape>
@@ -358,13 +358,13 @@
       <bpmndi:BPMNShape id="Activity_1ioawai_di" bpmnElement="Activity_1ioawai">
         <dc:Bounds x="260" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1qa1c1e_di" bpmnElement="Association_1qa1c1e">
-        <di:waypoint x="1268" y="220" />
-        <di:waypoint x="1258" y="208" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_14y0ub4_di" bpmnElement="Association_14y0ub4">
         <di:waypoint x="1338" y="220" />
         <di:waypoint x="1350" y="208" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1qa1c1e_di" bpmnElement="Association_1qa1c1e">
+        <di:waypoint x="1268" y="220" />
+        <di:waypoint x="1258" y="208" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

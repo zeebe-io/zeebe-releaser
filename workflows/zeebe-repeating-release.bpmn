@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0" camunda:diagramRelationId="e003dc70-be82-4b56-b0b8-3a46cb4c2c07">
-  <bpmn:process id="zeebe-root-release-process-hack-days" isExecutable="true">
+  <bpmn:process id="zeebe-repeating-release" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_04pzncy</bpmn:outgoing>
     </bpmn:startEvent>
@@ -13,7 +13,7 @@
     <bpmn:sequenceFlow id="Flow_0m1fon6" sourceRef="Gateway_0x9phop" targetRef="Activity_07lr9dh" />
     <bpmn:callActivity id="Activity_07lr9dh" name="Release">
       <bpmn:extensionElements>
-        <zeebe:calledElement processId="zeebe-full-release-process-hack-days" />
+        <zeebe:calledElement processId="zeebe-release" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0m1fon6</bpmn:incoming>
       <bpmn:outgoing>Flow_1ve89do</bpmn:outgoing>
@@ -21,21 +21,21 @@
     <bpmn:sequenceFlow id="Flow_1ve89do" sourceRef="Activity_07lr9dh" targetRef="Gateway_0x9phop" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-root-release-process-hack-days">
-      <bpmndi:BPMNEdge id="Flow_04pzncy_di" bpmnElement="Flow_04pzncy">
-        <di:waypoint x="188" y="120" />
-        <di:waypoint x="225" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0m1fon6_di" bpmnElement="Flow_0m1fon6">
-        <di:waypoint x="275" y="120" />
-        <di:waypoint x="350" y="120" />
-      </bpmndi:BPMNEdge>
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-repeating-release">
       <bpmndi:BPMNEdge id="Flow_1ve89do_di" bpmnElement="Flow_1ve89do">
         <di:waypoint x="450" y="120" />
         <di:waypoint x="550" y="120" />
         <di:waypoint x="550" y="270" />
         <di:waypoint x="250" y="270" />
         <di:waypoint x="250" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m1fon6_di" bpmnElement="Flow_0m1fon6">
+        <di:waypoint x="275" y="120" />
+        <di:waypoint x="350" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04pzncy_di" bpmnElement="Flow_04pzncy">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="225" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="102" width="36" height="36" />
