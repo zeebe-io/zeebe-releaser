@@ -84,6 +84,9 @@
           <zeebe:input source="=&#34;01-01-1970&#34;" target="releaseDate" />
           <zeebe:input source="=&#34;YOU&#34;" target="releaseManager" />
           <zeebe:input source="=&#34;0.99.0-alpha1&#34;" target="releaseVersion" />
+          <zeebe:output source="=releaseDate" target="releaseDate" />
+          <zeebe:output source="=releaseManager" target="releaseManager" />
+          <zeebe:output source="=releaseVersion" target="targetValue" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0erctpk</bpmn:incoming>
