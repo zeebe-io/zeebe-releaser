@@ -61,7 +61,7 @@
         <zeebe:taskDefinition type="humanTask" />
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;Help: define the releaseDate, releaseManager, releaseVersion&#34;" target="helpMessage" />
-          <zeebe:input source="=&#34;01-01-1970&#34;" target="releaseDate" />
+          <zeebe:input source="=&#34;yyyy-MM-dd&#34;" target="releaseDate" />
           <zeebe:input source="=&#34;YOU&#34;" target="releaseManager" />
           <zeebe:input source="=&#34;0.99.0-alpha1&#34;" target="releaseVersion" />
           <zeebe:output source="=releaseDate" target="releaseDate" />
