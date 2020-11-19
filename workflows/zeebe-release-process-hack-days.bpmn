@@ -2,6 +2,11 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0" camunda:diagramRelationId="38f40348-a5cc-470e-afef-5bc3b8015063">
   <bpmn:process id="zeebe-release-process-hack-days" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=[&#34;Go&#34;, &#34;Java&#34;, &#34;Quick Start&#34;]" target="clients" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1d3veqg</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0ryjb2v" sourceRef="Activity_0u27oc5" targetRef="Gateway_0mc0ra4" />
@@ -68,13 +73,6 @@
         <bpmn:outgoing>Flow_0w7vbl8</bpmn:outgoing>
         <bpmn:outgoing>Flow_1j6xpft</bpmn:outgoing>
       </bpmn:parallelGateway>
-      <bpmn:callActivity id="Activity_0cu3spf" name="Check Getting Started Guides" calledElement="Process_8b81f96a-413a-4aaf-a1b1-5ee5116909fd">
-        <bpmn:extensionElements>
-          <zeebe:calledElement processId="check-getting-started-guides-hack-days" />
-        </bpmn:extensionElements>
-        <bpmn:incoming>Flow_1j6xpft</bpmn:incoming>
-        <bpmn:outgoing>Flow_00uamqg</bpmn:outgoing>
-      </bpmn:callActivity>
       <bpmn:parallelGateway id="Gateway_1ekuep6">
         <bpmn:incoming>Flow_0wbc1v1</bpmn:incoming>
         <bpmn:incoming>Flow_00uamqg</bpmn:incoming>
@@ -129,6 +127,18 @@
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1kfdbpw</bpmn:incoming>
         <bpmn:outgoing>Flow_0t4y8ju</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_0cu3spf" name="Check Getting Started Guides">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="check-getting-started-guides-hack-days" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1j6xpft</bpmn:incoming>
+        <bpmn:outgoing>Flow_00uamqg</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics>
+          <bpmn:extensionElements>
+            <zeebe:loopCharacteristics inputCollection="=clients" inputElement="client" />
+          </bpmn:extensionElements>
+        </bpmn:multiInstanceLoopCharacteristics>
       </bpmn:serviceTask>
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_1d3veqg" sourceRef="StartEvent_1" targetRef="Activity_0u27oc5" />
@@ -375,9 +385,6 @@
       <bpmndi:BPMNShape id="Gateway_1i9eq1v_di" bpmnElement="Gateway_17agioj">
         <dc:Bounds x="925" y="495" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0e4uzbi_di" bpmnElement="Activity_0cu3spf">
-        <dc:Bounds x="1020" y="360" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0nr0y9h_di" bpmnElement="Gateway_1ekuep6">
         <dc:Bounds x="1685" y="495" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -395,6 +402,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zfnbpx_di" bpmnElement="Activity_1etjy3n">
         <dc:Bounds x="1300" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bdmiui_di" bpmnElement="Activity_0cu3spf">
+        <dc:Bounds x="1020" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0ed7n09_di" bpmnElement="Gateway_04gmi4t">
         <dc:Bounds x="1915" y="555" width="50" height="50" />
