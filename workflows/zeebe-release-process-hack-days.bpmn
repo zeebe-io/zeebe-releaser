@@ -116,6 +116,11 @@
       <bpmn:serviceTask id="Activity_1etjy3n" name="Check Benchmark">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="humanTask" />
+          <zeebe:ioMapping>
+            <zeebe:input source="=&#34;Help: Is the benchmark ok? If not publish a message. If the benchmark is ok AND the benchmark was running for 7 days then set benchmarkOkay to true.&#34;" target="helpMessage" />
+            <zeebe:input source="=false" target="benchmarkOk" />
+            <zeebe:output source="=benchmarkOk" target="benchmarkOk" />
+          </zeebe:ioMapping>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1kfdbpw</bpmn:incoming>
         <bpmn:outgoing>Flow_0t4y8ju</bpmn:outgoing>
@@ -198,6 +203,16 @@
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-process-hack-days">
+      <bpmndi:BPMNEdge id="Flow_0pjqq7p_di" bpmnElement="Flow_0pjqq7p">
+        <di:waypoint x="410" y="515" />
+        <di:waypoint x="410" y="260" />
+        <di:waypoint x="1060" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ug8030_di" bpmnElement="Flow_0ug8030">
+        <di:waypoint x="1160" y="260" />
+        <di:waypoint x="2300" y="260" />
+        <di:waypoint x="2300" y="515" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1s9awgn_di" bpmnElement="Flow_1s9awgn">
         <di:waypoint x="2520" y="540" />
         <di:waypoint x="2620" y="540" />
@@ -246,11 +261,6 @@
         <di:waypoint x="2300" y="680" />
         <di:waypoint x="2300" y="565" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ug8030_di" bpmnElement="Flow_0ug8030">
-        <di:waypoint x="1160" y="260" />
-        <di:waypoint x="2300" y="260" />
-        <di:waypoint x="2300" y="515" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0utbf6h_di" bpmnElement="Flow_0utbf6h">
         <di:waypoint x="2325" y="540" />
         <di:waypoint x="2420" y="540" />
@@ -258,11 +268,6 @@
       <bpmndi:BPMNEdge id="Flow_0xyiesv_di" bpmnElement="Flow_0xyiesv">
         <di:waypoint x="2170" y="540" />
         <di:waypoint x="2275" y="540" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0pjqq7p_di" bpmnElement="Flow_0pjqq7p">
-        <di:waypoint x="410" y="515" />
-        <di:waypoint x="410" y="260" />
-        <di:waypoint x="1060" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ryjb2v_di" bpmnElement="Flow_0ryjb2v">
         <di:waypoint x="335" y="540" />
@@ -285,24 +290,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1c143l4_di" bpmnElement="Activity_1pad70d">
         <dc:Bounds x="2800" y="500" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0i5oa5c_di" bpmnElement="Activity_0u27oc5">
-        <dc:Bounds x="235" y="500" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0tk4r25_di" bpmnElement="Activity_0u9zml7">
-        <dc:Bounds x="1060" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0vzibll_di" bpmnElement="Activity_1l8vu82">
-        <dc:Bounds x="2070" y="500" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1sgah7z_di" bpmnElement="Activity_1bw9aq7">
-        <dc:Bounds x="2070" y="640" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0elnu8o_di" bpmnElement="Activity_1ps5wkq">
-        <dc:Bounds x="2420" y="500" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1vpfeti_di" bpmnElement="Activity_15rzjig">
-        <dc:Bounds x="1220" y="870" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0m7s5h1_di" bpmnElement="Activity_0m7s5h1" isExpanded="true">
         <dc:Bounds x="480" y="320" width="1370" height="450" />
@@ -407,6 +394,24 @@
       <bpmndi:BPMNShape id="Gateway_0ed7n09_di" bpmnElement="Gateway_04gmi4t">
         <dc:Bounds x="1915" y="555" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0i5oa5c_di" bpmnElement="Activity_0u27oc5">
+        <dc:Bounds x="235" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tk4r25_di" bpmnElement="Activity_0u9zml7">
+        <dc:Bounds x="1060" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vzibll_di" bpmnElement="Activity_1l8vu82">
+        <dc:Bounds x="2070" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1sgah7z_di" bpmnElement="Activity_1bw9aq7">
+        <dc:Bounds x="2070" y="640" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0elnu8o_di" bpmnElement="Activity_1ps5wkq">
+        <dc:Bounds x="2420" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vpfeti_di" bpmnElement="Activity_15rzjig">
+        <dc:Bounds x="1220" y="870" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0tkek73_di" bpmnElement="TextAnnotation_0tkek73">
         <dc:Bounds x="1160" y="140" width="100" height="68" />
       </bpmndi:BPMNShape>
@@ -419,13 +424,13 @@
           <dc:Bounds x="1132" y="795" width="76" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_03qd6il_di" bpmnElement="Association_03qd6il">
-        <di:waypoint x="1148" y="220" />
-        <di:waypoint x="1160" y="208" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1y04431_di" bpmnElement="Association_1y04431">
         <di:waypoint x="1078" y="220" />
         <di:waypoint x="1030" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_03qd6il_di" bpmnElement="Association_03qd6il">
+        <di:waypoint x="1148" y="220" />
+        <di:waypoint x="1160" y="208" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
