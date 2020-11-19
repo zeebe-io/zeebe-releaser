@@ -17,4 +17,4 @@ chmod +x zbctl
 
 zbctl status
 
-zbctl create instance zeebe-root-release-process-hack-days
+zbctl create instance zeebe-repeating-release
