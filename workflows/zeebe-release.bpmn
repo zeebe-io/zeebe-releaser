@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:output source="=[&#34;Go&#34;, &#34;Java&#34;, &#34;Quick Start&#34;]" target="clients" />
+          <zeebe:output source="=[{&#34;guide&#34;:&#34;https://docs.camunda.io/docs/product-manuals/clients/cli-client/get-started&#34;, &#34;client&#34;:&#34;CLI&#34;}, {&#34;guide&#34;:&#34;https://github.com/zeebe-io/zeebe-get-started-go-client&#34;, &#34;client&#34;:&#34;go&#34;},{&#34;guide&#34;:&#34;https://github.com/zeebe-io/zeebe-get-started-java-client&#34;, &#34;client&#34;:&#34;java&#34;}]" target="guides" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0johp4c</bpmn:outgoing>
@@ -52,6 +52,10 @@
     <bpmn:serviceTask id="Activity_1de27cl" name="Create Calendar Appointment">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Help: Zeebe is regularly released on the 1st Tuesday of the month. If this day is a holiday choose the next work day. Send a calendar appointment for the release to zeebe@camunda.com so the whole team is aware of the release date. Optional participants: infra@camunda.com and operate@camunda.com. If it is a minor/patch release, set another calendar appointment for the Cloud production roll out. Set for the same day as the release announcement.&#34;" target="helpMessage" />
+          <zeebe:input source="=&#34;Hey all,  we will build a new Zeebe release: 0.X.0-alphaY.  Release manager is: MATE  Have a nice week!&#34;" target="exampleMessage" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_04nvy0k</bpmn:incoming>
       <bpmn:outgoing>Flow_1amz213</bpmn:outgoing>
@@ -118,6 +122,9 @@
     <bpmn:serviceTask id="Activity_0v0heip" name="Create Release Branch">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Help: checkout from develop and create a branch called release-X.Y.Z, if it is an alpha add the alpha suffix&#34;" target="helpMessage" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0rmdssu</bpmn:incoming>
       <bpmn:outgoing>Flow_0sfk5tw</bpmn:outgoing>
@@ -125,6 +132,9 @@
     <bpmn:serviceTask id="Activity_0o036xm" name="Write Release Blog Post">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Help: For alphas check the PR&#39;s which have been merged since last release and are worth to be added to the release document. For minor releases use the release document as draft for your blog post.&#34;" target="helpMessage" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ancku9</bpmn:incoming>
       <bpmn:outgoing>Flow_05va8v7</bpmn:outgoing>
@@ -132,6 +142,9 @@
     <bpmn:serviceTask id="Activity_010j4m5" name="Build Release Artifacts">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Help: trigger the release build https://ci.zeebe.camunda.cloud/job/zeebe-release/&#34;" target="helpMessage" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_008xpj7</bpmn:incoming>
       <bpmn:outgoing>Flow_1duos48</bpmn:outgoing>
@@ -139,6 +152,9 @@
     <bpmn:serviceTask id="Activity_0262te7" name="Clean up release benchmark">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Help: Make sure that you clean up your release benchmark&#34;" target="helpMessage" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1nctlux</bpmn:incoming>
       <bpmn:outgoing>Flow_1lsqmns</bpmn:outgoing>
@@ -313,6 +329,9 @@
       <bpmndi:BPMNShape id="Activity_1de27cl_di" bpmnElement="Activity_1de27cl">
         <dc:Bounds x="420" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ioawai_di" bpmnElement="Activity_1ioawai">
+        <dc:Bounds x="260" y="450" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0nmdqrm_di" bpmnElement="Event_0nmdqrm">
         <dc:Bounds x="2692" y="472" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -354,9 +373,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0ozb7zf_di" bpmnElement="TextAnnotation_0ozb7zf">
         <dc:Bounds x="1170" y="84" width="110" height="124" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ioawai_di" bpmnElement="Activity_1ioawai">
-        <dc:Bounds x="260" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1qa1c1e_di" bpmnElement="Association_1qa1c1e">
         <di:waypoint x="1268" y="220" />
