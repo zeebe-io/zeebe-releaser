@@ -19,4 +19,4 @@ chmod +x zbctl
 
 zbctl status
 
-zbctl deploy *.bpmn
+zbctl deploy processes/*.bpmn
