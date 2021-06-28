@@ -12,7 +12,7 @@ source credentials
 # zbctl
 if [ ! -f zbctl ]
 then
-  wget https://github.com/zeebe-io/zeebe/releases/download/0.24.5/zbctl
+  wget https://github.com/camunda-cloud/zeebe/releases/download/1.0.0/zbctl
 fi
 
 chmod +x zbctl
