@@ -12,12 +12,11 @@ source credentials
 release=$1
 
 # zbctl
-if [ ! -f zbctl ]
+if [ ! "$(which zbctl)" ]
 then
   wget https://github.com/camunda-cloud/zeebe/releases/download/1.0.0/zbctl
+  chmod +x zbctl
 fi
-
-chmod +x zbctl
 
 zbctl status
 
