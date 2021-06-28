@@ -12,6 +12,11 @@ To start the release process, run:
 ./createInstance.sh
 ```
 
+To cancel the current release, run:
+```shell
+./cancelRelease.sh <startDateTime>
+```
+
 # zeebe-maven-template
 
 This repo was generated usiong the zeebe-maven-template.
