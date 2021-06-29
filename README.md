@@ -1,4 +1,25 @@
+# Zeebe Releaser
+Project to automate and visualise the Zeebe release process.
+
+## Getting started
+To deploy the release process to Camunda Cloud (or Zeebe), run:
+```shell
+./deployProcesses.sh
+```
+
+To start the release process, run:
+```shell
+./createInstance.sh
+```
+
+To cancel the current release, run:
+```shell
+./abortRelease.sh <startDateTime>
+```
+
 # zeebe-maven-template
+
+This repo was generated using the zeebe-maven-template.
 
 Empty maven project with defaults that integrate with the Zeebe build pipeline
 
@@ -23,7 +44,7 @@ Adding [Contributing to this project](https://gist.github.com/jwulf/2c7f772570bf
 - Maven POM
   - Zeebe reprositories
   - Release to Maven, Zeebe and GitHub
-  - Google Code Formatter  
+  - Google Code Formatter
   - JUnit 5
   - AssertJ
   - Surefire Plugin

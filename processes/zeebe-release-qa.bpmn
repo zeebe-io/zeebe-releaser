@@ -42,7 +42,7 @@
       <bpmn:endEvent id="Event_19h3kvh">
         <bpmn:incoming>Flow_1m9tm68</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:serviceTask id="Activity_1f7zmxn" name="Check preconditions">
+      <bpmn:userTask id="Activity_1f7zmxn" name="Check preconditions">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="humanTask" />
           <zeebe:ioMapping>
@@ -51,22 +51,22 @@
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_0ssm0ua</bpmn:incoming>
         <bpmn:outgoing>Flow_19jmpdy</bpmn:outgoing>
-      </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_03n7qml" name="Build Release Candidate">
+      </bpmn:userTask>
+      <bpmn:userTask id="Activity_03n7qml" name="Build Release Candidate">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="humanTask" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_19jmpdy</bpmn:incoming>
         <bpmn:outgoing>Flow_1r9lwgg</bpmn:outgoing>
-      </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_1444sd6" name="Setup Release Benchmark">
+      </bpmn:userTask>
+      <bpmn:userTask id="Activity_1444sd6" name="Setup Release Benchmark">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="humanTask" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_10sgu3r</bpmn:incoming>
         <bpmn:outgoing>Flow_06sbjij</bpmn:outgoing>
-      </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_05897l5" name="Check Benchmark">
+      </bpmn:userTask>
+      <bpmn:userTask id="Activity_05897l5" name="Check Benchmark">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="humanTask" />
           <zeebe:ioMapping>
@@ -77,8 +77,8 @@
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1ruj9tw</bpmn:incoming>
         <bpmn:outgoing>Flow_0snv7m5</bpmn:outgoing>
-      </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_1w5oql8" name="Check Getting Started Guides">
+      </bpmn:userTask>
+      <bpmn:userTask id="Activity_1w5oql8" name="Check Getting Started Guides">
         <bpmn:extensionElements>
           <zeebe:calledElement processId="check-getting-started-guides-hack-days" />
           <zeebe:taskDefinition type="humanTask" />
@@ -90,7 +90,7 @@
             <zeebe:loopCharacteristics inputCollection="=guides" inputElement="guide" />
           </bpmn:extensionElements>
         </bpmn:multiInstanceLoopCharacteristics>
-      </bpmn:serviceTask>
+      </bpmn:userTask>
       <bpmn:sequenceFlow id="Flow_1m9tm68" sourceRef="Gateway_1kpzd6i" targetRef="Event_19h3kvh" />
       <bpmn:sequenceFlow id="Flow_19jmpdy" sourceRef="Activity_1f7zmxn" targetRef="Activity_03n7qml" />
       <bpmn:sequenceFlow id="Flow_0ssm0ua" sourceRef="Event_16ez2b8" targetRef="Activity_1f7zmxn" />
@@ -106,13 +106,13 @@
       <bpmn:sequenceFlow id="Flow_10sgu3r" sourceRef="Gateway_1y4pnq0" targetRef="Activity_1444sd6" />
       <bpmn:sequenceFlow id="Flow_1r9lwgg" sourceRef="Activity_03n7qml" targetRef="Gateway_1y4pnq0" />
     </bpmn:subProcess>
-    <bpmn:serviceTask id="Activity_1fdeagj" name="Fix problems">
+    <bpmn:userTask id="Activity_1fdeagj" name="Fix problems">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ppvmp8</bpmn:incoming>
       <bpmn:outgoing>Flow_1mitkgo</bpmn:outgoing>
-    </bpmn:serviceTask>
+    </bpmn:userTask>
     <bpmn:boundaryEvent id="Event_1gbo1nt" name="Bug discovered" attachedToRef="Activity_1ir7h8r">
       <bpmn:outgoing>Flow_0ppvmp8</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1id0x2u" messageRef="Message_005l4oe" />

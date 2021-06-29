@@ -27,34 +27,34 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0dwne3x" sourceRef="Gateway_0p2s5ch" targetRef="Gateway_1upfx10" />
     <bpmn:sequenceFlow id="Flow_03ti3w2" sourceRef="Activity_1l3fuj6" targetRef="Event_05qgp19" />
-    <bpmn:serviceTask id="Activity_0x2phfy" name="Merge to develop">
+    <bpmn:userTask id="Activity_0x2phfy" name="Merge to develop">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1lfg64b</bpmn:incoming>
       <bpmn:outgoing>Flow_0dezeh0</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0rp1dhk" name="Merge to master">
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0rp1dhk" name="Merge to master">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0a0t6bn</bpmn:incoming>
       <bpmn:outgoing>Flow_1prqugn</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_03uyfi0" name="Create stable branch">
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_03uyfi0" name="Create stable branch">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1prqugn</bpmn:incoming>
       <bpmn:outgoing>Flow_1pem2iw</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1l3fuj6" name="Delete release branch">
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1l3fuj6" name="Delete release branch">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0v0vli3</bpmn:incoming>
       <bpmn:outgoing>Flow_03ti3w2</bpmn:outgoing>
-    </bpmn:serviceTask>
+    </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_0kzj6dy" name="Is patch?" default="Flow_1lfg64b">
       <bpmn:incoming>Flow_1lp7svp</bpmn:incoming>
       <bpmn:outgoing>Flow_1lfg64b</bpmn:outgoing>
@@ -71,13 +71,13 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0v0vli3" sourceRef="Gateway_1upfx10" targetRef="Activity_1l3fuj6" />
     <bpmn:sequenceFlow id="Flow_0de8hqf" sourceRef="Activity_0vp26bt" targetRef="Gateway_1upfx10" />
-    <bpmn:serviceTask id="Activity_0vp26bt" name="Merge to stable">
+    <bpmn:userTask id="Activity_0vp26bt" name="Merge to stable">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="humanTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_18bmide</bpmn:incoming>
       <bpmn:outgoing>Flow_0de8hqf</bpmn:outgoing>
-    </bpmn:serviceTask>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="merge-and-clean-up-branches">
