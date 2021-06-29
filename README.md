@@ -14,12 +14,12 @@ To start the release process, run:
 
 To cancel the current release, run:
 ```shell
-./cancelRelease.sh <startDateTime>
+./abortRelease.sh <startDateTime>
 ```
 
 # zeebe-maven-template
 
-This repo was generated usiong the zeebe-maven-template.
+This repo was generated using the zeebe-maven-template.
 
 Empty maven project with defaults that integrate with the Zeebe build pipeline
 
