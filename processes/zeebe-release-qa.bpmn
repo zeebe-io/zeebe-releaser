@@ -140,9 +140,17 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0rl6m22" sourceRef="Event_1tf89cx" targetRef="Event_06ynbyn" />
     <bpmn:textAnnotation id="TextAnnotation_1mmtiok">
-      <bpmn:text>Should help to shorten QA when for example process has started to late or wrong Benchmark finished variable was set</bpmn:text>
+      <bpmn:text>Should help to shorten QA when for example process has started to late or wrong Benchmark finished variable was set.
+
+Name: qa-done
+Correlationkey: =releaseVersion</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_17x2dxe" sourceRef="Event_1tf89cx" targetRef="TextAnnotation_1mmtiok" />
+    <bpmn:textAnnotation id="TextAnnotation_0it7of9">
+      <bpmn:text>Name: bug-discovered
+Correlationkey: =releaseVersion</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0rgaqoc" sourceRef="Event_1gbo1nt" targetRef="TextAnnotation_0it7of9" />
   </bpmn:process>
   <bpmn:message id="Message_005l4oe" name="bug-discovered">
     <bpmn:extensionElements>
@@ -156,6 +164,9 @@
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-qa">
+      <bpmndi:BPMNShape id="TextAnnotation_0it7of9_di" bpmnElement="TextAnnotation_0it7of9">
+        <dc:Bounds x="770" y="595" width="208" height="45" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0rl6m22_di" bpmnElement="Flow_0rl6m22">
         <di:waypoint x="1250" y="548" />
         <di:waypoint x="1250" y="610" />
@@ -291,8 +302,12 @@
         <dc:Bounds x="1322" y="592" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1mmtiok_di" bpmnElement="TextAnnotation_1mmtiok">
-        <dc:Bounds x="1170" y="640" width="100" height="166" />
+        <dc:Bounds x="1170" y="640" width="260" height="96" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0rgaqoc_di" bpmnElement="Association_0rgaqoc">
+        <di:waypoint x="945" y="539" />
+        <di:waypoint x="846" y="595" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1mimrcw_di" bpmnElement="Event_1tf89cx">
         <dc:Bounds x="1232" y="512" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -306,8 +321,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_17x2dxe_di" bpmnElement="Association_17x2dxe">
-        <di:waypoint x="1246" y="547" />
-        <di:waypoint x="1224" y="640" />
+        <di:waypoint x="1245" y="547" />
+        <di:waypoint x="1218" y="640" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
