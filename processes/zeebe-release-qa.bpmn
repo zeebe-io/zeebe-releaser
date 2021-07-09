@@ -2,7 +2,7 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1dtcla7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
   <bpmn:process id="zeebe-release-qa" isExecutable="true">
     <bpmn:extensionElements>
-      <zeebe:userTaskForm id="userTaskForm_0vncs8p">{"type":"default","components":[{"key":"release_pipeline_url","label":"Build Release Candidate","type":"textfield","description":"Set release_version `<version>-rc1`, keep development_version the same as before, disable is_latest"},{"key":"button1","label":"Finished","type":"button"}]}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_0vncs8p">{"type":"default","components":[{"key":"release_pipeline_url","label":"Build Release Candidate","type":"textfield","description":"Set release_version `version-rc1`, keep development_version the same as before, disable is_latest"},{"key":"button1","label":"Finished","type":"button"}]}</zeebe:userTaskForm>
     </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_04pyldk</bpmn:outgoing>

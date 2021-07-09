@@ -5,7 +5,7 @@
       "key": "release_pipeline_url",
       "label": "Build Release Candidate",
       "type": "textfield",
-      "description": "Set release_version `<version>-rc1`, keep development_version the same as before, disable is_latest"
+      "description": "Set release_version `version-rc1`, keep development_version the same as before, disable is_latest"
     },
     {
       "key": "button1",
