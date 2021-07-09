@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1dtcla7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1dtcla7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
   <bpmn:process id="zeebe-release-qa" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_0vncs8p">{"type":"default","components":[{"key":"release_pipeline_url","label":"Build Release Candidate","type":"textfield","description":"Set release_version `version-rc1`, keep development_version the same as before, disable is_latest"},{"key":"button1","label":"Finished","type":"button"}]}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_04pyldk</bpmn:outgoing>
     </bpmn:startEvent>
@@ -46,7 +49,7 @@
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="humanTask" />
           <zeebe:ioMapping>
-            <zeebe:input source="=&#34;Help: Check release branch in the CI https://ci.zeebe.camunda.cloud/job/zeebe-io/job/zeebe/&#34;" target="helpMessage" />
+            <zeebe:input source="=&#34;Help: Check release branch in the CI https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/&#34;" target="helpMessage" />
           </zeebe:ioMapping>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_0ssm0ua</bpmn:incoming>
@@ -55,6 +58,10 @@
       <bpmn:userTask id="Activity_03n7qml" name="Build Release Candidate">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="humanTask" />
+          <zeebe:ioMapping>
+            <zeebe:input source="= &#34;https://ci.zeebe.camunda.cloud/job/zeebe-release/build&#34;" target="release_pipeline_url" />
+          </zeebe:ioMapping>
+          <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0vncs8p" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_19jmpdy</bpmn:incoming>
         <bpmn:outgoing>Flow_1r9lwgg</bpmn:outgoing>
@@ -133,9 +140,17 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0rl6m22" sourceRef="Event_1tf89cx" targetRef="Event_06ynbyn" />
     <bpmn:textAnnotation id="TextAnnotation_1mmtiok">
-      <bpmn:text>Should help to shorten QA when for example process has started to late or wrong Benchmark finished variable was set</bpmn:text>
+      <bpmn:text>Should help to shorten QA when for example process has started to late or wrong Benchmark finished variable was set.
+
+Name: qa-done
+Correlationkey: =releaseVersion</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_17x2dxe" sourceRef="Event_1tf89cx" targetRef="TextAnnotation_1mmtiok" />
+    <bpmn:textAnnotation id="TextAnnotation_0it7of9">
+      <bpmn:text>Name: bug-discovered
+Correlationkey: =releaseVersion</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0rgaqoc" sourceRef="Event_1gbo1nt" targetRef="TextAnnotation_0it7of9" />
   </bpmn:process>
   <bpmn:message id="Message_005l4oe" name="bug-discovered">
     <bpmn:extensionElements>
@@ -149,6 +164,9 @@
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-qa">
+      <bpmndi:BPMNShape id="TextAnnotation_0it7of9_di" bpmnElement="TextAnnotation_0it7of9">
+        <dc:Bounds x="770" y="595" width="208" height="45" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0rl6m22_di" bpmnElement="Flow_0rl6m22">
         <di:waypoint x="1250" y="548" />
         <di:waypoint x="1250" y="610" />
@@ -284,8 +302,12 @@
         <dc:Bounds x="1322" y="592" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1mmtiok_di" bpmnElement="TextAnnotation_1mmtiok">
-        <dc:Bounds x="1170" y="640" width="100" height="166" />
+        <dc:Bounds x="1170" y="640" width="260" height="96" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0rgaqoc_di" bpmnElement="Association_0rgaqoc">
+        <di:waypoint x="945" y="539" />
+        <di:waypoint x="846" y="595" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1mimrcw_di" bpmnElement="Event_1tf89cx">
         <dc:Bounds x="1232" y="512" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -299,8 +321,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_17x2dxe_di" bpmnElement="Association_17x2dxe">
-        <di:waypoint x="1246" y="547" />
-        <di:waypoint x="1224" y="640" />
+        <di:waypoint x="1245" y="547" />
+        <di:waypoint x="1218" y="640" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
