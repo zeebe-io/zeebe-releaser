@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Release Process Started">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:output source="=[{&#34;guide&#34;:&#34;https://docs.camunda.io/docs/product-manuals/clients/cli-client/get-started&#34;, &#34;client&#34;:&#34;CLI&#34;}, {&#34;guide&#34;:&#34;https://github.com/zeebe-io/zeebe-get-started-go-client&#34;, &#34;client&#34;:&#34;go&#34;},{&#34;guide&#34;:&#34;https://github.com/zeebe-io/zeebe-get-started-java-client&#34;, &#34;client&#34;:&#34;java&#34;}]" target="guides" />
+          <zeebe:output source="= [{&#34;guide&#34;:&#34;https://docs.camunda.io/docs/product-manuals/clients/cli-client/get-started&#34;,&#34;client&#34;:&#34;CLI&#34;},{&#34;guide&#34;:&#34;https://github.com/zeebe-io/zeebe-get-started-go-client&#34;,&#34;client&#34;:&#34;go&#34;},{&#34;guide&#34;:&#34;https://github.com/camunda-cloud/camunda-cloud-get-started&#34;,&#34;client&#34;:&#34;cloud&#34;}]" target="guides" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0johp4c</bpmn:outgoing>

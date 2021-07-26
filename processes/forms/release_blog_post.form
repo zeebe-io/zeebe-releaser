@@ -1,0 +1,17 @@
+{
+  "type": "default",
+  "components": [
+    {
+      "key": "zeebe_release_blog_posts_url",
+      "label": "Zeebe Release Blog Posts",
+      "type": "textfield",
+      "description": "Folder containing the Zeebe release blog posts"
+    },
+    {
+      "key": "cloud_release_blog_posts_url",
+      "label": "Camunda Cloud Release Blog Posts",
+      "type": "textfield",
+      "description": "Folder containing the Camunda Cloud release blog posts"
+    }
+  ]
+}
