@@ -18,4 +18,4 @@ fi
 
 zbctl status
 
-zbctl deploy processes/*.bpmn
+zbctl deploy processes_v1/*.bpmn
