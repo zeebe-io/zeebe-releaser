@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Release branch name",
+      "type": "textfield",
+      "id": "Field_0ydc4a9",
+      "key": "release_branch_name"
+    }
+  ],
+  "type": "default",
+  "id": "zeebe_release_branch"
+}

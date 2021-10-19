@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.10.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
   <bpmn:process id="zeebe-release-process" name="Zeebe release" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_0uh0d7s">{   "schemaVersion": 2,   "components": [     {       "label": "Release branch name",       "type": "textfield",       "id": "Field_0ydc4a9",       "key": "release_branch_name"     }   ],   "type": "default",   "id": "zeebe_release_branch" }</zeebe:userTaskForm>
+    </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1" name="Release started">
       <bpmn:outgoing>Flow_1ew46h4</bpmn:outgoing>
     </bpmn:startEvent>
@@ -20,6 +23,9 @@
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_1edl8wf" sourceRef="Activity_0e1ef7z" targetRef="Gateway_038v8ud" />
     <bpmn:userTask id="Activity_1f70utm" name="Create Release branch">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0uh0d7s" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1duxq4j</bpmn:incoming>
       <bpmn:outgoing>Flow_1qxbbhp</bpmn:outgoing>
     </bpmn:userTask>
@@ -60,47 +66,47 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-process">
-      <bpmndi:BPMNEdge id="Flow_1ew46h4_di" bpmnElement="Flow_1ew46h4">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="265" y="117" />
+      <bpmndi:BPMNEdge id="Flow_0zhm3wb_di" bpmnElement="Flow_0zhm3wb">
+        <di:waypoint x="1210" y="117" />
+        <di:waypoint x="1272" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1duxq4j_di" bpmnElement="Flow_1duxq4j">
-        <di:waypoint x="315" y="117" />
-        <di:waypoint x="370" y="117" />
+      <bpmndi:BPMNEdge id="Flow_0ttdn03_di" bpmnElement="Flow_0ttdn03">
+        <di:waypoint x="1050" y="117" />
+        <di:waypoint x="1110" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1oxyoos_di" bpmnElement="Flow_1oxyoos">
-        <di:waypoint x="290" y="142" />
-        <di:waypoint x="290" y="230" />
-        <di:waypoint x="370" y="230" />
+      <bpmndi:BPMNEdge id="Flow_05sub3t_di" bpmnElement="Flow_05sub3t">
+        <di:waypoint x="890" y="117" />
+        <di:waypoint x="950" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qxbbhp_di" bpmnElement="Flow_1qxbbhp">
-        <di:waypoint x="470" y="117" />
-        <di:waypoint x="525" y="117" />
+      <bpmndi:BPMNEdge id="Flow_0g6dgr5_di" bpmnElement="Flow_0g6dgr5">
+        <di:waypoint x="730" y="117" />
+        <di:waypoint x="790" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s1b66d_di" bpmnElement="Flow_0s1b66d">
+        <di:waypoint x="575" y="117" />
+        <di:waypoint x="630" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1edl8wf_di" bpmnElement="Flow_1edl8wf">
         <di:waypoint x="470" y="230" />
         <di:waypoint x="550" y="230" />
         <di:waypoint x="550" y="142" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0s1b66d_di" bpmnElement="Flow_0s1b66d">
-        <di:waypoint x="575" y="117" />
-        <di:waypoint x="630" y="117" />
+      <bpmndi:BPMNEdge id="Flow_1qxbbhp_di" bpmnElement="Flow_1qxbbhp">
+        <di:waypoint x="470" y="117" />
+        <di:waypoint x="525" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0g6dgr5_di" bpmnElement="Flow_0g6dgr5">
-        <di:waypoint x="730" y="117" />
-        <di:waypoint x="790" y="117" />
+      <bpmndi:BPMNEdge id="Flow_1oxyoos_di" bpmnElement="Flow_1oxyoos">
+        <di:waypoint x="290" y="142" />
+        <di:waypoint x="290" y="230" />
+        <di:waypoint x="370" y="230" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05sub3t_di" bpmnElement="Flow_05sub3t">
-        <di:waypoint x="890" y="117" />
-        <di:waypoint x="950" y="117" />
+      <bpmndi:BPMNEdge id="Flow_1duxq4j_di" bpmnElement="Flow_1duxq4j">
+        <di:waypoint x="315" y="117" />
+        <di:waypoint x="370" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ttdn03_di" bpmnElement="Flow_0ttdn03">
-        <di:waypoint x="1050" y="117" />
-        <di:waypoint x="1110" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zhm3wb_di" bpmnElement="Flow_0zhm3wb">
-        <di:waypoint x="1210" y="117" />
-        <di:waypoint x="1272" y="117" />
+      <bpmndi:BPMNEdge id="Flow_1ew46h4_di" bpmnElement="Flow_1ew46h4">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="265" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
