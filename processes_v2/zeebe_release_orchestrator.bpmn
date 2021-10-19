@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0luae88" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
+  <bpmn:process id="zeebe-release-orchestrator" name="Zeebe release orchestrator" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0kqinhf</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0kqinhf" sourceRef="StartEvent_1" targetRef="Activity_0ly5t97" />
+    <bpmn:intermediateCatchEvent id="Event_0a0f3b5">
+      <bpmn:incoming>Flow_0d40z33</bpmn:incoming>
+      <bpmn:incoming>Flow_02pbvs9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vpf68b</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1mamqyh" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0vpf68b" sourceRef="Event_0a0f3b5" targetRef="Activity_1hdciyv" />
+    <bpmn:sequenceFlow id="Flow_02phfzi" sourceRef="Activity_1hdciyv" targetRef="Event_06zvtgk" />
+    <bpmn:intermediateCatchEvent id="Event_06zvtgk">
+      <bpmn:incoming>Flow_02phfzi</bpmn:incoming>
+      <bpmn:outgoing>Flow_11gig4h</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1nhv7ux" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_11gig4h" sourceRef="Event_06zvtgk" targetRef="Activity_0loshmr" />
+    <bpmn:callActivity id="Activity_0loshmr" name="Start Zeebe release process">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="zeebe-release-process" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11gig4h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kyfxr2</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:userTask id="Activity_1hdciyv" name="Notify about code freeze">
+      <bpmn:incoming>Flow_0vpf68b</bpmn:incoming>
+      <bpmn:outgoing>Flow_02phfzi</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0ukfa61" name="Never ending process">
+      <bpmn:incoming>Flow_0kyfxr2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0d40z33</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0kyfxr2" sourceRef="Activity_0loshmr" targetRef="Gateway_0ukfa61" />
+    <bpmn:sequenceFlow id="Flow_0d40z33" sourceRef="Gateway_0ukfa61" targetRef="Event_0a0f3b5" />
+    <bpmn:sequenceFlow id="Flow_02pbvs9" sourceRef="Activity_0ly5t97" targetRef="Event_0a0f3b5" />
+    <bpmn:userTask id="Activity_0ly5t97" name="Collect required data">
+      <bpmn:incoming>Flow_0kqinhf</bpmn:incoming>
+      <bpmn:outgoing>Flow_02pbvs9</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-orchestrator">
+      <bpmndi:BPMNEdge id="Flow_0kqinhf_di" bpmnElement="Flow_0kqinhf">
+        <di:waypoint x="188" y="177" />
+        <di:waypoint x="250" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vpf68b_di" bpmnElement="Flow_0vpf68b">
+        <di:waypoint x="438" y="177" />
+        <di:waypoint x="500" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02phfzi_di" bpmnElement="Flow_02phfzi">
+        <di:waypoint x="600" y="177" />
+        <di:waypoint x="662" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11gig4h_di" bpmnElement="Flow_11gig4h">
+        <di:waypoint x="698" y="177" />
+        <di:waypoint x="760" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kyfxr2_di" bpmnElement="Flow_0kyfxr2">
+        <di:waypoint x="860" y="177" />
+        <di:waypoint x="925" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0d40z33_di" bpmnElement="Flow_0d40z33">
+        <di:waypoint x="950" y="152" />
+        <di:waypoint x="950" y="80" />
+        <di:waypoint x="420" y="80" />
+        <di:waypoint x="420" y="159" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="858" y="86" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02pbvs9_di" bpmnElement="Flow_02pbvs9">
+        <di:waypoint x="350" y="177" />
+        <di:waypoint x="402" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_18j4r6e_di" bpmnElement="Event_0a0f3b5">
+        <dc:Bounds x="402" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1jiejoh_di" bpmnElement="Event_06zvtgk">
+        <dc:Bounds x="662" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07rqmm2_di" bpmnElement="Activity_0loshmr">
+        <dc:Bounds x="760" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0iz4yru_di" bpmnElement="Activity_1hdciyv">
+        <dc:Bounds x="500" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ukfa61_di" bpmnElement="Gateway_0ukfa61" isMarkerVisible="true">
+        <dc:Bounds x="925" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="917" y="209" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rayqpj_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1511z1k_di" bpmnElement="Activity_0ly5t97">
+        <dc:Bounds x="250" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
