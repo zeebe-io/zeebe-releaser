@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "values": [
+        {
+          "value": "false",
+          "label": "Yes"
+        },
+        {
+          "label": "No",
+          "value": "true"
+        }
+      ],
+      "label": "Any issues in the benchmark?",
+      "type": "radio",
+      "id": "Field_1uzmulq",
+      "key": "qa_benchmark_ok",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "qa_benchmark_check"
+}
