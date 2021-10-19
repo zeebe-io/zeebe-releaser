@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#generate-the-changelog",
+      "type": "text",
+      "id": "Field_0rzoq4s"
+    }
+  ],
+  "type": "default",
+  "id": "Form_135pno4"
+}

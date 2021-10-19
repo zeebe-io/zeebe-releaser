@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Prepare the next stable branch\nhttps://github.com/camunda-cloud/zeebe/wiki/Release-protocol#prepare-the-next-stable-branch",
+      "type": "text",
+      "id": "Field_0rj9o4v"
+    }
+  ],
+  "type": "default",
+  "id": "Form_04k4orn"
+}

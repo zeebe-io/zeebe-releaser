@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Set a calendar appointment\n\nGo to Outlook, and create a new calendar appointment for the next applicable release (either ALPHA or MINOR), where X.Y.Z would be the next version:\n",
+      "type": "text",
+      "id": "Field_1ayukda"
+    },
+    {
+      "text": "Subject: Zeebe Release X.Y.Z\n\nHey all,\n\nWe will build a new Zeebe release: 0.X.0-alphaY.\n\nRelease manager is: RELEASE-MANAGER\n\nHave a nice week!",
+      "type": "text",
+      "id": "Field_1g8m768"
+    },
+    {
+      "text": "Make sure to invite the next release manager as required, and the following as optional:\n\n- zeebe@camunda.com\n- operate@camunda.com\n- sre@camunda.com",
+      "type": "text",
+      "id": "Field_1cpj19r"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1rwhxvm"
+}
