@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "components": [
     {
-      "text": "There's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- Zeebe\n- Operate & Tasklist\n- Shared Services\n- Optimize",
+      "text": "# Notify other teams\nThere's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- Zeebe\n- Operate & Tasklist\n- Shared Services\n- Optimize",
       "type": "text",
       "id": "Field_0zr0gl2"
     },
