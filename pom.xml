@@ -7,13 +7,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.zeebe</groupId>
-  <artifactId>Zeebe Releaser</artifactId>
+  <artifactId>zeebe-releaser</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Zeebe Releaser</name>
 
-  <!-- When changing the artifact or name, also make sure to change the SCM 
+  <!-- When changing the artifact or name, also make sure to change the SCM
     location below and in .ci/scripts/github-release.sh -->
 
   <scm>
@@ -39,6 +39,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.java>11</version.java>
     <maven.version>3.0</maven.version>
+    <eze.version>0.3.0</eze.version>
 
     <nexus.snapshot.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/</nexus.snapshot.repository>
     <nexus.release.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io/</nexus.release.repository>
@@ -75,28 +76,39 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
+
+      <dependency>
+        <groupId>org.camunda.community</groupId>
+        <artifactId>eze</artifactId>
+        <version>${eze.version}</version>
+      </dependency>
+    <!--    <dependency>
+      <groupId>org.camunda.community</groupId>
+      <artifactId>eze-junit-extension</artifactId>
+      <version>0.2.0</version>
+    </dependency> -->
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.4.1</version>
-        <configuration>
-          <rules>
-            <dependencyConvergence />
-          </rules>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-enforcer-plugin</artifactId>-->
+<!--        <version>1.4.1</version>-->
+<!--        <configuration>-->
+<!--          <rules>-->
+<!--            <dependencyConvergence />-->
+<!--          </rules>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <phase>verify</phase>-->
+<!--            <goals>-->
+<!--              <goal>enforce</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
