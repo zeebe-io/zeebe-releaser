@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.10.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
   <bpmn:process id="zeebe-release-process" name="Zeebe release" isExecutable="true">
     <bpmn:extensionElements>
       <zeebe:userTaskForm id="userTaskForm_0uh0d7s">{   "schemaVersion": 2,   "components": [     {       "label": "Release branch name",       "type": "textfield",       "id": "Field_0ydc4a9",       "key": "release_branch_name"     }   ],   "type": "default",   "id": "zeebe_release_branch" }</zeebe:userTaskForm>
@@ -55,6 +55,13 @@
     <bpmn:callActivity id="Activity_0ll9m9k" name="Start Zeebe post release process">
       <bpmn:extensionElements>
         <zeebe:calledElement processId="zeebe-post-release" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:output source="= release_version" target="release_version" />
+          <zeebe:output source="= release_date" target="release_date" />
+          <zeebe:output source="= code_freeze_date" target="code_freeze_date" />
+          <zeebe:output source="= release_manager" target="release_manager" />
+          <zeebe:output source="= release_type" target="release_type" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ttdn03</bpmn:incoming>
       <bpmn:outgoing>Flow_0zhm3wb</bpmn:outgoing>
