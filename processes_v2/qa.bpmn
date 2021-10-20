@@ -24,7 +24,7 @@
       <bpmn:startEvent id="Event_1trtn09" name="Every Day of the Week" isInterrupting="false">
         <bpmn:outgoing>Flow_0ogr394</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0l8up67">
-          <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle>
+          <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">= {   today: date and time(today(),time("04:00:00@Europe/Berlin")),   numberOfDays: for x in 1..3 return duration("P"+string(x)+"D"),   days: for d in numberOfDays return today + d,   weekdays: days[not(day of week(item) in ("Saturday","Sunday"))],   nextWeekday: weekdays[1],   cycleWithDuration: cycle(nextWeekday - now())  }.cycleWithDuration</bpmn:timeCycle>
         </bpmn:timerEventDefinition>
       </bpmn:startEvent>
       <bpmn:exclusiveGateway id="Gateway_1l4ylti" name="Found any error?">
