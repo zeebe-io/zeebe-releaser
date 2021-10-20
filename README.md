@@ -7,11 +7,18 @@ To deploy the release process to Camunda Cloud (or Zeebe), run:
 ./deployProcesses.sh
 ```
 
-To start the release process, run:
+To start the release orchestrator, run:
 ```shell
-./createInstance.sh
+./startZeebeReleaseOrchestrator.sh
+```
+This will start a long living instance that orchestrate our release cadence.
+
+To start a release that is outside of our release cadence (for eg:- a patch release), run:
+```shell
+./startPatchRelease.sh
 ```
 
+// Not yet supported
 To cancel the current release, run:
 ```shell
 ./abortRelease.sh <startDateTime>
