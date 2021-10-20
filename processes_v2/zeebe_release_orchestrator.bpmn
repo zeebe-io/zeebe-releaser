@@ -23,7 +23,7 @@
       <bpmn:incoming>Flow_02phfzi</bpmn:incoming>
       <bpmn:outgoing>Flow_11gig4h</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1nhv7ux">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">= data and time(code_freeze_date) - now()</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">= date and time(code_freeze_date) - now()</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_11gig4h" sourceRef="Event_06zvtgk" targetRef="Activity_0loshmr" />
