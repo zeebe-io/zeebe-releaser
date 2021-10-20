@@ -88,5 +88,7 @@
     }
   ],
   "type": "default",
-  "id": "release_collect_data"
+  "id": "release_collect_data",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
 }
