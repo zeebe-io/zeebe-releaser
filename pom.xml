@@ -7,11 +7,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.zeebe</groupId>
-  <artifactId>give-me-a-name</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>Zeebe Releaser</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>give-me-a-name</name>
+  <name>Zeebe Releaser</name>
 
   <!-- When changing the artifact or name, also make sure to change the SCM 
     location below and in .ci/scripts/github-release.sh -->
