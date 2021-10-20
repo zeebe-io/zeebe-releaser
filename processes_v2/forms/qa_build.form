@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Jenkins Build Link",
+      "type": "textfield",
+      "id": "Field_1ocluvy",
+      "key": "qa_build_jenkins_url",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "qa_build",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.1"
+}

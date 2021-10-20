@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Notify other teams\nThere's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- Zeebe\n- Operate & Tasklist\n- Shared Services\n- Optimize",
+      "type": "text",
+      "id": "Field_0zr0gl2"
+    },
+    {
+      "text": "`Hi :wave: team! There is a new Zeebe version MAJOR.MINOR.PATCH-ALPHA available that you can test against.`\n",
+      "type": "text",
+      "id": "Field_0f1lwfu"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1hcmrar"
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "QA Jenkins Build",
+      "type": "textfield",
+      "id": "Field_0eegfiv",
+      "key": "qa_build_jenkins_url"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "QA Build Successful?",
+      "type": "radio",
+      "id": "Field_08de9fi",
+      "key": "qa_build_success",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_19ta2h0"
+}

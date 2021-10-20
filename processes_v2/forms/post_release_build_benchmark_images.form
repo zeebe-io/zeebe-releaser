@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Build the benchmark images\n\nNext step is to build the worker and starter images we use for our continuous load tests. First, checkout the tag you just released, then navigate to the benchmark project folder, and from there we can build and push the images.\n\n```sh\nexport ZEEBE_VERSION=MAJOR.MINOR.PATCH-ALPHA\nexport DOCKER_BUILDKIT=1\ngit checkout $ZEEBE_VERSION\ncd benchmarks/project\ndocker build -t \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\" --target starter .\ndocker push \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\"\ndocker build -t \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\" --target worker .\ndocker push \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\"\n```",
+      "type": "text",
+      "id": "Field_0do8ch5"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1sslv4v"
+}

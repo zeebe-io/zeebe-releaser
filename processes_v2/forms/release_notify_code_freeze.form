@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "Remind zeebe team about the code freeze date",
+      "type": "text",
+      "id": "Field_1p84mr7"
+    }
+  ],
+  "type": "default",
+  "id": "notify_code_freeze_from"
+}

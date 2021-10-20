@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Benchmark Name",
+      "type": "textfield",
+      "id": "Field_1i0udu7",
+      "key": "qa_benchmark_name",
+      "description": "Kubernetes Namespace"
+    }
+  ],
+  "type": "default",
+  "id": "Form_0ri99bk"
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Merge with develop\nAs the release job produces some additional commits, we need to merge them back into our development branch.",
+      "type": "text",
+      "id": "Field_1ukm08o"
+    },
+    {
+      "label": "Release branch name:",
+      "type": "textfield",
+      "id": "Field_04y67ox",
+      "key": "release_branch_name"
+    },
+    {
+      "text": "Before opening a PR, in case we disabled the upgrade test suite due to backwards incompatible changes, make sure to re-enable it them here, and commit these changes. Now, create a PR for the release branch targeting this base branch, and assign someone from the Zeebe team to review it.",
+      "type": "text",
+      "id": "Field_04cb5kr"
+    }
+  ],
+  "type": "default",
+  "id": "merge_to_develop_form"
+}

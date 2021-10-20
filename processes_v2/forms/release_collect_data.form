@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Release version",
+      "type": "textfield",
+      "id": "Field_0q04txm",
+      "key": "release_version"
+    },
+    {
+      "label": "Release date",
+      "type": "textfield",
+      "id": "Field_1jl2q1w",
+      "key": "release_date"
+    },
+    {
+      "label": "Code Freeze date",
+      "type": "textfield",
+      "id": "Field_0w4n3mw",
+      "key": "code_freeze_date"
+    },
+    {
+      "values": [
+        {
+          "label": "Philipp",
+          "value": "philipp"
+        },
+        {
+          "label": "Chris",
+          "value": "chris"
+        },
+        {
+          "label": "Peter",
+          "value": "peter"
+        },
+        {
+          "value": "deepthi",
+          "label": "Deepthi"
+        },
+        {
+          "label": "Nico",
+          "value": "nico"
+        },
+        {
+          "label": "Remco",
+          "value": "remco"
+        },
+        {
+          "label": "Ole",
+          "value": "ole"
+        },
+        {
+          "label": "Nicolas",
+          "value": "nicolas"
+        }
+      ],
+      "label": "Release Manager",
+      "type": "select",
+      "id": "Field_08k3xs4",
+      "key": "release_manager"
+    },
+    {
+      "values": [
+        {
+          "label": "Major",
+          "value": "major"
+        },
+        {
+          "label": "Minor",
+          "value": "minor"
+        },
+        {
+          "label": "Alpha",
+          "value": "alpha"
+        },
+        {
+          "label": "Patch",
+          "value": "patch"
+        }
+      ],
+      "label": "The release is",
+      "type": "radio",
+      "id": "Field_01mvgma",
+      "key": "release_type"
+    }
+  ],
+  "type": "default",
+  "id": "release_collect_data"
+}

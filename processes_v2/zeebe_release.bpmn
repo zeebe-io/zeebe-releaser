@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
+  <bpmn:process id="zeebe-release-process" name="Zeebe release" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_0uh0d7s">{   "schemaVersion": 2,   "components": [     {       "label": "Release branch name",       "type": "textfield",       "id": "Field_0ydc4a9",       "key": "release_branch_name"     }   ],   "type": "default",   "id": "zeebe_release_branch" }</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="Release started">
+      <bpmn:outgoing>Flow_1ew46h4</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1ew46h4" sourceRef="StartEvent_1" targetRef="Gateway_113spke" />
+    <bpmn:parallelGateway id="Gateway_113spke">
+      <bpmn:incoming>Flow_1ew46h4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1duxq4j</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1oxyoos</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1duxq4j" sourceRef="Gateway_113spke" targetRef="Activity_1f70utm" />
+    <bpmn:sequenceFlow id="Flow_1oxyoos" sourceRef="Gateway_113spke" targetRef="Activity_0e1ef7z" />
+    <bpmn:sequenceFlow id="Flow_1qxbbhp" sourceRef="Activity_1f70utm" targetRef="Gateway_038v8ud" />
+    <bpmn:parallelGateway id="Gateway_038v8ud">
+      <bpmn:incoming>Flow_1qxbbhp</bpmn:incoming>
+      <bpmn:incoming>Flow_1edl8wf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s1b66d</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1edl8wf" sourceRef="Activity_0e1ef7z" targetRef="Gateway_038v8ud" />
+    <bpmn:userTask id="Activity_1f70utm" name="Create Release branch">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0uh0d7s" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1duxq4j</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qxbbhp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0e1ef7z" name="Collect release notes">
+      <bpmn:incoming>Flow_1oxyoos</bpmn:incoming>
+      <bpmn:outgoing>Flow_1edl8wf</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0s1b66d" sourceRef="Gateway_038v8ud" targetRef="Activity_19s3dm7" />
+    <bpmn:callActivity id="Activity_19s3dm7" name="Start Zeebe release QA process">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="zeebe-release-qa" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s1b66d</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g6dgr5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0g6dgr5" sourceRef="Activity_19s3dm7" targetRef="Activity_0e9yenz" />
+    <bpmn:sequenceFlow id="Flow_05sub3t" sourceRef="Activity_0e9yenz" targetRef="Activity_17yjb8k" />
+    <bpmn:userTask id="Activity_0e9yenz" name="Trigger release">
+      <bpmn:incoming>Flow_0g6dgr5</bpmn:incoming>
+      <bpmn:outgoing>Flow_05sub3t</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_17yjb8k" name="Release on Maven Central">
+      <bpmn:incoming>Flow_05sub3t</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ttdn03</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0ttdn03" sourceRef="Activity_17yjb8k" targetRef="Activity_0ll9m9k" />
+    <bpmn:callActivity id="Activity_0ll9m9k" name="Start Zeebe post release process">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="zeebe-post-release" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:output source="= release_version" target="release_version" />
+          <zeebe:output source="= release_date" target="release_date" />
+          <zeebe:output source="= code_freeze_date" target="code_freeze_date" />
+          <zeebe:output source="= release_manager" target="release_manager" />
+          <zeebe:output source="= release_type" target="release_type" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ttdn03</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zhm3wb</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0sbhiuc" name="Released">
+      <bpmn:incoming>Flow_0zhm3wb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0zhm3wb" sourceRef="Activity_0ll9m9k" targetRef="Event_0sbhiuc" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-process">
+      <bpmndi:BPMNEdge id="Flow_0zhm3wb_di" bpmnElement="Flow_0zhm3wb">
+        <di:waypoint x="1210" y="117" />
+        <di:waypoint x="1272" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ttdn03_di" bpmnElement="Flow_0ttdn03">
+        <di:waypoint x="1050" y="117" />
+        <di:waypoint x="1110" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05sub3t_di" bpmnElement="Flow_05sub3t">
+        <di:waypoint x="890" y="117" />
+        <di:waypoint x="950" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g6dgr5_di" bpmnElement="Flow_0g6dgr5">
+        <di:waypoint x="730" y="117" />
+        <di:waypoint x="790" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s1b66d_di" bpmnElement="Flow_0s1b66d">
+        <di:waypoint x="575" y="117" />
+        <di:waypoint x="630" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1edl8wf_di" bpmnElement="Flow_1edl8wf">
+        <di:waypoint x="470" y="230" />
+        <di:waypoint x="550" y="230" />
+        <di:waypoint x="550" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qxbbhp_di" bpmnElement="Flow_1qxbbhp">
+        <di:waypoint x="470" y="117" />
+        <di:waypoint x="525" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oxyoos_di" bpmnElement="Flow_1oxyoos">
+        <di:waypoint x="290" y="142" />
+        <di:waypoint x="290" y="230" />
+        <di:waypoint x="370" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1duxq4j_di" bpmnElement="Flow_1duxq4j">
+        <di:waypoint x="315" y="117" />
+        <di:waypoint x="370" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ew46h4_di" bpmnElement="Flow_1ew46h4">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="265" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="142" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ffgxzy_di" bpmnElement="Gateway_113spke">
+        <dc:Bounds x="265" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0avz4fv_di" bpmnElement="Gateway_038v8ud">
+        <dc:Bounds x="525" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1573ogz_di" bpmnElement="Activity_1f70utm">
+        <dc:Bounds x="370" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ojf2wd_di" bpmnElement="Activity_0e1ef7z">
+        <dc:Bounds x="370" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mxwnsr_di" bpmnElement="Activity_19s3dm7">
+        <dc:Bounds x="630" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1alb5n9_di" bpmnElement="Activity_0e9yenz">
+        <dc:Bounds x="790" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oqpj5t_di" bpmnElement="Activity_17yjb8k">
+        <dc:Bounds x="950" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1aw1lim_di" bpmnElement="Activity_0ll9m9k">
+        <dc:Bounds x="1110" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0sbhiuc_di" bpmnElement="Event_0sbhiuc">
+        <dc:Bounds x="1272" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1267" y="142" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

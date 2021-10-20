@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "values": [
+        {
+          "value": "false",
+          "label": "Yes"
+        },
+        {
+          "label": "No",
+          "value": "true"
+        }
+      ],
+      "label": "Any issues in the benchmark?",
+      "type": "radio",
+      "id": "Field_1uzmulq",
+      "key": "qa_benchmark_ok",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "GitHub Issues",
+      "type": "textfield",
+      "id": "Field_10d8zlz",
+      "key": "qa_benchmark_issues",
+      "description": "You can link any issues found during the benchmark here"
+    }
+  ],
+  "type": "default",
+  "id": "qa_benchmark_check"
+}
