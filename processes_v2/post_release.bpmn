@@ -187,13 +187,15 @@
       <incoming>Flow_0r71vpd</incoming>
       <outgoing>Flow_004201w</outgoing>
     </exclusiveGateway>
-    <exclusiveGateway id="Gateway_08xyc0i" name="Patch Release?">
+    <exclusiveGateway id="Gateway_08xyc0i" name="Patch Release?" default="Flow_02gv5rz">
       <incoming>Flow_151ugke</incoming>
       <outgoing>Flow_02gv5rz</outgoing>
       <outgoing>Flow_1y09u6a</outgoing>
     </exclusiveGateway>
     <sequenceFlow id="Flow_02gv5rz" name="No" sourceRef="Gateway_08xyc0i" targetRef="Activity_0hplmjw" />
-    <sequenceFlow id="Flow_1y09u6a" name="Yes" sourceRef="Gateway_08xyc0i" targetRef="Activity_1n1gvix" />
+    <sequenceFlow id="Flow_1y09u6a" name="Yes" sourceRef="Gateway_08xyc0i" targetRef="Activity_1n1gvix">
+      <conditionExpression xsi:type="tFormalExpression">= release_type = "patch"</conditionExpression>
+    </sequenceFlow>
     <exclusiveGateway id="Gateway_0hz7kvb">
       <incoming>Flow_1e04bck</incoming>
       <incoming>Flow_0bxq922</incoming>
