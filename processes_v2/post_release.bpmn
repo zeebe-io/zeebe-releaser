@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="4.11.0">
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="4.10.0">
   <process id="zeebe-post-release" name="Zeebe Post Release" isExecutable="true">
     <extensionElements>
       <ns0:userTaskForm id="userTaskForm_25kpsi7">{   "schemaVersion": 2,   "components": [     {       "text": "There's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- Zeebe\n- Operate &amp; Tasklist\n- Shared Services\n- Optimize",       "type": "text",       "id": "Field_0zr0gl2"     },     {       "text": "`Hi :wave: team! There is a new Zeebe version MAJOR.MINOR.PATCH-ALPHA available that you can test against.`\n",       "type": "text",       "id": "Field_0f1lwfu"     }   ],   "type": "default",   "id": "Form_1hcmrar" }</ns0:userTaskForm>
@@ -66,7 +66,7 @@
       <outgoing>Flow_0yl4sw3</outgoing>
     </exclusiveGateway>
     <sequenceFlow id="Flow_0116ifi" name="yes" sourceRef="Gateway_1m24vub" targetRef="Gateway_0kj2l1z">
-      <conditionExpression xsi:type="tFormalExpression">= release_type == "alpha"</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">= release_type = "alpha"</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="Flow_0yl4sw3" name="no" sourceRef="Gateway_1m24vub" targetRef="Gateway_03s2p31" />
     <parallelGateway id="Gateway_03s2p31">
@@ -202,6 +202,20 @@
   </message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_cf8297c4-1b01-4c89-a2a1-87ac60eb83ba">
     <bpmndi:BPMNPlane id="BPMNPlane_d215a1c8-1f52-448c-aa98-de25f8336c52" bpmnElement="zeebe-post-release">
+      <bpmndi:BPMNEdge id="Flow_0gtz7qb_di" bpmnElement="Flow_0gtz7qb">
+        <di:waypoint x="1065" y="120" />
+        <di:waypoint x="1130" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v38vir_di" bpmnElement="Flow_0v38vir">
+        <di:waypoint x="1690" y="450" />
+        <di:waypoint x="1800" y="450" />
+        <di:waypoint x="1800" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_010kmt4_di" bpmnElement="Flow_010kmt4">
+        <di:waypoint x="1480" y="145" />
+        <di:waypoint x="1480" y="450" />
+        <di:waypoint x="1590" y="450" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xo3036_di" bpmnElement="Flow_1xo3036">
         <di:waypoint x="1825" y="120" />
         <di:waypoint x="1912" y="120" />
@@ -322,20 +336,6 @@
         <di:waypoint x="218" y="120" />
         <di:waypoint x="295" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_010kmt4_di" bpmnElement="Flow_010kmt4">
-        <di:waypoint x="1480" y="145" />
-        <di:waypoint x="1480" y="450" />
-        <di:waypoint x="1590" y="450" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0v38vir_di" bpmnElement="Flow_0v38vir">
-        <di:waypoint x="1690" y="450" />
-        <di:waypoint x="1800" y="450" />
-        <di:waypoint x="1800" y="145" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gtz7qb_di" bpmnElement="Flow_0gtz7qb">
-        <di:waypoint x="1065" y="120" />
-        <di:waypoint x="1130" y="120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1bzj58u_di" bpmnElement="Event_1bzj58u">
         <dc:Bounds x="182" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -372,6 +372,18 @@
       <bpmndi:BPMNShape id="Gateway_0nf8g9j_di" bpmnElement="Gateway_0dpkt4r">
         <dc:Bounds x="1015" y="425" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1d3rou3_di" bpmnElement="Gateway_04bbzjp">
+        <dc:Bounds x="1455" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19pet65_di" bpmnElement="Gateway_0c41kcg">
+        <dc:Bounds x="1775" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rk4u8i_di" bpmnElement="Event_0rk4u8i">
+        <dc:Bounds x="1912" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1907" y="145" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1mpk96m_di" bpmnElement="Activity_0fq4a43">
         <dc:Bounds x="560" y="410" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -389,18 +401,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1cg71mw_di" bpmnElement="Activity_08nyyfd">
         <dc:Bounds x="1300" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1d3rou3_di" bpmnElement="Gateway_04bbzjp">
-        <dc:Bounds x="1455" y="95" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_19pet65_di" bpmnElement="Gateway_0c41kcg">
-        <dc:Bounds x="1775" y="95" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0rk4u8i_di" bpmnElement="Event_0rk4u8i">
-        <dc:Bounds x="1912" y="102" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1907" y="145" width="47" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ehj6gb_di" bpmnElement="Activity_18zrvuf">
         <dc:Bounds x="1590" y="80" width="100" height="80" />
