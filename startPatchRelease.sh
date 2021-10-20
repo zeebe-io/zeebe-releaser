@@ -18,4 +18,4 @@ fi
 
 zbctl status
 
-zbctl deploy processes_v2/*.bpmn
+zbctl create instance zeebe-patch-release-process
