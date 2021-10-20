@@ -89,6 +89,13 @@
             <groupId>org.camunda.community</groupId>
             <artifactId>eze-junit-extension</artifactId>
             <version>0.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility-kotlin</artifactId>
+            <version>4.0.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
