@@ -87,13 +87,15 @@
         <bpmn:incoming>Flow_014nhup</bpmn:incoming>
         <bpmn:outgoing>Flow_0pmk4ca</bpmn:outgoing>
       </bpmn:userTask>
-      <bpmn:exclusiveGateway id="Gateway_1qmo6ll" name="Is it a patch release?">
+      <bpmn:exclusiveGateway id="Gateway_1qmo6ll" name="Is it a patch release?" default="Flow_0n59tzo">
         <bpmn:incoming>Flow_0ogr394</bpmn:incoming>
         <bpmn:outgoing>Flow_0n59tzo</bpmn:outgoing>
         <bpmn:outgoing>Flow_13ht5oh</bpmn:outgoing>
       </bpmn:exclusiveGateway>
       <bpmn:sequenceFlow id="Flow_0n59tzo" name="No" sourceRef="Gateway_1qmo6ll" targetRef="Gateway_0hi2uxv" />
-      <bpmn:sequenceFlow id="Flow_13ht5oh" name="Yes" sourceRef="Gateway_1qmo6ll" targetRef="Gateway_0kmv9zb" />
+      <bpmn:sequenceFlow id="Flow_13ht5oh" name="Yes" sourceRef="Gateway_1qmo6ll" targetRef="Gateway_0kmv9zb">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= release_type = "patch"</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
       <bpmn:exclusiveGateway id="Gateway_0kmv9zb">
         <bpmn:incoming>Flow_0m22asp</bpmn:incoming>
         <bpmn:incoming>Flow_13ht5oh</bpmn:incoming>
@@ -191,13 +193,15 @@
       <bpmn:incoming>Flow_10auxgf</bpmn:incoming>
       <bpmn:outgoing>Flow_091kws4</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:exclusiveGateway id="Gateway_1wi99se" name="Is it a patch release?">
+    <bpmn:exclusiveGateway id="Gateway_1wi99se" name="Is it a patch release?" default="Flow_0sinhos">
       <bpmn:incoming>Flow_02b0qqa</bpmn:incoming>
       <bpmn:outgoing>Flow_0sinhos</bpmn:outgoing>
       <bpmn:outgoing>Flow_1s5mjw5</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0sinhos" sourceRef="Gateway_1wi99se" targetRef="Activity_1igmxwh" />
-    <bpmn:sequenceFlow id="Flow_1s5mjw5" name="Yes" sourceRef="Gateway_1wi99se" targetRef="Gateway_0qr9yjh" />
+    <bpmn:sequenceFlow id="Flow_1s5mjw5" name="Yes" sourceRef="Gateway_1wi99se" targetRef="Gateway_0qr9yjh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= release_type = "patch"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0qr9yjh">
       <bpmn:incoming>Flow_091kws4</bpmn:incoming>
       <bpmn:incoming>Flow_1s5mjw5</bpmn:incoming>
