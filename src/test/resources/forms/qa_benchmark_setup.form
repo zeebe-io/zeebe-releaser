@@ -2,6 +2,11 @@
   "schemaVersion": 2,
   "components": [
     {
+      "text": "# Set up a new benchmark for the release branch\n\n[https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#setup-a-long-running-benchmark](https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#setup-a-long-running-benchmark)\n\nCheckout the release branch and run \n```\nkubectx gke_zeebe-io_europe-west1-b_zeebe-cluster\n./createBenchmark.sh release-MAJOR-MINOR-PATCH-ALPHA\n```",
+      "type": "text",
+      "id": "Field_0nu869f"
+    },
+    {
       "label": "Name",
       "type": "textfield",
       "id": "Field_0r35pcc",
@@ -13,5 +18,7 @@
     }
   ],
   "type": "default",
-  "id": "Form_1h5rru0"
+  "id": "qa_benchmark_setup",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
 }

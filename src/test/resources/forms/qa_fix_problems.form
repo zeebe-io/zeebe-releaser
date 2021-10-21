@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Fix problems CI and QA build\n\nThe build failed. Check the url for details. \n\n* If some of them are failing, verify with your tech lead whether or not these are blockers for the release.\n* `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. \n* Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.",
+      "type": "text",
+      "id": "Field_14sg3k7"
+    },
+    {
+      "label": "Jenkins build url",
+      "type": "textfield",
+      "id": "Field_0r6pob4",
+      "key": "qa_build_jenkins_url"
+    }
+  ],
+  "type": "default",
+  "id": "qa_fix_problems",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}

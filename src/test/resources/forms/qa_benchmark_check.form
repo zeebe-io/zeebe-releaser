@@ -2,6 +2,17 @@
   "schemaVersion": 2,
   "components": [
     {
+      "text": "# Check benchmark\n\n#### Check dashboard\n\nCheck [grafana](http://34.77.165.228/d/I4lo7_EZk/zeebe?orgId=1&refresh=10s) of the benchmark\nLook at (atleast the following):\n* Throughput\n* Memory usage\n* Disk Space\n\n#### Check logs\n\nGo to [error reporting](https://console.cloud.google.com/errors?service=zeebe-broker&time=P1D&order=CREATED_DESC&resolution=OPEN&resolution=ACKNOWLEDGED&project=zeebe-io) and filter version for the release benchmark name\n\nIf there is anything unusual, inspect it to see if it is a criticial issue. If not sure talk to the team or the tech lead.",
+      "type": "text",
+      "id": "Field_0y684db"
+    },
+    {
+      "label": "Benchmark name",
+      "type": "textfield",
+      "id": "Field_1bb1diq",
+      "key": "qa_benchmark_name"
+    },
+    {
       "values": [
         {
           "value": "false",
@@ -29,5 +40,7 @@
     }
   ],
   "type": "default",
-  "id": "qa_benchmark_check"
+  "id": "qa_benchmark_check",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
 }

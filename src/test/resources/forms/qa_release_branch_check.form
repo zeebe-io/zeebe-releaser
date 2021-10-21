@@ -2,6 +2,11 @@
   "schemaVersion": 2,
   "components": [
     {
+      "text": "# Check release branch for new commits\n\n\nIf there are new bugfixes backported to the release branch, we may have to re-create the benchmark.",
+      "type": "text",
+      "id": "Field_1aqkm7x"
+    },
+    {
       "values": [
         {
           "label": "Yes",
@@ -22,5 +27,7 @@
     }
   ],
   "type": "default",
-  "id": "qa_release_branch_check"
+  "id": "qa_release_branch_check",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
 }
