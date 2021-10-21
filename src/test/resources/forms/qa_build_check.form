@@ -2,7 +2,12 @@
   "schemaVersion": 2,
   "components": [
     {
-      "label": "QA Jenkins Build",
+      "text": "# Check CI build pipeline and QA build\n\n\n#### Check CI build pipeline \n\nYou should verify that the latest build is green. If there are any non-green builds, you should analyze them and understand if they can be ignored. For example, `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.\n\nAnother thing to verify is that the number of tests that Jenkins reports it ran more or less matches the number that it reports for the `develop` branch. This is important to ensure that we did not lose test coverage due to build and/or pipeline changes.\n\n#### Check QA build\n\nYou will find the final test results [here](https://docs.google.com/spreadsheets/d/1ruQ1zmOj_Wed-WqDOU69wF79hsBHce5CvUAF5UEbC20/edit#gid=0), tagged with the business key which is the jenkins build url. Make sure that the tests all pass! If some of them are failing, verify with your tech lead whether or not these are blockers for the release.",
+      "type": "text",
+      "id": "Field_01jr12y"
+    },
+    {
+      "label": "Jenkins Build Url",
       "type": "textfield",
       "id": "Field_0eegfiv",
       "key": "qa_build_jenkins_url"
@@ -18,7 +23,7 @@
           "value": "false"
         }
       ],
-      "label": "QA Build Successful?",
+      "label": "CI and QA Build Successful?",
       "type": "radio",
       "id": "Field_08de9fi",
       "key": "qa_build_success",
@@ -28,5 +33,7 @@
     }
   ],
   "type": "default",
-  "id": "Form_19ta2h0"
+  "id": "Form_19ta2h0",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
 }
