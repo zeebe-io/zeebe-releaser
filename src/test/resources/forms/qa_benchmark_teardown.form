@@ -2,6 +2,11 @@
   "schemaVersion": 2,
   "components": [
     {
+      "text": "# Delete benchmark\n\n[https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#clean-up](https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#clean-up)\n\nRun:\n\n```\nkubectx gke_zeebe-io_europe-west1-b_zeebe-cluster\nkubectl delete namespace <benchmark_name>\n```",
+      "type": "text",
+      "id": "Field_0lyqg4p"
+    },
+    {
       "label": "Benchmark Name",
       "type": "textfield",
       "id": "Field_1i0udu7",
@@ -10,5 +15,7 @@
     }
   ],
   "type": "default",
-  "id": "Form_0ri99bk"
+  "id": "qa_benchmark_teardown",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
 }
