@@ -26,5 +26,7 @@
     }
   ],
   "type": "default",
-  "id": "notify_code_freeze_from"
+  "id": "notify_code_freeze_from",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
 }
