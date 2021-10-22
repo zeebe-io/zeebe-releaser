@@ -12,17 +12,18 @@ import org.camunda.community.eze.RecordStream.withJobType
 import org.camunda.community.eze.RecordStream.withProcessInstanceKey
 import org.camunda.community.eze.RecordStreamSource
 
-open class TestHelper(val client: ZeebeClient, val recordStream: RecordStreamSource) {
+class TestHelper(val client: ZeebeClient, val recordStream: RecordStreamSource) {
 
     fun assertThatUserTaskActivated(processInstanceKey: Long, elementId: String, amount: Int = 1) {
         await.untilAsserted {
-            val userTaskRecords = recordStream.processInstanceRecords()
+            val amountOfActivatedTasks = recordStream.processInstanceRecords()
                 .withProcessInstanceKey(processInstanceKey)
                 .withElementType(BpmnElementType.USER_TASK)
                 .withIntent(ProcessInstanceIntent.ELEMENT_ACTIVATED)
                 .filter { record -> record.value.elementId == elementId }
+                .count()
 
-            Assertions.assertThat(userTaskRecords.size).isEqualTo(amount)
+            Assertions.assertThat(amountOfActivatedTasks).isEqualTo(amount)
         }
     }
 

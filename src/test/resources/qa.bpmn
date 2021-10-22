@@ -20,9 +20,9 @@
       <bpmn:endEvent id="Event_1bo2qwj" name="Daily Tasks Finished">
         <bpmn:incoming>Flow_0o0yeym</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0ogr394" sourceRef="Event_1trtn09" targetRef="Gateway_1qmo6ll" />
+      <bpmn:sequenceFlow id="Flow_0ogr394" sourceRef="daily-timer" targetRef="Gateway_1qmo6ll" />
       <bpmn:sequenceFlow id="Flow_13l5xfp" sourceRef="check-benchmark" targetRef="Gateway_1l4ylti" />
-      <bpmn:startEvent id="Event_1trtn09" name="Every Day of the Week" isInterrupting="false">
+      <bpmn:startEvent id="daily-timer" name="Every Day of the Week" isInterrupting="false">
         <bpmn:outgoing>Flow_0ogr394</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0l8up67">
           <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">= {   today: date and time(today(),time("04:00:00@Europe/Berlin")),   numberOfDays: for x in 1..3 return duration("P"+string(x)+"D"),   days: for d in numberOfDays return today + d,   weekdays: days[not(day of week(item) in ("Saturday","Sunday"))],   nextWeekday: weekdays[1],   cycleWithDuration: cycle(nextWeekday - now())  }.cycleWithDuration</bpmn:timeCycle>
@@ -399,7 +399,7 @@
           <dc:Bounds x="1263" y="665" width="56" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1y2ca4b_di" bpmnElement="Event_1trtn09">
+      <bpmndi:BPMNShape id="Event_1y2ca4b_di" bpmnElement="daily-timer">
         <dc:Bounds x="307" y="622" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="284" y="665" width="82" height="27" />

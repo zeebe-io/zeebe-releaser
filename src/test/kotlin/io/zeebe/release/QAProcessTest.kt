@@ -3,9 +3,11 @@ package io.zeebe.release
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
 import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent
+import io.camunda.zeebe.protocol.record.intent.TimerIntent
 import io.camunda.zeebe.protocol.record.value.BpmnElementType
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.kotlin.await
+import org.awaitility.kotlin.untilAsserted
 import org.camunda.community.eze.EmbeddedZeebeEngine
 import org.camunda.community.eze.RecordStream.withElementType
 import org.camunda.community.eze.RecordStream.withIntent
@@ -16,6 +18,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import java.lang.Exception
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -138,6 +141,13 @@ class QAProcessTest {
 
         // when
         val instanceEvent = createInstance(variables)
+        await.untilAsserted {
+            val timerRecord = recordStream.timerRecords()
+                .withIntent(TimerIntent.CREATED)
+                .filter { record -> record.value.targetElementId == "daily-timer" }
+                .firstOrNull()
+            assertThat(timerRecord).isNotNull
+        }
         clock.increaseTime(getDurationToNextWeekday())
 
         // then
@@ -162,6 +172,13 @@ class QAProcessTest {
 
         // when
         val instanceEvent = createInstance(variables)
+        await.untilAsserted {
+            val timerRecord = recordStream.timerRecords()
+                .withIntent(TimerIntent.CREATED)
+                .filter { record -> record.value.targetElementId == "daily-timer" }
+                .firstOrNull()
+            assertThat(timerRecord).isNotNull
+        }
         clock.increaseTime(getDurationToNextWeekday())
 
         // then
