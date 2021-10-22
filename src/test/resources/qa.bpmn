@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1pwapqm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1pwapqm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
   <bpmn:process id="zeebe-release-qa" name="Zeebe Release QA" isExecutable="true">
     <bpmn:extensionElements>
       <zeebe:userTaskForm id="userTaskForm_1b9cav3">{   "schemaVersion": 2,   "components": [     {       "text": "# Run CI Pipeline and QA\n\n[https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#perform-quality-assurance](https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#perform-quality-assurance)\n\n\n#### Run the CI pipeline (Automatically triggered when the branch is created)\n\nOur CI pipeline runs in an internal Jenkins, [here](https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/). The first thing you want to verify after creating the release branch is to verify that it builds and passes our CI pipeline. While it may take a little bit, eventually there will be a new Jenkins job which is building your branch, typically at the following URL: https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/job/release-X.Y.Z/. The job should already be building automatically after you pushed the branch, but if it isn't, you can always start a new build manually by clicking on `Run with parameters` and keeping the defaults.\n\n#### Run the Testbench QA\n\nWe make heavy use of [Testbench](https://github.com/zeebe-io/zeebe-cluster-testbench) for our QA as well, and we want to run those tests against the release branch as well. **From the Jenkins job, start a new build via `Run with parameters`, but this time check `SKIP_VERIFY` and also check `RUN_QA`.** This will start a build which will skip the normal automated tests (which we ran in the previous step), and instead just stage the release artifacts and run the tests in Camunda Cloud. You can then track the tests in [Operate](https://bru-1.operate.ultrawombat.com/383e5e2d-05a9-4feb-9926-02f538aa80ea/) - filter the running instances by businessKey, with the value being the Jenkins build URL. \n\nHints:\n- The QA run will use the Zeebe image built by Jenkins from your branch. However, it needs to know the equivalent Operate, Tasklist, Elasticsearch, etc., versions to use in conjunction when spinning up a new cluster in the cloud. To solve this, we specify a _template_ generation which has all these things.\n- The template generation is used to set the version of Operate/Elasticsearch for the QA run. This must be a generation which already exists in Cloud on Int stage. It should also fit to the version you release (so if the next release is 0.24.2 the template generation probably is 0.24.1). You can check which generations exist in the Int stage using the cloud console (check under 'Generations' in the Document of Truth).\n- Jenkins will be notified of the result of the tests. If any test fails, the Jenkins build fails and test reports are available in the Google Sheet and a message is posted to Slack. Both Slack and Google Sheet contain a link to the build that started the QA run.\n- If the build gets stuck, have a look at Operate to see whether any incidents were raised. This is the one missing loophole, because Jenkins has no way of knowing when incidents were created\n\n",       "type": "text",       "id": "Field_17jz7bk"     },     {       "label": "Jenkins Build Link",       "type": "textfield",       "id": "Field_1ocluvy",       "key": "qa_build_jenkins_url",       "validate": {         "required": true       },       "description": "Add the link to jenkins build job"     }   ],   "type": "default",   "id": "qa_build",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
@@ -10,19 +10,19 @@
       <zeebe:userTaskForm id="userTaskForm_1ebigng">{   "schemaVersion": 2,   "components": [     {       "text": "# Check release branch for new commits\n\n\nIf there are new bugfixes backported to the release branch, we may have to re-create the benchmark.",       "type": "text",       "id": "Field_1aqkm7x"     },     {       "values": [         {           "label": "Yes",           "value": "true"         },         {           "label": "No",           "value": "false"         }       ],       "label": "Are there new commits on the release branch?",       "type": "radio",       "id": "Field_002hibw",       "key": "qa_benchmark_outdated",       "validate": {         "required": true       }     }   ],   "type": "default",   "id": "qa_release_branch_check",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
       <zeebe:userTaskForm id="userTaskForm_37tnqqm">{   "schemaVersion": 2,   "components": [     {       "text": "# Fix problems CI and QA build\n\nThe build failed. Check the url for details. \n\n* If some of them are failing, verify with your tech lead whether or not these are blockers for the release.\n* `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. \n* Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.",       "type": "text",       "id": "Field_14sg3k7"     },     {       "label": "Jenkins build url",       "type": "textfield",       "id": "Field_0r6pob4",       "key": "qa_build_jenkins_url"     }   ],   "type": "default",   "id": "qa_fix_problems",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
     </bpmn:extensionElements>
-    <bpmn:sequenceFlow id="Flow_1u6won8" sourceRef="Activity_0mnmq4z" targetRef="Activity_1022t91" />
+    <bpmn:sequenceFlow id="Flow_1u6won8" sourceRef="build-ci-with-qa" targetRef="check-qa-results" />
     <bpmn:startEvent id="Event_0vq2qf4" name="Code Freezed">
       <bpmn:extensionElements />
       <bpmn:outgoing>Flow_10fj3ib</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_10fj3ib" sourceRef="Event_0vq2qf4" targetRef="Activity_0mnmq4z" />
+    <bpmn:sequenceFlow id="Flow_10fj3ib" sourceRef="Event_0vq2qf4" targetRef="build-ci-with-qa" />
     <bpmn:subProcess id="Activity_1imqbj3" name="Daily task" triggeredByEvent="true">
       <bpmn:endEvent id="Event_1bo2qwj" name="Daily Tasks Finished">
         <bpmn:incoming>Flow_0o0yeym</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0ogr394" sourceRef="Event_1trtn09" targetRef="Gateway_1qmo6ll" />
-      <bpmn:sequenceFlow id="Flow_13l5xfp" sourceRef="Activity_1mlyru2" targetRef="Gateway_1l4ylti" />
-      <bpmn:startEvent id="Event_1trtn09" name="Every Day of the Week" isInterrupting="false">
+      <bpmn:sequenceFlow id="Flow_0ogr394" sourceRef="daily-timer" targetRef="Gateway_1qmo6ll" />
+      <bpmn:sequenceFlow id="Flow_13l5xfp" sourceRef="check-benchmark" targetRef="Gateway_1l4ylti" />
+      <bpmn:startEvent id="daily-timer" name="Every Day of the Week" isInterrupting="false">
         <bpmn:outgoing>Flow_0ogr394</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0l8up67">
           <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">= {   today: date and time(today(),time("04:00:00@Europe/Berlin")),   numberOfDays: for x in 1..3 return duration("P"+string(x)+"D"),   days: for d in numberOfDays return today + d,   weekdays: days[not(day of week(item) in ("Saturday","Sunday"))],   nextWeekday: weekdays[1],   cycleWithDuration: cycle(nextWeekday - now())  }.cycleWithDuration</bpmn:timeCycle>
@@ -34,15 +34,15 @@
         <bpmn:outgoing>Flow_1c95oe2</bpmn:outgoing>
       </bpmn:exclusiveGateway>
       <bpmn:sequenceFlow id="Flow_14416rg" name="No" sourceRef="Gateway_1l4ylti" targetRef="Gateway_0wm06h0">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= qa_benchmark_ok = "false"</bpmn:conditionExpression>
-      </bpmn:sequenceFlow>
-      <bpmn:sequenceFlow id="Flow_1c95oe2" name="Yes" sourceRef="Gateway_1l4ylti" targetRef="Activity_02ac5eu">
         <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= qa_benchmark_ok = "true"</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
-      <bpmn:sequenceFlow id="Flow_0edaypg" sourceRef="Activity_02ac5eu" targetRef="Gateway_0wm06h0" />
-      <bpmn:sequenceFlow id="Flow_0xui8t5" sourceRef="Gateway_0hi2uxv" targetRef="Activity_1mlyru2" />
-      <bpmn:sequenceFlow id="Flow_1mc3iqv" sourceRef="Gateway_0hi2uxv" targetRef="Activity_1ggeq4y" />
-      <bpmn:sequenceFlow id="Flow_1ceu93t" sourceRef="Activity_1ggeq4y" targetRef="Gateway_0q75lje" />
+      <bpmn:sequenceFlow id="Flow_1c95oe2" name="Yes" sourceRef="Gateway_1l4ylti" targetRef="create-issue">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= qa_benchmark_ok = "false"</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_0edaypg" sourceRef="create-issue" targetRef="Gateway_0wm06h0" />
+      <bpmn:sequenceFlow id="Flow_0xui8t5" sourceRef="Gateway_0hi2uxv" targetRef="check-benchmark" />
+      <bpmn:sequenceFlow id="Flow_1mc3iqv" sourceRef="Gateway_0hi2uxv" targetRef="check-new-commits" />
+      <bpmn:sequenceFlow id="Flow_1ceu93t" sourceRef="check-new-commits" targetRef="Gateway_0q75lje" />
       <bpmn:parallelGateway id="Gateway_0hi2uxv">
         <bpmn:incoming>Flow_0n59tzo</bpmn:incoming>
         <bpmn:outgoing>Flow_0xui8t5</bpmn:outgoing>
@@ -53,7 +53,7 @@
         <bpmn:outgoing>Flow_014nhup</bpmn:outgoing>
         <bpmn:outgoing>Flow_03ccwuo</bpmn:outgoing>
       </bpmn:exclusiveGateway>
-      <bpmn:sequenceFlow id="Flow_014nhup" name="Yes" sourceRef="Gateway_0q75lje" targetRef="Activity_00qfbqe">
+      <bpmn:sequenceFlow id="Flow_014nhup" name="Yes" sourceRef="Gateway_0q75lje" targetRef="recreate-benchmark">
         <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= qa_benchmark_outdated = "true"</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:parallelGateway id="Gateway_0ewpjqn">
@@ -65,26 +65,26 @@
       <bpmn:sequenceFlow id="Flow_03ccwuo" name="No" sourceRef="Gateway_0q75lje" targetRef="Gateway_0ihocqm">
         <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= qa_benchmark_outdated = "false"</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
-      <bpmn:sequenceFlow id="Flow_0pmk4ca" sourceRef="Activity_00qfbqe" targetRef="Gateway_0ihocqm" />
-      <bpmn:userTask id="Activity_1mlyru2" name="Check Benchmark">
+      <bpmn:sequenceFlow id="Flow_0pmk4ca" sourceRef="recreate-benchmark" targetRef="Gateway_0ihocqm" />
+      <bpmn:userTask id="check-benchmark" name="Check Benchmark">
         <bpmn:extensionElements>
           <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0vfujp8" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_0xui8t5</bpmn:incoming>
         <bpmn:outgoing>Flow_13l5xfp</bpmn:outgoing>
       </bpmn:userTask>
-      <bpmn:userTask id="Activity_1ggeq4y" name="Check for new commits on the release branch">
+      <bpmn:userTask id="check-new-commits" name="Check for new commits on the release branch">
         <bpmn:extensionElements>
           <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1ebigng" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1mc3iqv</bpmn:incoming>
         <bpmn:outgoing>Flow_1ceu93t</bpmn:outgoing>
       </bpmn:userTask>
-      <bpmn:userTask id="Activity_02ac5eu" name="Create github issue">
+      <bpmn:userTask id="create-issue" name="Create github issue">
         <bpmn:incoming>Flow_1c95oe2</bpmn:incoming>
         <bpmn:outgoing>Flow_0edaypg</bpmn:outgoing>
       </bpmn:userTask>
-      <bpmn:userTask id="Activity_00qfbqe" name="Send message &#34;Recreate Benchmark&#34;">
+      <bpmn:userTask id="recreate-benchmark" name="Send message &#34;Recreate Benchmark&#34;">
         <bpmn:incoming>Flow_014nhup</bpmn:incoming>
         <bpmn:outgoing>Flow_0pmk4ca</bpmn:outgoing>
       </bpmn:userTask>
@@ -116,14 +116,14 @@
       <bpmn:sequenceFlow id="Flow_131el46" sourceRef="Gateway_0wm06h0" targetRef="Gateway_0ewpjqn" />
       <bpmn:sequenceFlow id="Flow_18xopoc" sourceRef="Gateway_0ihocqm" targetRef="Gateway_0ewpjqn" />
     </bpmn:subProcess>
-    <bpmn:sequenceFlow id="Flow_0ytbx0r" sourceRef="Activity_1igmxwh" targetRef="Gateway_1sp4w8i" />
+    <bpmn:sequenceFlow id="Flow_0ytbx0r" sourceRef="setup-benchmark" targetRef="Gateway_1sp4w8i" />
     <bpmn:eventBasedGateway id="Gateway_1sp4w8i">
       <bpmn:incoming>Flow_0ytbx0r</bpmn:incoming>
       <bpmn:outgoing>Flow_0epbj3m</bpmn:outgoing>
       <bpmn:outgoing>Flow_1g3lnif</bpmn:outgoing>
     </bpmn:eventBasedGateway>
     <bpmn:sequenceFlow id="Flow_0epbj3m" sourceRef="Gateway_1sp4w8i" targetRef="Event_070p6xx" />
-    <bpmn:sequenceFlow id="Flow_10auxgf" sourceRef="Event_070p6xx" targetRef="Activity_0xhqekn" />
+    <bpmn:sequenceFlow id="Flow_10auxgf" sourceRef="Event_070p6xx" targetRef="delete-benchmark" />
     <bpmn:intermediateCatchEvent id="Event_070p6xx" name="On release date">
       <bpmn:incoming>Flow_0epbj3m</bpmn:incoming>
       <bpmn:outgoing>Flow_10auxgf</bpmn:outgoing>
@@ -134,9 +134,9 @@
     <bpmn:endEvent id="Event_0dz2x1t" name="QA Finished">
       <bpmn:incoming>Flow_1ewrj5i</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_091kws4" sourceRef="Activity_0xhqekn" targetRef="Gateway_0qr9yjh" />
-    <bpmn:sequenceFlow id="Flow_1puyfkr" sourceRef="Activity_1s5lvt6" targetRef="Activity_0mnmq4z" />
-    <bpmn:sequenceFlow id="Flow_172mjv0" sourceRef="Activity_1022t91" targetRef="Gateway_0fglwop" />
+    <bpmn:sequenceFlow id="Flow_091kws4" sourceRef="delete-benchmark" targetRef="Gateway_0qr9yjh" />
+    <bpmn:sequenceFlow id="Flow_1puyfkr" sourceRef="fix-problems" targetRef="build-ci-with-qa" />
+    <bpmn:sequenceFlow id="Flow_172mjv0" sourceRef="check-qa-results" targetRef="Gateway_0fglwop" />
     <bpmn:exclusiveGateway id="Gateway_0fglwop" name="QA success?">
       <bpmn:incoming>Flow_172mjv0</bpmn:incoming>
       <bpmn:outgoing>Flow_02b0qqa</bpmn:outgoing>
@@ -145,22 +145,18 @@
     <bpmn:sequenceFlow id="Flow_02b0qqa" name="No" sourceRef="Gateway_0fglwop" targetRef="Gateway_1wi99se">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= qa_build_success = "true"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1x9lmny" name="No" sourceRef="Gateway_0fglwop" targetRef="Activity_1s5lvt6">
+    <bpmn:sequenceFlow id="Flow_1x9lmny" name="No" sourceRef="Gateway_0fglwop" targetRef="fix-problems">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= qa_build_success = "false"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:intermediateCatchEvent id="Event_1q3nlli" name="Recreate Benchmark">
-      <bpmn:extensionElements>
-        <zeebe:ioMapping>
-          <zeebe:output source="= source" target="OutputVariable_3qd1u1f" />
-        </zeebe:ioMapping>
-      </bpmn:extensionElements>
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1g3lnif</bpmn:incoming>
       <bpmn:outgoing>Flow_0cnrtm2</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1v1hg81" messageRef="Message_29jvtb5" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_0cnrtm2" sourceRef="Event_1q3nlli" targetRef="Activity_0mnmq4z" />
+    <bpmn:sequenceFlow id="Flow_0cnrtm2" sourceRef="Event_1q3nlli" targetRef="build-ci-with-qa" />
     <bpmn:sequenceFlow id="Flow_1g3lnif" sourceRef="Gateway_1sp4w8i" targetRef="Event_1q3nlli" />
-    <bpmn:userTask id="Activity_0mnmq4z" name="Build CI with QA">
+    <bpmn:userTask id="build-ci-with-qa" name="Build CI with QA">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1b9cav3" />
       </bpmn:extensionElements>
@@ -169,28 +165,28 @@
       <bpmn:incoming>Flow_0cnrtm2</bpmn:incoming>
       <bpmn:outgoing>Flow_1u6won8</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_1022t91" name="Check QA results">
+    <bpmn:userTask id="check-qa-results" name="Check QA results">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_22t7hjl" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1u6won8</bpmn:incoming>
       <bpmn:outgoing>Flow_172mjv0</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_1igmxwh" name="Setup Benchmark">
+    <bpmn:userTask id="setup-benchmark" name="Setup Benchmark">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_10tg0jn" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0sinhos</bpmn:incoming>
       <bpmn:outgoing>Flow_0ytbx0r</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_1s5lvt6" name="Fix problems">
+    <bpmn:userTask id="fix-problems" name="Fix problems">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_37tnqqm" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1x9lmny</bpmn:incoming>
       <bpmn:outgoing>Flow_1puyfkr</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_0xhqekn" name="Delete Benchmark">
+    <bpmn:userTask id="delete-benchmark" name="Delete Benchmark">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_3dknkdc" />
       </bpmn:extensionElements>
@@ -202,7 +198,7 @@
       <bpmn:outgoing>Flow_0sinhos</bpmn:outgoing>
       <bpmn:outgoing>Flow_1s5mjw5</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0sinhos" sourceRef="Gateway_1wi99se" targetRef="Activity_1igmxwh" />
+    <bpmn:sequenceFlow id="Flow_0sinhos" sourceRef="Gateway_1wi99se" targetRef="setup-benchmark" />
     <bpmn:sequenceFlow id="Flow_1s5mjw5" name="Yes" sourceRef="Gateway_1wi99se" targetRef="Gateway_0qr9yjh">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= release_type = "patch"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -386,7 +382,7 @@
         <di:waypoint x="850" y="640" />
         <di:waypoint x="955" y="640" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="854.0000000000005" y="622" width="15" height="14" />
+          <dc:Bounds x="854" y="622" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13l5xfp_di" bpmnElement="Flow_13l5xfp">
@@ -403,7 +399,7 @@
           <dc:Bounds x="1263" y="665" width="56" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1y2ca4b_di" bpmnElement="Event_1trtn09">
+      <bpmndi:BPMNShape id="Event_1y2ca4b_di" bpmnElement="daily-timer">
         <dc:Bounds x="307" y="622" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="284" y="665" width="82" height="27" />
@@ -427,16 +423,16 @@
       <bpmndi:BPMNShape id="Gateway_0zxjf1l_di" bpmnElement="Gateway_0ewpjqn">
         <dc:Bounds x="1075" y="615" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wivgj6_di" bpmnElement="Activity_1mlyru2">
+      <bpmndi:BPMNShape id="Activity_0wivgj6_di" bpmnElement="check-benchmark">
         <dc:Bounds x="675" y="600" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_16b8tf2_di" bpmnElement="Activity_1ggeq4y">
+      <bpmndi:BPMNShape id="Activity_16b8tf2_di" bpmnElement="check-new-commits">
         <dc:Bounds x="535" y="710" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0y1zd1z_di" bpmnElement="Activity_02ac5eu">
+      <bpmndi:BPMNShape id="Activity_0y1zd1z_di" bpmnElement="create-issue">
         <dc:Bounds x="775" y="710" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1flwbnz_di" bpmnElement="Activity_00qfbqe">
+      <bpmndi:BPMNShape id="Activity_1flwbnz_di" bpmnElement="recreate-benchmark">
         <dc:Bounds x="535" y="940" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1qmo6ll_di" bpmnElement="Gateway_1qmo6ll" isMarkerVisible="true">
@@ -481,19 +477,19 @@
           <dc:Bounds x="532" y="435" width="56" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05plqia_di" bpmnElement="Activity_0mnmq4z">
+      <bpmndi:BPMNShape id="Activity_05plqia_di" bpmnElement="build-ci-with-qa">
         <dc:Bounds x="370" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jkgkns_di" bpmnElement="Activity_1022t91">
+      <bpmndi:BPMNShape id="Activity_1jkgkns_di" bpmnElement="check-qa-results">
         <dc:Bounds x="660" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wahmqz_di" bpmnElement="Activity_1igmxwh">
+      <bpmndi:BPMNShape id="Activity_0wahmqz_di" bpmnElement="setup-benchmark">
         <dc:Bounds x="1040" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1m98e75_di" bpmnElement="Activity_1s5lvt6">
+      <bpmndi:BPMNShape id="Activity_1m98e75_di" bpmnElement="fix-problems">
         <dc:Bounds x="780" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0vceihq_di" bpmnElement="Activity_0xhqekn">
+      <bpmndi:BPMNShape id="Activity_0vceihq_di" bpmnElement="delete-benchmark">
         <dc:Bounds x="1430" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1wi99se_di" bpmnElement="Gateway_1wi99se" isMarkerVisible="true">
