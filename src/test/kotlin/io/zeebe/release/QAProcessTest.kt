@@ -105,7 +105,7 @@ class QAProcessTest {
     }
 
     @Test
-    fun `should rebuild with QA when mesage is triggered`() {
+    fun `should rebuild with QA when message is triggered`() {
         // given
         val date = ZonedDateTime.now().plusHours(1)
         val variables = hashMapOf(
@@ -123,12 +123,6 @@ class QAProcessTest {
         testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
         testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "setup-benchmark")
         testHelper.completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
-        await.untilAsserted {
-            val timerRecord = recordStream.timerRecords().lastOrNull()
-
-            assertThat(timerRecord).isNotNull
-            assertThat(timerRecord!!.value.processInstanceKey).isEqualTo(instanceEvent.processInstanceKey)
-        }
         client.newPublishMessageCommand()
             .messageName("recreate_benchmark")
             .correlationKey("release_version")
