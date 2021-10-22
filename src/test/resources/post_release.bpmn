@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="4.10.0">
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="4.11.1">
   <process id="zeebe-post-release" name="Zeebe Post Release" isExecutable="true">
     <extensionElements>
       <ns0:userTaskForm id="userTaskForm_25kpsi7">{   "schemaVersion": 2,   "components": [     {       "text": "# Notify other teams\nThere's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- Zeebe\n- Operate &amp; Tasklist\n- Shared Services\n- Optimize",       "type": "text",       "id": "Field_0zr0gl2"     },     {       "text": "`Hi :wave: team! There is a new Zeebe version MAJOR.MINOR.PATCH-ALPHA available that you can test against.`\n",       "type": "text",       "id": "Field_0f1lwfu"     }   ],   "type": "default",   "id": "Form_1hcmrar" }</ns0:userTaskForm>
@@ -12,7 +12,7 @@
       <ns0:userTaskForm id="userTaskForm_0gi1aut">{   "schemaVersion": 2,   "components": [     {       "text": "# Update benchmarks\nAs part of our continuous testing efforts, we also run long running load tests for the various supported versions:\n\n- One benchmark for the latest alpha version\n- One benchmark for each supported minor version (updated to their latest patch release)\n\nOnce a new version is released, we need to update all of these benchmarks depending on the release type. _Only execute the steps below for the release type that you are performing!_\n\nLong running benchmark deployments can be found in the main repository by checking out the branch `medic-cw-benchmarks`, under `benchmarks/setup`. There you will find a folder with the name of the benchmark. Each release benchmark is prefixed with `release-`, and then the version _with dashes instead of periods as separator_, e.g. `release-1-0-1` or `release-2-3-1-alpha1`. [See our documentation for more](https://github.com/camunda-cloud/zeebe/tree/develop/benchmarks/setup).\n\nAs a first step, checkout this branch and navigate there. Then set the Kubernetes context to the long running cluster, where the long running load tests live.\n\n```sh\ngit checkout medic-cw-benchmarks\ncd benchmarks/setup\nkubectx gke_zeebe-io_europe-west1-b_zeebe-long-running\n```\n\n#### ALPHA\n\nIf performing an alpha release, the first step is to remove the load test for the previous alpha release. From the `benchmarks/setup` folder, we can use the script `./deleteBenchmark.sh` for this.\n\n```sh\n./deleteBenchmark.sh release-MAJOR-MINOR-ALPHA\n```\n\nFor example, if you're releasing `1.2.0-alpha2`, then you would be deleting the previous `1.2.0-alpha1` benchmark, e.g. `./deleteBenchmark release-1-2-alpha1`.\n\nOnce done, we need to create a new benchmark for your version.\n\n```sh\n./newBenchmark.sh release-MAJOR-MINOR-ALPHA\n```\n\nThen update the Zeebe, worker, and starter image tags. Navigate to your benchmark folder, and from there:\n\n- Open `zeebe-values.yaml`\n- Set `image.tag` to `MAJOR.MINOR.PATCH-ALPHA`, e.g. `1.1.2`\n- Save and exit\n- Open `worker.yaml`\n- Set `spec.template.spec.containers[0].image` to `gcr.io/zeebe-io/worker:MAJOR.MINOR.PATCH-ALPHA`\n- Save and exit\n- Open `starter.yaml`\n- Set `spec.template.spec.containers[0].image` to `gcr.io/zeebe-io/starter:MAJOR.MINOR.PATCH-ALPHA`\n- Save and exit\n\nThen start the benchmark. Verify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\n```sh\nmake zeebe worker starter\n```\n\n#### PATCH\n\nIf performing a patch release, simply update the existing benchmark for the same minor version. This means, if you are releasing 1.1.2, then you would update the existing 1.1.1 benchmark. To update a benchmark, navigate to the existing benchmark folder (in our example, you would go to `release-1-1`). From there, update the Zeebe image tag.\n\n- Open `zeebe-values.yaml`\n- Set `image.tag` to `MAJOR.MINOR.PATCH-ALPHA`, e.g. `1.1.2`\n- Save and exit\n- Open `worker.yaml`\n- Set `spec.template.spec.containers[0].image` to `gcr.io/zeebe-io/worker:MAJOR.MINOR.PATCH-ALPHA`\n- Save and exit\n- Open `starter.yaml`\n- Set `spec.template.spec.containers[0].image` to `gcr.io/zeebe-io/starter:MAJOR.MINOR.PATCH-ALPHA`\n- Save and exit\n\nAfterwards, we need to update the Helm release by running the following. Be sure the update the version in the release name, e.g. `release-1-1`.\n\n```sh\nhelm upgrade release-MAJOR-MINOR camundacloud/zeebe-cluster-helm --reuse-values -f zeebe-values.yaml --skip-crds\nmake worker starter\n```\n\nIf you need to update the clients, you will also have to update the `starter.yaml` and `worker.yaml`, updating their image tags as well. Refer to the benchmarks documentation for this. But for patch releases, this shouldn't be necessary in most cases.\n\nVerify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\n#### MINOR\n\nIf you're performing a minor release, the first step is to delete the oldest minor load test - that is, for the version which will stop being supported. From the `benchmarks/setup` folder, we can use the script `./deleteBenchmark.sh` for this.\n\n```sh\n./deleteBenchmark.sh release-MAJOR-MINOR\n```\n\nFor example, with our current 3 months release cadence, if you're releasing `1.2.0`, then you would be deleting the previous `1.0.0` benchmark, e.g. `./deleteBenchmark release-1-0`.\n\nOnce done, we need to create a new benchmark for your version.\n\n```sh\n./newBenchmark.sh release-MAJOR-MINOR\n```\n\nThen update the Zeebe, worker, and starter image tags. Navigate to your benchmark folder, and from there:\n\n- Open `zeebe-values.yaml`\n- Set `image.tag` to `MAJOR.MINOR.0`, e.g. `1.1.0`\n- Save and exit\n- Open `worker.yaml`\n- Set `spec.template.spec.containers[0].image` to `gcr.io/zeebe-io/worker:MAJOR.MINOR.0`\n- Save and exit\n- Open `starter.yaml`\n- Set `spec.template.spec.containers[0].image` to `gcr.io/zeebe-io/starter:MAJOR.MINOR.0`\n- Save and exit\n\nThen start the benchmark.\n\n```sh\nmake zeebe worker starter\n```\n\nVerify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\n#### Commit the benchmark files\n\nAt the end, when the benchmark is running correctly, remember to commit the benchmark setup files.\n\n```sh\ngit add release-MAJOR-MINOR-ALPHA\ngit commit -m\"test(benchmark): setup MAJOR.MINOR.PATCH.ALPHA benchmark\"\ngit push\n```",       "type": "text",       "id": "Field_1rfqdzy"     }   ],   "type": "default",   "id": "Form_0qq681s" }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_0koj8jh">{   "schemaVersion": 2,   "components": [     {       "text": "# Set a calendar appointment\n\nGo to Outlook, and create a new calendar appointment for the next applicable release (either ALPHA or MINOR), where X.Y.Z would be the next version:\n",       "type": "text",       "id": "Field_1ayukda"     },     {       "text": "Subject: Zeebe Release X.Y.Z\n\nHey all,\n\nWe will build a new Zeebe release: 0.X.0-alphaY.\n\nRelease manager is: RELEASE-MANAGER\n\nHave a nice week!",       "type": "text",       "id": "Field_1g8m768"     },     {       "text": "Make sure to invite the next release manager as required, and the following as optional:\n\n- zeebe@camunda.com\n- operate@camunda.com\n- sre@camunda.com",       "type": "text",       "id": "Field_1cpj19r"     }   ],   "type": "default",   "id": "Form_1rwhxvm" }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_2hidn1i">{   "schemaVersion": 2,   "components": [     {       "text": "# Celebrate the release\n\nMake an appointment for the team at the bar around 4/5pm or via zoom to have a beverage of their choice. Talk about new features and the next steps.",       "type": "text",       "id": "Field_1bh8t3w"     }   ],   "type": "default",   "id": "Form_1cpheid" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_01m96lq">{   "schemaVersion": 2,   "components": [     {       "text": "# Collect next release data",       "type": "text",       "id": "Field_0vol9so"     },     {       "label": "Release version",       "type": "textfield",       "id": "Field_0q04txm",       "key": "release_version"     },     {       "label": "Release date",       "type": "textfield",       "id": "Field_1jl2q1w",       "key": "release_date"     },     {       "label": "Code Freeze date",       "type": "textfield",       "id": "Field_0w4n3mw",       "key": "code_freeze_date"     },     {       "values": [         {           "label": "Philipp",           "value": "philipp"         },         {           "label": "Chris",           "value": "chris"         },         {           "label": "Peter",           "value": "peter"         },         {           "value": "deepthi",           "label": "Deepthi"         },         {           "label": "Nico",           "value": "nico"         },         {           "label": "Remco",           "value": "remco"         },         {           "label": "Ole",           "value": "ole"         },         {           "label": "Nicolas",           "value": "nicolas"         }       ],       "label": "Release Manager",       "type": "select",       "id": "Field_08k3xs4",       "key": "release_manager"     },     {       "values": [         {           "label": "Major",           "value": "major"         },         {           "label": "Minor",           "value": "minor"         },         {           "label": "Alpha",           "value": "alpha"         }       ],       "label": "The release is",       "type": "radio",       "id": "Field_01mvgma",       "key": "release_type"     }   ],   "type": "default",   "id": "release_collect_data" }</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_01m96lq">{   "schemaVersion": 2,   "components": [     {       "text": "# Data about next release",       "type": "text",       "id": "Field_18uxmez"     },     {       "label": "Release version",       "type": "textfield",       "id": "Field_0q04txm",       "key": "release_version",       "description": "MAJOR.MINOR.PATCH-ALPHA (Eg:- 1.3.0-alpha1)"     },     {       "label": "Release date",       "type": "textfield",       "id": "Field_1jl2q1w",       "key": "release_date",       "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T:00:00:00Z)"     },     {       "label": "Code Freeze date",       "type": "textfield",       "id": "Field_0w4n3mw",       "key": "code_freeze_date",       "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T:00:00:00Z)"     },     {       "values": [         {           "label": "Philipp",           "value": "philipp"         },         {           "label": "Chris",           "value": "chris"         },         {           "label": "Peter",           "value": "peter"         },         {           "value": "deepthi",           "label": "Deepthi"         },         {           "label": "Nico",           "value": "nico"         },         {           "label": "Remco",           "value": "remco"         },         {           "label": "Ole",           "value": "ole"         },         {           "label": "Nicolas",           "value": "nicolas"         }       ],       "label": "Release Manager",       "type": "select",       "id": "Field_08k3xs4",       "key": "release_manager"     },     {       "values": [         {           "label": "Major",           "value": "major"         },         {           "label": "Minor",           "value": "minor"         },         {           "label": "Alpha",           "value": "alpha"         }       ],       "label": "The release is",       "type": "radio",       "id": "Field_01mvgma",       "key": "release_type"     }   ],   "type": "default",   "id": "release_collect_data",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_3e5brtf">{   "schemaVersion": 2,   "components": [     {       "text": "# Merge with Stable\n\nAs the release job produces some additional commits, we need to merge them back into our development branch. This should be the same base branch as the one you used when creating the release branch at the very beginning. So for alpha, minor, and major releases, this will be develop. For patch releases, this will be the appropriate stable/MAJOR.MINOR branch.",       "type": "text",       "id": "Field_1ukm08o"     },     {       "label": "Release branch name:",       "type": "textfield",       "id": "Field_04y67ox",       "key": "release_branch_name"     }   ],   "type": "default",   "id": "merge_to_master_form" }</ns0:userTaskForm>
     </extensionElements>
     <startEvent id="Event_1bzj58u" name="Released on maven central">
@@ -231,6 +231,34 @@
   </message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_cf8297c4-1b01-4c89-a2a1-87ac60eb83ba">
     <bpmndi:BPMNPlane id="BPMNPlane_d215a1c8-1f52-448c-aa98-de25f8336c52" bpmnElement="zeebe-post-release">
+      <bpmndi:BPMNEdge id="Flow_004201w_di" bpmnElement="Flow_004201w">
+        <di:waypoint x="1160" y="355" />
+        <di:waypoint x="1160" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bxq922_di" bpmnElement="Flow_0bxq922">
+        <di:waypoint x="960" y="640" />
+        <di:waypoint x="1230" y="640" />
+        <di:waypoint x="1230" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xchhzg_di" bpmnElement="Flow_1xchhzg">
+        <di:waypoint x="1255" y="530" />
+        <di:waypoint x="1275" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y09u6a_di" bpmnElement="Flow_1y09u6a">
+        <di:waypoint x="570" y="555" />
+        <di:waypoint x="570" y="640" />
+        <di:waypoint x="860" y="640" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="576" y="595" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02gv5rz_di" bpmnElement="Flow_02gv5rz">
+        <di:waypoint x="595" y="530" />
+        <di:waypoint x="710" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="645" y="512" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gtz7qb_di" bpmnElement="Flow_0gtz7qb">
         <di:waypoint x="1185" y="120" />
         <di:waypoint x="1280" y="120" />
@@ -285,6 +313,52 @@
         <di:waypoint x="1380" y="120" />
         <di:waypoint x="1440" y="120" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0r71vpd_di" bpmnElement="Flow_0r71vpd">
+        <di:waypoint x="1300" y="505" />
+        <di:waypoint x="1300" y="380" />
+        <di:waypoint x="1185" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q2u3un_di" bpmnElement="Flow_1q2u3un">
+        <di:waypoint x="960" y="740" />
+        <di:waypoint x="1300" y="740" />
+        <di:waypoint x="1300" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e04bck_di" bpmnElement="Flow_1e04bck">
+        <di:waypoint x="1130" y="530" />
+        <di:waypoint x="1205" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hfrzaj_di" bpmnElement="Flow_0hfrzaj">
+        <di:waypoint x="960" y="530" />
+        <di:waypoint x="1030" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rn3fe6_di" bpmnElement="Flow_0rn3fe6">
+        <di:waypoint x="810" y="530" />
+        <di:waypoint x="860" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_151ugke_di" bpmnElement="Flow_151ugke">
+        <di:waypoint x="505" y="530" />
+        <di:waypoint x="545" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ysso60_di" bpmnElement="Flow_0ysso60">
+        <di:waypoint x="480" y="555" />
+        <di:waypoint x="480" y="740" />
+        <di:waypoint x="860" y="740" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yl4sw3_di" bpmnElement="Flow_0yl4sw3">
+        <di:waypoint x="385" y="530" />
+        <di:waypoint x="455" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="394" y="512" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0116ifi_di" bpmnElement="Flow_0116ifi">
+        <di:waypoint x="360" y="505" />
+        <di:waypoint x="360" y="380" />
+        <di:waypoint x="1135" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="365" y="453" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r12izo_di" bpmnElement="Flow_1r12izo">
         <di:waypoint x="320" y="145" />
         <di:waypoint x="320" y="530" />
@@ -320,80 +394,6 @@
         <di:waypoint x="218" y="120" />
         <di:waypoint x="295" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_004201w_di" bpmnElement="Flow_004201w">
-        <di:waypoint x="1160" y="355" />
-        <di:waypoint x="1160" y="145" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0116ifi_di" bpmnElement="Flow_0116ifi">
-        <di:waypoint x="360" y="505" />
-        <di:waypoint x="360" y="380" />
-        <di:waypoint x="1135" y="380" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="365" y="453" width="29" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0yl4sw3_di" bpmnElement="Flow_0yl4sw3">
-        <di:waypoint x="385" y="530" />
-        <di:waypoint x="455" y="530" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="394" y="512" width="52" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ysso60_di" bpmnElement="Flow_0ysso60">
-        <di:waypoint x="480" y="555" />
-        <di:waypoint x="480" y="740" />
-        <di:waypoint x="860" y="740" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_151ugke_di" bpmnElement="Flow_151ugke">
-        <di:waypoint x="505" y="530" />
-        <di:waypoint x="545" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1q2u3un_di" bpmnElement="Flow_1q2u3un">
-        <di:waypoint x="960" y="740" />
-        <di:waypoint x="1300" y="740" />
-        <di:waypoint x="1300" y="555" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xchhzg_di" bpmnElement="Flow_1xchhzg">
-        <di:waypoint x="1255" y="530" />
-        <di:waypoint x="1275" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0r71vpd_di" bpmnElement="Flow_0r71vpd">
-        <di:waypoint x="1300" y="505" />
-        <di:waypoint x="1300" y="380" />
-        <di:waypoint x="1185" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02gv5rz_di" bpmnElement="Flow_02gv5rz">
-        <di:waypoint x="595" y="530" />
-        <di:waypoint x="710" y="530" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="645" y="512" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0rn3fe6_di" bpmnElement="Flow_0rn3fe6">
-        <di:waypoint x="810" y="530" />
-        <di:waypoint x="860" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0hfrzaj_di" bpmnElement="Flow_0hfrzaj">
-        <di:waypoint x="960" y="530" />
-        <di:waypoint x="1030" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1e04bck_di" bpmnElement="Flow_1e04bck">
-        <di:waypoint x="1130" y="530" />
-        <di:waypoint x="1205" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1y09u6a_di" bpmnElement="Flow_1y09u6a">
-        <di:waypoint x="570" y="555" />
-        <di:waypoint x="570" y="640" />
-        <di:waypoint x="860" y="640" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="576" y="595" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bxq922_di" bpmnElement="Flow_0bxq922">
-        <di:waypoint x="960" y="640" />
-        <di:waypoint x="1230" y="640" />
-        <di:waypoint x="1230" y="555" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1bzj58u_di" bpmnElement="Event_1bzj58u">
         <dc:Bounds x="182" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -415,38 +415,8 @@
       <bpmndi:BPMNShape id="Activity_1mgf7zd_di" bpmnElement="Activity_0uvoirh">
         <dc:Bounds x="810" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1d3rou3_di" bpmnElement="Gateway_04bbzjp">
-        <dc:Bounds x="1655" y="95" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_19pet65_di" bpmnElement="Gateway_0c41kcg">
-        <dc:Bounds x="1975" y="95" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0rk4u8i_di" bpmnElement="Event_0rk4u8i">
-        <dc:Bounds x="2112" y="102" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2107" y="145" width="47" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ehj6gb_di" bpmnElement="Activity_18zrvuf">
-        <dc:Bounds x="1790" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_06mb042_di" bpmnElement="Activity_173xvcg">
-        <dc:Bounds x="1790" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1c50liq_di" bpmnElement="Activity_1o19fut">
-        <dc:Bounds x="1790" y="300" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05uye4r_di" bpmnElement="Activity_11swko3">
-        <dc:Bounds x="1790" y="410" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1xfsspz_di" bpmnElement="Activity_01me846">
-        <dc:Bounds x="1280" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0vmp0ew_di" bpmnElement="Gateway_0kj2l1z">
         <dc:Bounds x="1135" y="95" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1cg71mw_di" bpmnElement="Activity_08nyyfd">
-        <dc:Bounds x="1440" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0mc61tc_di" bpmnElement="Gateway_1m24vub" isMarkerVisible="true">
         <dc:Bounds x="335" y="505" width="50" height="50" />
@@ -460,6 +430,18 @@
       <bpmndi:BPMNShape id="Gateway_0nf8g9j_di" bpmnElement="Gateway_0dpkt4r">
         <dc:Bounds x="1275" y="505" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1d3rou3_di" bpmnElement="Gateway_04bbzjp">
+        <dc:Bounds x="1655" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19pet65_di" bpmnElement="Gateway_0c41kcg">
+        <dc:Bounds x="1975" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rk4u8i_di" bpmnElement="Event_0rk4u8i">
+        <dc:Bounds x="2112" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2107" y="145" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1mpk96m_di" bpmnElement="Activity_0fq4a43">
         <dc:Bounds x="860" y="700" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -472,6 +454,27 @@
       <bpmndi:BPMNShape id="Activity_1jyc766_di" bpmnElement="Activity_0p24d5f">
         <dc:Bounds x="1030" y="490" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xfsspz_di" bpmnElement="Activity_01me846">
+        <dc:Bounds x="1280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cg71mw_di" bpmnElement="Activity_08nyyfd">
+        <dc:Bounds x="1440" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ehj6gb_di" bpmnElement="Activity_18zrvuf">
+        <dc:Bounds x="1790" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06mb042_di" bpmnElement="Activity_173xvcg">
+        <dc:Bounds x="1790" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1c50liq_di" bpmnElement="Activity_1o19fut">
+        <dc:Bounds x="1790" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05uye4r_di" bpmnElement="Activity_11swko3">
+        <dc:Bounds x="1790" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rbz8gw_di" bpmnElement="Gateway_0rbz8gw" isMarkerVisible="true">
+        <dc:Bounds x="1135" y="355" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_08xyc0i_di" bpmnElement="Gateway_08xyc0i" isMarkerVisible="true">
         <dc:Bounds x="545" y="505" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -480,9 +483,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0hz7kvb_di" bpmnElement="Gateway_0hz7kvb" isMarkerVisible="true">
         <dc:Bounds x="1205" y="505" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0rbz8gw_di" bpmnElement="Gateway_0rbz8gw" isMarkerVisible="true">
-        <dc:Bounds x="1135" y="355" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0grrx5b_di" bpmnElement="Activity_1n1gvix">
         <dc:Bounds x="860" y="600" width="100" height="80" />
