@@ -77,8 +77,7 @@ class QAProcessTest {
         testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
         testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "fix-problems")
         testHelper.completeUserTask(instanceEvent.processInstanceKey, "fix-problems")
-        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        testHelper.completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa", 2)
     }
 
     @Test
@@ -135,8 +134,7 @@ class QAProcessTest {
             .correlationKey("release_version")
             .send()
             .join()
-        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        testHelper.completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa", 2)
     }
 
     @Test

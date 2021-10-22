@@ -14,16 +14,15 @@ import org.camunda.community.eze.RecordStreamSource
 
 open class TestHelper(val client: ZeebeClient, val recordStream: RecordStreamSource) {
 
-    fun assertThatUserTaskActivated(processInstanceKey: Long, elementId: String) {
+    fun assertThatUserTaskActivated(processInstanceKey: Long, elementId: String, amount: Int = 1) {
         await.untilAsserted {
-            val userTaskRecord = recordStream.processInstanceRecords()
+            val userTaskRecords = recordStream.processInstanceRecords()
                 .withProcessInstanceKey(processInstanceKey)
                 .withElementType(BpmnElementType.USER_TASK)
                 .withIntent(ProcessInstanceIntent.ELEMENT_ACTIVATED)
-                .findLast { record -> record.value.elementId == elementId }
+                .filter { record -> record.value.elementId == elementId }
 
-            Assertions.assertThat(userTaskRecord).isNotNull
-            Assertions.assertThat(userTaskRecord!!.value.elementId).isEqualTo(elementId)
+            Assertions.assertThat(userTaskRecords.size).isEqualTo(amount)
         }
     }
 
