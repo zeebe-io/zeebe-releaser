@@ -189,24 +189,12 @@ class QAProcessTest {
     }
 
     private fun createInstance(variables: Map<String, Any>): ProcessInstanceEvent {
-        val instanceEvent = client.newCreateInstanceCommand()
+        return client.newCreateInstanceCommand()
             .bpmnProcessId("zeebe-release-qa")
             .latestVersion()
             .variables(variables)
             .send()
             .join()
-
-        await.untilAsserted {
-            val processRecord = recordStream.processInstanceRecords()
-                .withProcessInstanceKey(instanceEvent.processInstanceKey)
-                .withElementType(BpmnElementType.PROCESS)
-                .withIntent(ProcessInstanceIntent.ELEMENT_ACTIVATED)
-                .firstOrNull()
-
-            assertThat(processRecord).isNotNull
-        }
-
-        return instanceEvent
     }
 
     private fun getDurationToNextWeekday(): Duration {
