@@ -2,27 +2,30 @@
   "schemaVersion": 2,
   "components": [
     {
-      "text": "# Collect next release data",
+      "text": "# Data about next release",
       "type": "text",
-      "id": "Field_0vol9so"
+      "id": "Field_18uxmez"
     },
     {
       "label": "Release version",
       "type": "textfield",
       "id": "Field_0q04txm",
-      "key": "release_version"
+      "key": "release_version",
+      "description": "MAJOR.MINOR.PATCH-ALPHA (Eg:- 1.3.0-alpha1)"
     },
     {
       "label": "Release date",
       "type": "textfield",
       "id": "Field_1jl2q1w",
-      "key": "release_date"
+      "key": "release_date",
+      "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T:00:00:00Z)"
     },
     {
       "label": "Code Freeze date",
       "type": "textfield",
       "id": "Field_0w4n3mw",
-      "key": "code_freeze_date"
+      "key": "code_freeze_date",
+      "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T:00:00:00Z)"
     },
     {
       "values": [
@@ -86,5 +89,7 @@
     }
   ],
   "type": "default",
-  "id": "release_collect_data"
+  "id": "release_collect_data",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
 }
