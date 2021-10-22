@@ -1,24 +1,37 @@
 package io.zeebe.release
 
+import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
 import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent
 import io.camunda.zeebe.protocol.record.value.BpmnElementType
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.kotlin.await
-import org.awaitility.kotlin.untilAsserted
+import org.camunda.community.eze.EmbeddedZeebeEngine
 import org.camunda.community.eze.RecordStream.withElementType
 import org.camunda.community.eze.RecordStream.withIntent
 import org.camunda.community.eze.RecordStream.withProcessInstanceKey
-import org.junit.jupiter.api.AfterEach
+import org.camunda.community.eze.RecordStreamSource
+import org.camunda.community.eze.ZeebeEngineClock
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.time.*
+import java.time.format.DateTimeFormatter
+import java.util.*
 
+@EmbeddedZeebeEngine
+class QAProcessTest {
 
-class QAProcessTest : BaseProcessTest() {
+    lateinit var client: ZeebeClient
+    lateinit var recordStream: RecordStreamSource
+    lateinit var clock: ZeebeEngineClock
+    lateinit var testHelper: TestHelper
+    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
     @BeforeEach
     fun beforeEach() {
+        testHelper = TestHelper(client, recordStream)
         deployProcess()
     }
 
@@ -42,11 +55,11 @@ class QAProcessTest : BaseProcessTest() {
         val instanceEvent = createInstance(variables)
 
         // then
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-qa-results")
-        completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
-        assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-qa-results")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
+        testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
     }
 
     @Test
@@ -58,14 +71,14 @@ class QAProcessTest : BaseProcessTest() {
         val instanceEvent = createInstance(variables)
 
         // then
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-qa-results")
-        completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "fix-problems")
-        completeUserTask(instanceEvent.processInstanceKey, "fix-problems")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-qa-results")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "fix-problems")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "fix-problems")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
     }
 
     @Test
@@ -81,15 +94,15 @@ class QAProcessTest : BaseProcessTest() {
         val instanceEvent = createInstance(variables)
 
         // then
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-qa-results")
-        completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "setup-benchmark")
-        completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "delete-benchmark")
-        completeUserTask(instanceEvent.processInstanceKey, "delete-benchmark")
-        assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-qa-results")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "setup-benchmark")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "delete-benchmark")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "delete-benchmark")
+        testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
     }
 
     @Test
@@ -105,12 +118,12 @@ class QAProcessTest : BaseProcessTest() {
         val instanceEvent = createInstance(variables)
 
         // then
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-qa-results")
-        completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "setup-benchmark")
-        completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-qa-results")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "setup-benchmark")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
         await.untilAsserted {
             val timerRecord = recordStream.timerRecords().lastOrNull()
 
@@ -122,8 +135,8 @@ class QAProcessTest : BaseProcessTest() {
             .correlationKey("release_version")
             .send()
             .join()
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
-        completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "build-ci-with-qa")
     }
 
     @Test
@@ -133,7 +146,7 @@ class QAProcessTest : BaseProcessTest() {
 
         // when
         val instanceEvent = createInstance(variables)
-        clock.increaseTime(Duration.ofDays(1))
+        clock.increaseTime(getDurationToNextWeekday())
 
         // then
         await.untilAsserted {
@@ -157,17 +170,17 @@ class QAProcessTest : BaseProcessTest() {
 
         // when
         val instanceEvent = createInstance(variables)
-        clock.increaseTime(Duration.ofDays(1))
+        clock.increaseTime(getDurationToNextWeekday())
 
         // then
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-benchmark")
-        completeUserTask(instanceEvent.processInstanceKey, "check-benchmark")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-new-commits")
-        completeUserTask(instanceEvent.processInstanceKey, "check-new-commits")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "create-issue")
-        completeUserTask(instanceEvent.processInstanceKey, "create-issue")
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "recreate-benchmark")
-        completeUserTask(instanceEvent.processInstanceKey, "recreate-benchmark")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-benchmark")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-benchmark")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "check-new-commits")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-new-commits")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "create-issue")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "create-issue")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "recreate-benchmark")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "recreate-benchmark")
     }
 
     private fun deployProcess() {
@@ -196,5 +209,11 @@ class QAProcessTest : BaseProcessTest() {
         }
 
         return instanceEvent
+    }
+
+    private fun getDurationToNextWeekday(): Duration {
+        val calendar = Calendar.getInstance()
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        return if (dayOfWeek == 6) Duration.ofDays(3) else Duration.ofDays(1)
     }
 }

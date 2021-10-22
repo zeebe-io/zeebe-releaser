@@ -1,21 +1,33 @@
 package io.zeebe.release
 
+import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
 import io.camunda.zeebe.model.bpmn.Bpmn
 import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent
 import io.camunda.zeebe.protocol.record.value.BpmnElementType
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.kotlin.await
+import org.camunda.community.eze.EmbeddedZeebeEngine
 import org.camunda.community.eze.RecordStream.withElementType
 import org.camunda.community.eze.RecordStream.withIntent
 import org.camunda.community.eze.RecordStream.withProcessInstanceKey
+import org.camunda.community.eze.RecordStreamSource
+import org.camunda.community.eze.ZeebeEngineClock
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
-class PatchReleaseProcessTest: BaseProcessTest() {
+@EmbeddedZeebeEngine
+class PatchReleaseProcessTest {
+
+    lateinit var client: ZeebeClient
+    lateinit var recordStream: RecordStreamSource
+    lateinit var testHelper: TestHelper
 
     @BeforeEach
     fun beforeEach() {
+        testHelper = TestHelper(client, recordStream)
         deployProcess()
         deployCallActivityMockProcess()
     }
@@ -35,8 +47,8 @@ class PatchReleaseProcessTest: BaseProcessTest() {
         val instanceEvent = createInstance()
 
         // then
-        assertThatUserTaskActivated(instanceEvent.processInstanceKey, "collect-required-data")
-        completeUserTask(instanceEvent.processInstanceKey, "collect-required-data")
+        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "collect-required-data")
+        testHelper.completeUserTask(instanceEvent.processInstanceKey, "collect-required-data")
 
         await.untilAsserted {
             val callActivityRecord = recordStream.processInstanceRecords()
@@ -48,7 +60,7 @@ class PatchReleaseProcessTest: BaseProcessTest() {
             assertThat(callActivityRecord).isNotNull
         }
 
-        assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+        testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
     }
 
     private fun deployProcess() {

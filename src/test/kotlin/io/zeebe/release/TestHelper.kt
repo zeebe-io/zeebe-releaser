@@ -6,22 +6,13 @@ import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent
 import io.camunda.zeebe.protocol.record.value.BpmnElementType
 import org.assertj.core.api.Assertions
 import org.awaitility.kotlin.await
-import org.camunda.community.eze.EmbeddedZeebeEngine
 import org.camunda.community.eze.RecordStream.withElementType
 import org.camunda.community.eze.RecordStream.withIntent
 import org.camunda.community.eze.RecordStream.withJobType
 import org.camunda.community.eze.RecordStream.withProcessInstanceKey
 import org.camunda.community.eze.RecordStreamSource
-import org.camunda.community.eze.ZeebeEngineClock
-import java.time.format.DateTimeFormatter
 
-@EmbeddedZeebeEngine
-open class BaseProcessTest {
-
-    lateinit var client: ZeebeClient
-    lateinit var recordStream: RecordStreamSource
-    lateinit var clock: ZeebeEngineClock
-    val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+open class TestHelper(val client: ZeebeClient, val recordStream: RecordStreamSource) {
 
     fun assertThatUserTaskActivated(processInstanceKey: Long, elementId: String) {
         await.untilAsserted {
