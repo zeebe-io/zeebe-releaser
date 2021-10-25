@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: oleschoenburg/zbctl-action@v0.0.1
+      - uses: oleschoenburg/zbctl-action@v0.0.7
         with:
           version: '1.2.1'
           command: 'deploy processes_v2/*'
