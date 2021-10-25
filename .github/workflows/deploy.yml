@@ -1,0 +1,17 @@
+name: Deploy Process
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: oleschoenburg/zbctl-action@v0.0.1
+        with:
+          version: '1.2.1'
+          command: 'deploy processes_v2/*'
