@@ -1,0 +1,21 @@
+name: Deploy Processes
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: oleschoenburg/zbctl-action@v0.0.7
+        with:
+          version: '1.2.1'
+          command: 'deploy src/test/resources/*.bpmn'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZEEBE_ADDRESS: ${{ secrets.ZEEBE_ADDRESS }}
+          ZEEBE_CLIENT_ID: ${{ secrets.ZEEBE_CLIENT_ID }}
+          ZEEBE_CLIENT_SECRET: ${{ secrets.ZEEBE_CLIENT_SECRET }}
+          ZEEBE_AUTHORIZATION_SERVER_URL: ${{ secrets.ZEEBE_AUTHORIZATION_SERVER_URL }}
