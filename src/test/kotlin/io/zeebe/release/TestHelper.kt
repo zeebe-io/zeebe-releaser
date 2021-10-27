@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions
 import org.awaitility.kotlin.await
 import org.camunda.community.eze.RecordStream.withElementType
 import org.camunda.community.eze.RecordStream.withIntent
-import org.camunda.community.eze.RecordStream.withJobType
 import org.camunda.community.eze.RecordStream.withProcessInstanceKey
 import org.camunda.community.eze.RecordStreamSource
 
