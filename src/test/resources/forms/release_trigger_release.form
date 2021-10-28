@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Run the release pipeline\n\nThe Zeebe release pipeline runs on the same Jenkins instance as the CI pipeline, [here](https://ci.zeebe.camunda.cloud/job/zeebe-release/).  The pipeline itself lives in the Zeebe repository, [here](https://github.com/camunda-cloud/zeebe/blob/develop/.ci/pipelines/release_zeebe.groovy). In short, it will build the release branch, stage and deploy Maven and Docker artifacts, tag the release, and update the version for the next development iteration. \n\n[Create a new build](https://ci.zeebe.camunda.cloud/job/zeebe-release/build?delay=0sec), and fill in the parameters accordingly.\n\n  \n**Alpha release**\n```\nRELEASE_VERSION: MAJOR.MINOR.0-ALPHA\nDEVELOPMENT_VERSION: MAJOR.MINOR.0-SNAPSHOT\nPUSH_CHANGES: true\nPUSH_DOCKER: true\nPUSH_DOCS: false\nIS_LATEST: false\n```\n\n  \n**Patch release**\n\n> **NOTE**: here the development version is MAJOR.MINOR.PATCH+1-SNAPSHOT. So if you have your release version is `1.2.1`, then the next development version will be `1.2.2-SNAPSHOT`.\n\n> **NOTE**: if you are release a patch release for the latest minor release, then `IS_LATEST` should be set to `true`.\n\n```\nRELEASE_VERSION: MAJOR.MINOR.PATCH\nDEVELOPMENT_VERSION: MAJOR.MINOR.PATCH+1-SNAPSHOT\nPUSH_CHANGES: true\nPUSH_DOCKER: true\nPUSH_DOCS: false\nIS_LATEST: false\n```\n\n  \n**Minor release**\n\n> **NOTE**: here the development version is MAJOR.MINOR+1.0-SNAPSHOT. So if you have your release version is `1.2.0`, then the next development version will be `1.3.0-SNAPSHOT`.\n\n```\nRELEASE_VERSION: MAJOR.MINOR.0\nDEVELOPMENT_VERSION: MAJOR.MINOR+1.0-SNAPSHOT\nPUSH_CHANGES: true\nPUSH_DOCKER: true\nPUSH_DOCS: false\nIS_LATEST: true\n```\n  \n  \nClick `Build` to start the release process, and wait until the pipeline finishes successfully.\n\nHints:\n- Sometimes the release process will fail. It's currently necessary to manually rollback the changes before restarting again. To roll back the changes, you will need to delete any tags that the job may have created (you can do so via the Github Web UI), and also drop the additional commits that the job added on the release branch, such that it's in the state it was before running the job. You may also have to drop the Maven artifacts on Maven central, [here](https://s01.oss.sonatype.org/).\n- If unsure about anything, ask the team and/or your tech lead.",
+      "type": "text",
+      "id": "Field_05xq34i"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1ituz9d"
+}
