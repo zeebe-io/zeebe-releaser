@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "components": [
     {
-      "text": "# Delete benchmark\n\n[https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#clean-up](https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#clean-up)\n\nRun:\n\n```\nkubectx gke_zeebe-io_europe-west1-b_zeebe-cluster\nkubectl delete namespace <benchmark_name>\n```",
+      "text": "# Delete benchmark\n\nFor ALPHA, MINOR, and MAJOR releases, one of the pre-release tasks was to create a long running benchmark. As the release is finished, we now need to clean up this benchmark. The simplest way is to delete the namespace we created previously.\n\nSwitch to the right context, and delete the namespace:\n\n```sh\nkubectx gke_zeebe-io_europe-west1-b_zeebe-cluster\nkubectl delete namespace release-xyz\n```",
       "type": "text",
       "id": "Field_0lyqg4p"
     },
