@@ -18,6 +18,6 @@ then
   chmod +x zbctl
 fi
 
-zbctl status
+./zbctl status
 
-zbctl publish message "qa-done" --correlationKey "$release"
+./zbctl publish message "qa-done" --correlationKey "$release"

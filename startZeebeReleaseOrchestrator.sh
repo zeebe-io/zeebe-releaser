@@ -16,6 +16,6 @@ then
   chmod +x zbctl
 fi
 
-zbctl status
+./zbctl status
 
-zbctl create instance zeebe-release-orchestrator
+./zbctl create instance zeebe-release-orchestrator
