@@ -16,6 +16,6 @@ then
   chmod +x zbctl
 fi
 
-zbctl status
+./zbctl status
 
-zbctl deploy src/test/resources/*.bpmn
+./zbctl deploy src/test/resources/*.bpmn

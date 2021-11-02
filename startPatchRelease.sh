@@ -16,6 +16,6 @@ then
   chmod +x zbctl
 fi
 
-zbctl status
+./zbctl status
 
-zbctl create instance zeebe-patch-release-process
+./zbctl create instance zeebe-patch-release-process
