@@ -2,6 +2,12 @@
   "schemaVersion": 2,
   "components": [
     {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
       "text": "# Collect release notes\n\nThis step is only applicable for MAJOR and MINOR releases. We do not write blog posts for patch or alpha releases.\n\nThe next step is to prepare a document where you can gather the team's blog post input asynchronously. Create a new document [here](https://drive.google.com/drive/folders/1DTIeswnEEq-NggJ25rm2BsDjcCQpDape?usp=sharing) titled `Zeebe & Operate X.Y.Z Release Notes`. Once done, share it with the team and remind them to add their notes for the upcoming `X.Y.Z` release in there. You will be using this document later in order to write the blog post.",
       "type": "text",
       "id": "Field_0zseyuj"
