@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Create backport label for frozen code\n\n> This is only required for MAJOR and MINOR releases. Please skip this task for PATCH and ALPHA releases.\n\nPlease create add a new `backport <release_branch_name>` label to our [Backport Labels](https://github.com/camunda-cloud/zeebe/labels?q=backport).\n\nOnce created, please announce it in Slack:\n\n> You can now backport bugfixes (and flaky test fixes) to the frozen release, by labelling your pull request with `backport <release_branch_name>`.",
+      "type": "text",
+      "id": "Field_0lbu80a"
+    },
+    {
+      "label": "Release branch name",
+      "type": "textfield",
+      "id": "Field_0c99dqr",
+      "key": "release_branch_name"
+    }
+  ],
+  "type": "default",
+  "id": "release_backport_label",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}
