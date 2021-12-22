@@ -9,6 +9,7 @@
       <zeebe:userTaskForm id="userTaskForm_0vfujp8">{   "schemaVersion": 2,   "components": [     {       "text": "# Check benchmark\n\n#### Check dashboard\n\nCheck [grafana](http://34.77.165.228/d/I4lo7_EZk/zeebe?orgId=1&amp;refresh=10s) of the benchmark\nLook at (atleast the following):\n* Throughput\n* Memory usage\n* Disk Space\n\n#### Check logs\n\nGo to [error reporting](https://console.cloud.google.com/errors?service=zeebe-broker&amp;time=P1D&amp;order=CREATED_DESC&amp;resolution=OPEN&amp;resolution=ACKNOWLEDGED&amp;project=zeebe-io) and filter version for the release benchmark name\n\nIf there is anything unusual, inspect it to see if it is a criticial issue. If not sure talk to the team or the tech lead.",       "type": "text",       "id": "Field_0y684db"     },     {       "label": "Benchmark name",       "type": "textfield",       "id": "Field_1bb1diq",       "key": "qa_benchmark_name"     },     {       "values": [         {           "value": "false",           "label": "Yes"         },         {           "label": "No",           "value": "true"         }       ],       "label": "Any issues in the benchmark?",       "type": "radio",       "id": "Field_1uzmulq",       "key": "qa_benchmark_ok",       "validate": {         "required": true       }     },     {       "label": "GitHub Issues",       "type": "textfield",       "id": "Field_10d8zlz",       "key": "qa_benchmark_issues",       "description": "You can link any issues found during the benchmark here"     }   ],   "type": "default",   "id": "qa_benchmark_check",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
       <zeebe:userTaskForm id="userTaskForm_1ebigng">{   "schemaVersion": 2,   "components": [     {       "text": "# Check release branch for new commits\n\n\nIf there are new bugfixes backported to the release branch, we may have to re-create the benchmark.",       "type": "text",       "id": "Field_1aqkm7x"     },     {       "values": [         {           "label": "Yes",           "value": "true"         },         {           "label": "No",           "value": "false"         }       ],       "label": "Are there new commits on the release branch?",       "type": "radio",       "id": "Field_002hibw",       "key": "qa_benchmark_outdated",       "validate": {         "required": true       }     }   ],   "type": "default",   "id": "qa_release_branch_check",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
       <zeebe:userTaskForm id="userTaskForm_37tnqqm">{   "schemaVersion": 2,   "components": [     {       "text": "# Fix problems CI and QA build\n\nThe build failed. Check the url for details. \n\n* If some of them are failing, verify with your tech lead whether or not these are blockers for the release.\n* `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. \n* Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.",       "type": "text",       "id": "Field_14sg3k7"     },     {       "label": "Jenkins build url",       "type": "textfield",       "id": "Field_0r6pob4",       "key": "qa_build_jenkins_url"     }   ],   "type": "default",   "id": "qa_fix_problems",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_0q022uh">{   "schemaVersion": 2,   "components": [     {       "text": "# Send message Recreate Benchmark\n\nIt seems your benchmark is no longer valid. You'll have to recreate the benchmark.\n\nTo do that, publish a message to the cluster. For example, using `zbctl`:\n\n```\nzbctl publish message recreate_benchmark --correlationKey \"1.3.0\"\n```\n\n&gt; Make sure you are using the correct API Client Credentials. You can check which Zeebe cluster your zbctl is connected to by running `zbctl status`.",       "type": "text",       "id": "Field_0xdhmcn"     }   ],   "type": "default",   "id": "qa-send-message-recreate-benchmark",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
     </bpmn:extensionElements>
     <bpmn:sequenceFlow id="Flow_1u6won8" sourceRef="build-ci-with-qa" targetRef="check-qa-results" />
     <bpmn:startEvent id="Event_0vq2qf4" name="Code Freezed">
@@ -85,6 +86,9 @@
         <bpmn:outgoing>Flow_0edaypg</bpmn:outgoing>
       </bpmn:userTask>
       <bpmn:userTask id="recreate-benchmark" name="Send message &#34;Recreate Benchmark&#34;">
+        <bpmn:extensionElements>
+          <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0q022uh" />
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_014nhup</bpmn:incoming>
         <bpmn:outgoing>Flow_0pmk4ca</bpmn:outgoing>
       </bpmn:userTask>
@@ -212,14 +216,22 @@
       <bpmn:text>Pass the Release date</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0w2kh4q" sourceRef="Event_0vq2qf4" targetRef="TextAnnotation_1yvenpe" />
+    <bpmn:textAnnotation id="TextAnnotation_1t8yrh0">
+      <bpmn:text>name: "recreate_benchmark"
+correlation-key: release_version</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0hkmor4" sourceRef="Event_1q3nlli" targetRef="TextAnnotation_1t8yrh0" />
   </bpmn:process>
   <bpmn:message id="Message_29jvtb5" name="recreate_benchmark">
     <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="= &#34;release_version&#34;" />
+      <zeebe:subscription correlationKey="= release_version" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-qa">
+      <bpmndi:BPMNShape id="TextAnnotation_1t8yrh0_di" bpmnElement="TextAnnotation_1t8yrh0">
+        <dc:Bounds x="470" y="350" width="207" height="42" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1ewrj5i_di" bpmnElement="Flow_1ewrj5i">
         <di:waypoint x="1645" y="300" />
         <di:waypoint x="1702" y="300" />
@@ -507,6 +519,10 @@
       <bpmndi:BPMNEdge id="Association_0w2kh4q_di" bpmnElement="Association_0w2kh4q">
         <di:waypoint x="243" y="284" />
         <di:waypoint x="221" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0hkmor4_di" bpmnElement="Association_0hkmor4">
+        <di:waypoint x="548" y="397" />
+        <di:waypoint x="544" y="392" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -87,7 +87,8 @@ class QAProcessTest {
         hashMapOf(
             "qa_build_success" to "true",
             "release_type" to "minor",
-            "release_date" to date.format(dateFormatter))
+            "release_date" to date.format(dateFormatter),
+            "release_version" to "1.3.0")
 
     // when
     val instanceEvent = createInstance(variables)
@@ -112,7 +113,8 @@ class QAProcessTest {
         hashMapOf(
             "qa_build_success" to "true",
             "release_type" to "minor",
-            "release_date" to dateFormatter.format(date))
+            "release_date" to dateFormatter.format(date),
+            "release_version" to "1.3.0")
 
     // when
     val instanceEvent = createInstance(variables)
@@ -127,7 +129,7 @@ class QAProcessTest {
     client
         .newPublishMessageCommand()
         .messageName("recreate_benchmark")
-        .correlationKey("release_version")
+        .correlationKey("1.3.0")
         .send()
         .join()
     testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa", 2)
