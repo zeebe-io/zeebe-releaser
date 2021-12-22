@@ -11,26 +11,22 @@ import org.junit.jupiter.api.Test
 @EmbeddedZeebeEngine
 class ReleaserTest {
 
-    // the extension injects the fields before running the test
-    lateinit var client: ZeebeClient
-    lateinit var recordStream: RecordStreamSource
-    lateinit var clock: ZeebeEngineClock
+  // the extension injects the fields before running the test
+  lateinit var client: ZeebeClient
+  lateinit var recordStream: RecordStreamSource
+  lateinit var clock: ZeebeEngineClock
 
-    @Test
-    fun `should complete process`() {
-        // given
-        val process = Bpmn.createExecutableProcess("process")
-            .startEvent()
-            .endEvent()
-            .done()
+  @Test
+  fun `should complete process`() {
+    // given
+    val process = Bpmn.createExecutableProcess("process").startEvent().endEvent().done()
 
-        client.newDeployCommand()
-            .addProcessModel(process, "process.bpmn")
-            .send()
-            .join()
+    client.newDeployCommand().addProcessModel(process, "process.bpmn").send().join()
 
-        // when
-        val processInstanceResult = client.newCreateInstanceCommand()
+    // when
+    val processInstanceResult =
+        client
+            .newCreateInstanceCommand()
             .bpmnProcessId("process")
             .latestVersion()
             .variables(mapOf("x" to 1))
@@ -38,8 +34,7 @@ class ReleaserTest {
             .send()
             .join()
 
-        // then
-        assertThat(processInstanceResult.variablesAsMap)
-            .containsEntry("x", 1)
-    }
+    // then
+    assertThat(processInstanceResult.variablesAsMap).containsEntry("x", 1)
+  }
 }

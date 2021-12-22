@@ -12,79 +12,77 @@ import org.camunda.community.eze.RecordStream.withElementType
 import org.camunda.community.eze.RecordStream.withIntent
 import org.camunda.community.eze.RecordStream.withProcessInstanceKey
 import org.camunda.community.eze.RecordStreamSource
-import org.camunda.community.eze.ZeebeEngineClock
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 
 @EmbeddedZeebeEngine
 class PatchReleaseProcessTest {
 
-    lateinit var client: ZeebeClient
-    lateinit var recordStream: RecordStreamSource
-    lateinit var testHelper: TestHelper
+  lateinit var client: ZeebeClient
+  lateinit var recordStream: RecordStreamSource
+  lateinit var testHelper: TestHelper
 
-    @BeforeEach
-    fun beforeEach() {
-        testHelper = TestHelper(client, recordStream)
-        deployProcess()
-        deployCallActivityMockProcess()
+  @BeforeEach
+  fun beforeEach() {
+    testHelper = TestHelper(client, recordStream)
+    deployProcess()
+    deployCallActivityMockProcess()
+  }
+
+  @Test
+  fun `should be able to create an instance`() {
+    // when
+    val instanceEvent = createInstance()
+
+    // then
+    assertThat(instanceEvent.processInstanceKey).isGreaterThan(0)
+  }
+
+  @Test
+  fun `should complete process`() {
+    // when
+    val instanceEvent = createInstance()
+
+    // then
+    testHelper.assertThatUserTaskActivated(
+        instanceEvent.processInstanceKey, "collect-required-data")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "collect-required-data")
+
+    await.untilAsserted {
+      val callActivityRecord =
+          recordStream
+              .processInstanceRecords()
+              .withProcessInstanceKey(instanceEvent.processInstanceKey)
+              .withElementType(BpmnElementType.CALL_ACTIVITY)
+              .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
+              .firstOrNull()
+
+      assertThat(callActivityRecord).isNotNull
     }
 
-    @Test
-    fun `should be able to create an instance`() {
-        // when
-        val instanceEvent = createInstance()
+    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+  }
 
-        // then
-        assertThat(instanceEvent.processInstanceKey).isGreaterThan(0)
-    }
+  private fun deployProcess() {
+    client.newDeployCommand().addResourceFromClasspath("patch_release.bpmn").send().join()
+  }
 
-    @Test
-    fun `should complete process`() {
-        // when
-        val instanceEvent = createInstance()
+  private fun deployCallActivityMockProcess() {
+    client
+        .newDeployCommand()
+        .addProcessModel(
+            Bpmn.createExecutableProcess("zeebe-release-process").startEvent().endEvent().done(),
+            "zeebe-release-process.bpmn")
+        .send()
+        .join()
+  }
 
-        // then
-        testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "collect-required-data")
-        testHelper.completeUserTask(instanceEvent.processInstanceKey, "collect-required-data")
-
-        await.untilAsserted {
-            val callActivityRecord = recordStream.processInstanceRecords()
-                .withProcessInstanceKey(instanceEvent.processInstanceKey)
-                .withElementType(BpmnElementType.CALL_ACTIVITY)
-                .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
-                .firstOrNull()
-
-            assertThat(callActivityRecord).isNotNull
-        }
-
-        testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
-    }
-
-    private fun deployProcess() {
-        client.newDeployCommand()
-            .addResourceFromClasspath("patch_release.bpmn")
-            .send()
-            .join()
-    }
-
-    private fun deployCallActivityMockProcess() {
-        client.newDeployCommand()
-            .addProcessModel(Bpmn.createExecutableProcess("zeebe-release-process")
-                .startEvent()
-                .endEvent()
-                .done(), "zeebe-release-process.bpmn")
-            .send()
-            .join()
-    }
-
-    private fun createInstance(): ProcessInstanceEvent {
-        return client.newCreateInstanceCommand()
-            .bpmnProcessId("zeebe-patch-release-process")
-            .latestVersion()
-            .send()
-            .join()
-    }
+  private fun createInstance(): ProcessInstanceEvent {
+    return client
+        .newCreateInstanceCommand()
+        .bpmnProcessId("zeebe-patch-release-process")
+        .latestVersion()
+        .send()
+        .join()
+  }
 }
