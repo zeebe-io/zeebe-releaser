@@ -26,3 +26,16 @@ To cancel the current release, run:
 ```shell
 ./abortRelease.sh <startDateTime>
 ```
+
+## Testing
+This is a maven project. To test it, simply run:
+```shell
+mvn verify
+```
+
+These tests are written in Kotlin and use [EZE](https://github.com/camunda-community-hub/eze) (Embedded Zeebe Engine) to validate that the processes behave as expected.
+
+A [GitHub Action](.github/workflows/build.yml) automatically runs these tests for you when you open a pull request.
+
+## Deployment
+A [GitHub Action](.github/workflows/deploy.yml) automatically deploys the processes to Camunda Cloud every time a commit is pushed to `master`.
