@@ -17,16 +17,16 @@
       <bpmn:outgoing>Flow_1duxq4j</bpmn:outgoing>
       <bpmn:outgoing>Flow_1oxyoos</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_1duxq4j" sourceRef="Gateway_113spke" targetRef="Activity_1f70utm" />
-    <bpmn:sequenceFlow id="Flow_1oxyoos" sourceRef="Gateway_113spke" targetRef="Activity_0e1ef7z" />
-    <bpmn:sequenceFlow id="Flow_1qxbbhp" sourceRef="Activity_1f70utm" targetRef="Activity_0owrndn" />
+    <bpmn:sequenceFlow id="Flow_1duxq4j" sourceRef="Gateway_113spke" targetRef="create-release-branch" />
+    <bpmn:sequenceFlow id="Flow_1oxyoos" sourceRef="Gateway_113spke" targetRef="collect-release-notes" />
+    <bpmn:sequenceFlow id="Flow_1qxbbhp" sourceRef="create-release-branch" targetRef="create-code-freeze-backport-label" />
     <bpmn:parallelGateway id="Gateway_038v8ud">
       <bpmn:incoming>Flow_1edl8wf</bpmn:incoming>
       <bpmn:incoming>Flow_1getqr6</bpmn:incoming>
       <bpmn:outgoing>Flow_0s1b66d</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_1edl8wf" sourceRef="Activity_0e1ef7z" targetRef="Gateway_038v8ud" />
-    <bpmn:userTask id="Activity_1f70utm" name="Create Release branch">
+    <bpmn:sequenceFlow id="Flow_1edl8wf" sourceRef="collect-release-notes" targetRef="Gateway_038v8ud" />
+    <bpmn:userTask id="create-release-branch" name="Create Release branch">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0uh0d7s" />
         <zeebe:ioMapping>
@@ -37,7 +37,7 @@
       <bpmn:incoming>Flow_1duxq4j</bpmn:incoming>
       <bpmn:outgoing>Flow_1qxbbhp</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_0e1ef7z" name="Collect release notes">
+    <bpmn:userTask id="collect-release-notes" name="Collect release notes">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_02jdlul" />
       </bpmn:extensionElements>
@@ -52,23 +52,23 @@
       <bpmn:incoming>Flow_0s1b66d</bpmn:incoming>
       <bpmn:outgoing>Flow_0g6dgr5</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:sequenceFlow id="Flow_0g6dgr5" sourceRef="Activity_19s3dm7" targetRef="Activity_0e9yenz" />
-    <bpmn:sequenceFlow id="Flow_05sub3t" sourceRef="Activity_0e9yenz" targetRef="Activity_17yjb8k" />
-    <bpmn:userTask id="Activity_0e9yenz" name="Trigger release">
+    <bpmn:sequenceFlow id="Flow_0g6dgr5" sourceRef="Activity_19s3dm7" targetRef="trigger-release" />
+    <bpmn:sequenceFlow id="Flow_05sub3t" sourceRef="trigger-release" targetRef="release-on-maven-central" />
+    <bpmn:userTask id="trigger-release" name="Trigger release">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0fvvukm" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0g6dgr5</bpmn:incoming>
       <bpmn:outgoing>Flow_05sub3t</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_17yjb8k" name="Release on Maven Central">
+    <bpmn:userTask id="release-on-maven-central" name="Release on Maven Central">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_32rn8gp" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_05sub3t</bpmn:incoming>
       <bpmn:outgoing>Flow_0ttdn03</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0ttdn03" sourceRef="Activity_17yjb8k" targetRef="Activity_0ll9m9k" />
+    <bpmn:sequenceFlow id="Flow_0ttdn03" sourceRef="release-on-maven-central" targetRef="Activity_0ll9m9k" />
     <bpmn:callActivity id="Activity_0ll9m9k" name="Start Zeebe post release process">
       <bpmn:extensionElements>
         <zeebe:calledElement processId="zeebe-post-release" propagateAllChildVariables="false" />
@@ -87,8 +87,8 @@
       <bpmn:incoming>Flow_0zhm3wb</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0zhm3wb" sourceRef="Activity_0ll9m9k" targetRef="Event_0sbhiuc" />
-    <bpmn:sequenceFlow id="Flow_1getqr6" sourceRef="Activity_0owrndn" targetRef="Gateway_038v8ud" />
-    <bpmn:userTask id="Activity_0owrndn" name="Create Code Freeze Backport Label">
+    <bpmn:sequenceFlow id="Flow_1getqr6" sourceRef="create-code-freeze-backport-label" targetRef="Gateway_038v8ud" />
+    <bpmn:userTask id="create-code-freeze-backport-label" name="Create Code Freeze Backport Label">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_23539ci" />
         <zeebe:ioMapping>
@@ -98,94 +98,105 @@
       <bpmn:incoming>Flow_1qxbbhp</bpmn:incoming>
       <bpmn:outgoing>Flow_1getqr6</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:textAnnotation id="TextAnnotation_15g9k3f">
+      <bpmn:text>req: release_version: string</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0uafnuq" sourceRef="StartEvent_1" targetRef="TextAnnotation_15g9k3f" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-process">
+      <bpmndi:BPMNShape id="TextAnnotation_15g9k3f_di" bpmnElement="TextAnnotation_15g9k3f">
+        <dc:Bounds x="220" y="80" width="210" height="26" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1getqr6_di" bpmnElement="Flow_1getqr6">
+        <di:waypoint x="610" y="187" />
+        <di:waypoint x="655" y="187" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zhm3wb_di" bpmnElement="Flow_0zhm3wb">
-        <di:waypoint x="1340" y="117" />
-        <di:waypoint x="1402" y="117" />
+        <di:waypoint x="1340" y="187" />
+        <di:waypoint x="1402" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ttdn03_di" bpmnElement="Flow_0ttdn03">
-        <di:waypoint x="1180" y="117" />
-        <di:waypoint x="1240" y="117" />
+        <di:waypoint x="1180" y="187" />
+        <di:waypoint x="1240" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_05sub3t_di" bpmnElement="Flow_05sub3t">
-        <di:waypoint x="1020" y="117" />
-        <di:waypoint x="1080" y="117" />
+        <di:waypoint x="1020" y="187" />
+        <di:waypoint x="1080" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0g6dgr5_di" bpmnElement="Flow_0g6dgr5">
-        <di:waypoint x="860" y="117" />
-        <di:waypoint x="920" y="117" />
+        <di:waypoint x="860" y="187" />
+        <di:waypoint x="920" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0s1b66d_di" bpmnElement="Flow_0s1b66d">
-        <di:waypoint x="705" y="117" />
-        <di:waypoint x="760" y="117" />
+        <di:waypoint x="705" y="187" />
+        <di:waypoint x="760" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1edl8wf_di" bpmnElement="Flow_1edl8wf">
-        <di:waypoint x="470" y="230" />
-        <di:waypoint x="680" y="230" />
-        <di:waypoint x="680" y="142" />
+        <di:waypoint x="470" y="300" />
+        <di:waypoint x="680" y="300" />
+        <di:waypoint x="680" y="212" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qxbbhp_di" bpmnElement="Flow_1qxbbhp">
-        <di:waypoint x="470" y="117" />
-        <di:waypoint x="510" y="117" />
+        <di:waypoint x="470" y="187" />
+        <di:waypoint x="510" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1oxyoos_di" bpmnElement="Flow_1oxyoos">
-        <di:waypoint x="290" y="142" />
-        <di:waypoint x="290" y="230" />
-        <di:waypoint x="370" y="230" />
+        <di:waypoint x="290" y="212" />
+        <di:waypoint x="290" y="300" />
+        <di:waypoint x="370" y="300" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1duxq4j_di" bpmnElement="Flow_1duxq4j">
-        <di:waypoint x="315" y="117" />
-        <di:waypoint x="370" y="117" />
+        <di:waypoint x="315" y="187" />
+        <di:waypoint x="370" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ew46h4_di" bpmnElement="Flow_1ew46h4">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="265" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1getqr6_di" bpmnElement="Flow_1getqr6">
-        <di:waypoint x="610" y="117" />
-        <di:waypoint x="655" y="117" />
+        <di:waypoint x="215" y="187" />
+        <di:waypoint x="265" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <dc:Bounds x="179" y="169" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="158" y="142" width="78" height="14" />
+          <dc:Bounds x="158" y="212" width="78" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ffgxzy_di" bpmnElement="Gateway_113spke">
-        <dc:Bounds x="265" y="92" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1573ogz_di" bpmnElement="Activity_1f70utm">
-        <dc:Bounds x="370" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ojf2wd_di" bpmnElement="Activity_0e1ef7z">
-        <dc:Bounds x="370" y="190" width="100" height="80" />
+        <dc:Bounds x="265" y="162" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0avz4fv_di" bpmnElement="Gateway_038v8ud">
-        <dc:Bounds x="655" y="92" width="50" height="50" />
+        <dc:Bounds x="655" y="162" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1573ogz_di" bpmnElement="create-release-branch">
+        <dc:Bounds x="370" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ojf2wd_di" bpmnElement="collect-release-notes">
+        <dc:Bounds x="370" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1mxwnsr_di" bpmnElement="Activity_19s3dm7">
-        <dc:Bounds x="760" y="77" width="100" height="80" />
+        <dc:Bounds x="760" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1alb5n9_di" bpmnElement="Activity_0e9yenz">
-        <dc:Bounds x="920" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1alb5n9_di" bpmnElement="trigger-release">
+        <dc:Bounds x="920" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1oqpj5t_di" bpmnElement="Activity_17yjb8k">
-        <dc:Bounds x="1080" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1oqpj5t_di" bpmnElement="release-on-maven-central">
+        <dc:Bounds x="1080" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1aw1lim_di" bpmnElement="Activity_0ll9m9k">
-        <dc:Bounds x="1240" y="77" width="100" height="80" />
+        <dc:Bounds x="1240" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0sbhiuc_di" bpmnElement="Event_0sbhiuc">
-        <dc:Bounds x="1402" y="99" width="36" height="36" />
+        <dc:Bounds x="1402" y="169" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1397" y="142" width="47" height="14" />
+          <dc:Bounds x="1397" y="212" width="47" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_01azq7b_di" bpmnElement="Activity_0owrndn">
-        <dc:Bounds x="510" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_01azq7b_di" bpmnElement="create-code-freeze-backport-label">
+        <dc:Bounds x="510" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0uafnuq_di" bpmnElement="Association_0uafnuq">
+        <di:waypoint x="208" y="173" />
+        <di:waypoint x="261" y="106" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
