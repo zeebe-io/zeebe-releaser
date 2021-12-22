@@ -51,4 +51,26 @@ class TestHelper(val client: ZeebeClient, val recordStream: RecordStreamSource) 
             Assertions.assertThat(processCompletedRecord).isNotNull
         }
     }
+
+    fun assertThatCalledProcessActivated(processInstanceKey: Long, processId: String) {
+        await.untilAsserted {
+            Assertions.assertThat(recordStream.processInstanceRecords()
+                .withParentProcessInstanceKey(processInstanceKey)
+                .withBpmnProcessId(processId)
+                .withIntent(ProcessInstanceIntent.ELEMENT_ACTIVATED)
+                .firstOrNull()
+            ).isNotNull
+        }
+    }
+
+    fun assertThatCalledProcessCompleted(processInstanceKey: Long, processId: String) {
+        await.untilAsserted {
+            Assertions.assertThat(recordStream.processInstanceRecords()
+                .withParentProcessInstanceKey(processInstanceKey)
+                .withBpmnProcessId(processId)
+                .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
+                .firstOrNull()
+            ).isNotNull
+        }
+    }
 }
