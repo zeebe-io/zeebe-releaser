@@ -12,7 +12,7 @@ jobs:
       - uses: oleschoenburg/zbctl-action@v0.0.7
         with:
           version: '1.2.1'
-          command: 'deploy src/test/resources/*.bpmn'
+          command: 'deploy src/main/resources/*.bpmn'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZEEBE_ADDRESS: ${{ secrets.ZEEBE_ADDRESS }}
