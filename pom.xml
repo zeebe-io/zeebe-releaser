@@ -38,6 +38,11 @@
                 <kotlin>
                   <ktfmt />
                 </kotlin>
+                <pom>
+                  <sortPom>
+                    <expandEmptyElements>false</expandEmptyElements>
+                  </sortPom>
+                </pom>
               </configuration>
               <executions>
                 <execution>
