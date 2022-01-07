@@ -23,6 +23,6 @@ jobs:
         java-version: '17'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file pom.xml -DskipTests
+      run: mvn -B package --file pom.xml -PcheckFormat -DskipTests
     - name: Run Tests with Maven
-      run: mvn -B verify --file pom.xml
+      run: mvn -B verify --file pom.xml -PcheckFormat

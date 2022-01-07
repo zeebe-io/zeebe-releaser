@@ -18,4 +18,4 @@ fi
 
 ./zbctl status
 
-./zbctl deploy src/test/resources/*.bpmn
+./zbctl deploy src/main/resources/*.bpmn
