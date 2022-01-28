@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_01n46il" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
+  <bpmn:process id="zeebe-process-test-release" name="Zeebe process test release" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_32jmkh6">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Upgrade Zeebe Version\n\n## First Alpha release (X.Y.Z-alpha1)\n1. Branch from main.\n2. Manually update the zeebe version to the desired alpha version.\n3. Create a PR with the change and get it merged.\n\n## Others\n1. Go to https://github.com/camunda-cloud/zeebe-process-test/network/updates/272742809 and click the \"Check for updates\" button.\n2. A new PR should've been opened by dependabot with the Zeebe version update. (https://github.com/camunda-cloud/zeebe-process-test/pulls)\n3. If this is a patch release, change the target branch to stable/X.Y\n4. If the pipeline finished without problems, merge the PR.\n5. If this is a patch release, create a PR from the stable/X.Y branch to the main branch and get it merged.",
+      "type": "text",
+      "id": "Field_1snupo2"
+    },
+    {
+      "label": "Current release version",
+      "type": "textfield",
+      "id": "Field_1rtug3v",
+      "key": "release_version"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1a90pch"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_1pile2u">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Create release\n\nhttps://github.com/camunda-cloud/zeebe-process-test/releases/new\n\n## Alpha version\n1. Create a tag of this release version from the main branch\n2. Set the release version as the title\n3. Fill in the release notes\n4. Check the pre-release box\n5. Publish the release\n\n## Other\n1. Create a stable/X.Y branch from the main branch if it does not exist yet\n2. Create a tag of this release version from the newly created branch\n3. Set the release version as the title\n4. Fill in the release notes\n5. Publish the release",
+      "type": "text",
+      "id": "Field_1ntxcmv"
+    },
+    {
+      "label": "Current release version",
+      "type": "textfield",
+      "id": "Field_0yuhnxp",
+      "key": "release_version"
+    }
+  ],
+  "type": "default",
+  "id": "create-release"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_322tp7v">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_04nbnkr",
+      "key": "release_version"
+    },
+    {
+      "text": "# Release the Maven artifacts\n\nOnce the pipeline was successfully finished, the Docker artifacts will already be available publicly. We now have to release the Maven central ones.\n\n1. Go to [Maven Central](https://s01.oss.sonatype.org/) and login using the shared `Maven Central` credentials for login `camundabpm` found in [Keeper](https://keepersecurity.eu/vault/) under `Shared-Engineering - Zeebe`. \n2. On the left side, click on the 'Staging Repositories' link.\n3. After it has been loaded, scroll down to the bottom of the list. You should find the relevant Zeebe staging repositories there.\n4. Mark the repository you want to release, which should be one for zeebe.\n\n&gt; io.camunda:zeebe-process-test*\n\n\n5. Click on 'Release' at the menu on top of the list. A window will pop up were you can enter a description but it is not necessary. Activate 'Drop repository after release automatically'. Then proceed.\n6. Done.",
+      "type": "text",
+      "id": "Field_10avz1w"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1tx0oak"
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0pm76g1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0pm76g1" sourceRef="StartEvent_1" targetRef="upgrade-zeebe-version" />
+    <bpmn:userTask id="upgrade-zeebe-version" name="Ugrade Zeebe version">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_32jmkh6" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0pm76g1</bpmn:incoming>
+      <bpmn:outgoing>Flow_13s7xx4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_13s7xx4" sourceRef="upgrade-zeebe-version" targetRef="create-release" />
+    <bpmn:userTask id="create-release" name="Create release">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1pile2u" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13s7xx4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xosw7i</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0xosw7i" sourceRef="create-release" targetRef="release-on-maven-central" />
+    <bpmn:endEvent id="Event_1opqc7l">
+      <bpmn:incoming>Flow_14q7tzh</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_14q7tzh" sourceRef="release-on-maven-central" targetRef="Event_1opqc7l" />
+    <bpmn:userTask id="release-on-maven-central" name="Release on Maven Central">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_322tp7v" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xosw7i</bpmn:incoming>
+      <bpmn:outgoing>Flow_14q7tzh</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-process-test-release">
+      <bpmndi:BPMNEdge id="Flow_14q7tzh_di" bpmnElement="Flow_14q7tzh">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="752" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xosw7i_di" bpmnElement="Flow_0xosw7i">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13s7xx4_di" bpmnElement="Flow_13s7xx4">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pm76g1_di" bpmnElement="Flow_0pm76g1">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qf1bys_di" bpmnElement="upgrade-zeebe-version">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_117mjal_di" bpmnElement="create-release">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1opqc7l_di" bpmnElement="Event_1opqc7l">
+        <dc:Bounds x="752" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1n2arae_di" bpmnElement="release-on-maven-central">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

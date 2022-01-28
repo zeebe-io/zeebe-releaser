@@ -25,6 +25,7 @@ class ZeebeReleaseProcessTest {
     testHelper = TestHelper(client, recordStream)
     deployProcess()
     deployFakeChildProcess("zeebe-release-qa")
+    deployFakeChildProcess("zeebe-process-test-release")
     deployFakeChildProcess(
         "zeebe-post-release",
         hashMapOf(
@@ -69,6 +70,10 @@ class ZeebeReleaseProcessTest {
     testHelper.assertThatUserTaskActivated(
         instanceEvent.processInstanceKey, "release-on-maven-central")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "release-on-maven-central")
+    testHelper.assertThatCalledProcessActivated(
+        instanceEvent.processInstanceKey, "zeebe-process-test-release")
+    testHelper.assertThatCalledProcessCompleted(
+        instanceEvent.processInstanceKey, "zeebe-process-test-release")
     testHelper.assertThatCalledProcessActivated(
         instanceEvent.processInstanceKey, "zeebe-post-release")
     testHelper.assertThatCalledProcessCompleted(
