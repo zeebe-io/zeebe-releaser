@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Upgrade Zeebe Version\n\n## First Alpha release (X.Y.Z-alpha1)\n1. Branch from main.\n2. Manually update the zeebe version to the desired alpha version.\n3. Create a PR with the change and get it merged.\n\n## Others\n1. Go to https://github.com/camunda-cloud/zeebe-process-test/network/updates/272742809 and click the \"Check for updates\" button.\n2. A new PR should've been opened by dependabot with the Zeebe version update. (https://github.com/camunda-cloud/zeebe-process-test/pulls)\n3. If this is a patch release, change the target branch to stable/X.Y\n4. If the pipeline finished without problems, merge the PR.\n5. If this is a patch release, create a PR from the stable/X.Y branch to the main branch and get it merged.",
+      "type": "text",
+      "id": "Field_1snupo2"
+    },
+    {
+      "label": "Current release version",
+      "type": "textfield",
+      "id": "Field_1rtug3v",
+      "key": "release_version"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1a90pch"
+}
