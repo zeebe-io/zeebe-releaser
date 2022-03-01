@@ -32,13 +32,245 @@
   "executionPlatform": "Camunda Cloud",
   "executionPlatformVersion": "1.2"
 }</zeebe:userTaskForm>
-      <zeebe:userTaskForm id="userTaskForm_22t7hjl">{   "schemaVersion": 2,   "components": [     {       "label": "Current release process",       "type": "textfield",       "id": "Field_0u3p898",       "key": "release_version"     },     {       "text": "# Check CI build pipeline and QA build\n\n\n#### Check CI build pipeline \n\nYou should verify that the latest build is green. If there are any non-green builds, you should analyze them and understand if they can be ignored. For example, `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.\n\nAnother thing to verify is that the number of tests that Jenkins reports it ran more or less matches the number that it reports for the `develop` branch. This is important to ensure that we did not lose test coverage due to build and/or pipeline changes.\n\n#### Check QA build\n\nYou will find the final test results [here](https://docs.google.com/spreadsheets/d/1ruQ1zmOj_Wed-WqDOU69wF79hsBHce5CvUAF5UEbC20/edit#gid=0), tagged with the business key which is the jenkins build url. Make sure that the tests all pass! If some of them are failing, verify with your tech lead whether or not these are blockers for the release.",       "type": "text",       "id": "Field_01jr12y"     },     {       "label": "Jenkins Build Url",       "type": "textfield",       "id": "Field_0eegfiv",       "key": "qa_build_jenkins_url"     },     {       "values": [         {           "label": "Yes",           "value": "true"         },         {           "label": "No",           "value": "false"         }       ],       "label": "CI and QA Build Successful?",       "type": "radio",       "id": "Field_08de9fi",       "key": "qa_build_success",       "validate": {         "required": true       }     }   ],   "type": "default",   "id": "Form_19ta2h0",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
-      <zeebe:userTaskForm id="userTaskForm_10tg0jn">{   "schemaVersion": 2,   "components": [     {       "text": "# Set up a new benchmark for the release branch\n\nSet up a long running benchmark for the release branch. This lets us observe stability and performance changes over a longer period of time than the tests would typically show. For minor and alpha releases, we can use the medic benchmarks as baseline for comparison.\n\nTo do so, checkout your release branch (if you haven't already), and navigate to the root of the project. We will use the `createBenchmark.sh` script found at the root of the project. [Make sure you've already followed the instructions on how to setup a benchmark once, and have all the tools prepared](https://github.com/camunda-cloud/zeebe/tree/develop/benchmarks).\n\nThis script does the following:\n\n1. Build the current branch\n2. Build the docker dev image\n3. Publish the docker image\n4. Sets up a new namespace\n5. Configures the benchmark\n6. Deploys the benchmark\n\n&gt; **NOTE**: if you have saved the zeebe-cluster context with a different name, update the `kubectx` command below for it. The important part is to ensure you are on the right context, as the script below will create Kubernetes resources.\n\n```sh\nkubectx gke_zeebe-io_europe-west1-b_zeebe-cluster\n./createBenchmark.sh release-MAJOR-MINOR-PATCH-ALPHA\n```\n\nThe whole thing should take a few minutes to start. Verify that it is started by checking the [Grafana instance](http://34.77.165.228) for your namespace.\n\nAs release manager, you should then monitor that benchmark daily until the release day, and react to any strange behavior and/or failures. Consult the team if unsure whether something is a release blocker or not.",       "type": "text",       "id": "Field_0nu869f"     },     {       "label": "Name",       "type": "textfield",       "id": "Field_0r35pcc",       "key": "qa_benchmark_name",       "description": "Kubernetes namespace",       "validate": {         "required": true       }     }   ],   "type": "default",   "id": "qa_benchmark_setup",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
-      <zeebe:userTaskForm id="userTaskForm_3dknkdc">{   "schemaVersion": 2,   "components": [     {       "text": "# Delete benchmark\n\nFor ALPHA, MINOR, and MAJOR releases, one of the pre-release tasks was to create a long running benchmark. As the release is finished, we now need to clean up this benchmark. The simplest way is to delete the namespace we created previously.\n\nSwitch to the right context, and delete the namespace:\n\n```sh\nkubectx gke_zeebe-io_europe-west1-b_zeebe-cluster\nkubectl delete namespace release-xyz\n```",       "type": "text",       "id": "Field_0lyqg4p"     },     {       "label": "Benchmark Name",       "type": "textfield",       "id": "Field_1i0udu7",       "key": "qa_benchmark_name",       "description": "Kubernetes Namespace"     }   ],   "type": "default",   "id": "qa_benchmark_teardown",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
-      <zeebe:userTaskForm id="userTaskForm_0vfujp8">{   "schemaVersion": 2,   "components": [     {       "text": "# Check benchmark\n\n#### Check dashboard\n\nCheck [grafana](http://34.77.165.228/d/I4lo7_EZk/zeebe?orgId=1&amp;refresh=10s) of the benchmark\nLook at (atleast the following):\n* Throughput\n* Memory usage\n* Disk Space\n\n#### Check logs\n\nGo to [error reporting](https://console.cloud.google.com/errors?service=zeebe-broker&amp;time=P1D&amp;order=CREATED_DESC&amp;resolution=OPEN&amp;resolution=ACKNOWLEDGED&amp;project=zeebe-io) and filter version for the release benchmark name\n\nIf there is anything unusual, inspect it to see if it is a criticial issue. If not sure talk to the team or the tech lead.",       "type": "text",       "id": "Field_0y684db"     },     {       "label": "Benchmark name",       "type": "textfield",       "id": "Field_1bb1diq",       "key": "qa_benchmark_name"     },     {       "values": [         {           "value": "false",           "label": "Yes"         },         {           "label": "No",           "value": "true"         }       ],       "label": "Any issues in the benchmark?",       "type": "radio",       "id": "Field_1uzmulq",       "key": "qa_benchmark_ok",       "validate": {         "required": true       }     },     {       "label": "GitHub Issues",       "type": "textfield",       "id": "Field_10d8zlz",       "key": "qa_benchmark_issues",       "description": "You can link any issues found during the benchmark here"     }   ],   "type": "default",   "id": "qa_benchmark_check",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
-      <zeebe:userTaskForm id="userTaskForm_1ebigng">{   "schemaVersion": 2,   "components": [     {       "text": "# Check release branch for new commits\n\n\nIf there are new bugfixes backported to the release branch, we may have to re-create the benchmark.",       "type": "text",       "id": "Field_1aqkm7x"     },     {       "values": [         {           "label": "Yes",           "value": "true"         },         {           "label": "No",           "value": "false"         }       ],       "label": "Are there new commits on the release branch?",       "type": "radio",       "id": "Field_002hibw",       "key": "qa_benchmark_outdated",       "validate": {         "required": true       }     }   ],   "type": "default",   "id": "qa_release_branch_check",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
-      <zeebe:userTaskForm id="userTaskForm_37tnqqm">{   "schemaVersion": 2,   "components": [     {       "text": "# Fix problems CI and QA build\n\nThe build failed. Check the url for details. \n\n* If some of them are failing, verify with your tech lead whether or not these are blockers for the release.\n* `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. \n* Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.",       "type": "text",       "id": "Field_14sg3k7"     },     {       "label": "Jenkins build url",       "type": "textfield",       "id": "Field_0r6pob4",       "key": "qa_build_jenkins_url"     }   ],   "type": "default",   "id": "qa_fix_problems",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
-      <zeebe:userTaskForm id="userTaskForm_0q022uh">{   "schemaVersion": 2,   "components": [     {       "text": "# Send message Recreate Benchmark\n\nIt seems your benchmark is no longer valid. You'll have to recreate the benchmark.\n\nTo do that, publish a message to the cluster. For example, using `zbctl`:\n\n```\nzbctl publish message recreate_benchmark --correlationKey \"1.3.0\"\n```\n\n&gt; Make sure you are using the correct API Client Credentials. You can check which Zeebe cluster your zbctl is connected to by running `zbctl status`.",       "type": "text",       "id": "Field_0xdhmcn"     }   ],   "type": "default",   "id": "qa-send-message-recreate-benchmark",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_22t7hjl">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_0u3p898",
+      "key": "release_version"
+    },
+    {
+      "text": "# Check CI build pipeline and QA build\n\n\n#### Check CI build pipeline \n\nYou should verify that the latest build is green. If there are any non-green builds, you should analyze them and understand if they can be ignored. For example, `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.\n\nAnother thing to verify is that the number of tests that Jenkins reports it ran more or less matches the number that it reports for the `develop` branch. This is important to ensure that we did not lose test coverage due to build and/or pipeline changes.\n\n#### Check QA build\n\nYou will find the final test results [here](https://docs.google.com/spreadsheets/d/1ruQ1zmOj_Wed-WqDOU69wF79hsBHce5CvUAF5UEbC20/edit#gid=0), tagged with the business key which is the jenkins build url. Make sure that the tests all pass! If some of them are failing, verify with your tech lead whether or not these are blockers for the release.",
+      "type": "text",
+      "id": "Field_01jr12y"
+    },
+    {
+      "label": "Jenkins Build Url",
+      "type": "textfield",
+      "id": "Field_0eegfiv",
+      "key": "qa_build_jenkins_url"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "CI and QA Build Successful?",
+      "type": "radio",
+      "id": "Field_08de9fi",
+      "key": "qa_build_success",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_19ta2h0",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_10tg0jn">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Set up a new benchmark for the release branch\n\nSet up a long running benchmark for the release branch. This lets us observe stability and performance changes over a longer period of time than the tests would typically show. For minor and alpha releases, we can use the medic benchmarks as baseline for comparison.\n\nTo do so, checkout your release branch (if you haven't already), and navigate to the root of the project. We will use the `createBenchmark.sh` script found at the root of the project. [Make sure you've already followed the instructions on how to setup a benchmark once, and have all the tools prepared](https://github.com/camunda-cloud/zeebe/tree/develop/benchmarks).\n\nThis script does the following:\n\n1. Build the current branch\n2. Build the docker dev image\n3. Publish the docker image\n4. Sets up a new namespace\n5. Configures the benchmark\n6. Deploys the benchmark\n\n&gt; **NOTE**: if you have saved the zeebe-cluster context with a different name, update the `kubectx` command below for it. The important part is to ensure you are on the right context, as the script below will create Kubernetes resources.\n\n```sh\nkubectx gke_zeebe-io_europe-west1-b_zeebe-cluster\n./createBenchmark.sh release-MAJOR-MINOR-PATCH-ALPHA\n```\n\nThe whole thing should take a few minutes to start. Verify that it is started by checking the [Grafana instance](http://34.77.165.228) for your namespace.\n\nAs release manager, you should then monitor that benchmark daily until the release day, and react to any strange behavior and/or failures. Consult the team if unsure whether something is a release blocker or not.",
+      "type": "text",
+      "id": "Field_0nu869f"
+    },
+    {
+      "label": "Name",
+      "type": "textfield",
+      "id": "Field_0r35pcc",
+      "key": "qa_benchmark_name",
+      "description": "Kubernetes namespace",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "qa_benchmark_setup",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_3dknkdc">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Delete benchmark\n\nFor ALPHA, MINOR, and MAJOR releases, one of the pre-release tasks was to create a long running benchmark. As the release is finished, we now need to clean up this benchmark. The simplest way is to delete the namespace we created previously.\n\nSwitch to the right context, and delete the namespace:\n\n```sh\nkubectx gke_zeebe-io_europe-west1-b_zeebe-cluster\nkubectl delete namespace release-xyz\n```",
+      "type": "text",
+      "id": "Field_0lyqg4p"
+    },
+    {
+      "label": "Benchmark Name",
+      "type": "textfield",
+      "id": "Field_1i0udu7",
+      "key": "qa_benchmark_name",
+      "description": "Kubernetes Namespace"
+    }
+  ],
+  "type": "default",
+  "id": "qa_benchmark_teardown",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_0vfujp8">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Check benchmark\n\n#### Check dashboard\n\nCheck [grafana](http://34.77.165.228/d/I4lo7_EZk/zeebe?orgId=1&amp;refresh=10s) of the benchmark\nLook at (atleast the following):\n* Throughput\n* Memory usage\n* Disk Space\n\n#### Check logs\n\nGo to [error reporting](https://console.cloud.google.com/errors?service=zeebe-broker&amp;time=P1D&amp;order=CREATED_DESC&amp;resolution=OPEN&amp;resolution=ACKNOWLEDGED&amp;project=zeebe-io) and filter version for the release benchmark name\n\nIf there is anything unusual, inspect it to see if it is a criticial issue. If not sure talk to the team or the tech lead.",
+      "type": "text",
+      "id": "Field_0y684db"
+    },
+    {
+      "label": "Benchmark name",
+      "type": "textfield",
+      "id": "Field_1bb1diq",
+      "key": "qa_benchmark_name"
+    },
+    {
+      "values": [
+        {
+          "value": "false",
+          "label": "Yes"
+        },
+        {
+          "label": "No",
+          "value": "true"
+        }
+      ],
+      "label": "Any issues in the benchmark?",
+      "type": "radio",
+      "id": "Field_1uzmulq",
+      "key": "qa_benchmark_ok",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "GitHub Issues",
+      "type": "textfield",
+      "id": "Field_10d8zlz",
+      "key": "qa_benchmark_issues",
+      "description": "You can link any issues found during the benchmark here"
+    }
+  ],
+  "type": "default",
+  "id": "qa_benchmark_check",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_1ebigng">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Check release branch for new commits\n\n\nIf there are new bugfixes backported to the release branch, we may have to re-create the benchmark.",
+      "type": "text",
+      "id": "Field_1aqkm7x"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Are there new commits on the release branch?",
+      "type": "radio",
+      "id": "Field_002hibw",
+      "key": "qa_benchmark_outdated",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "qa_release_branch_check",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_37tnqqm">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Fix problems CI and QA build\n\nThe build failed. Check the url for details. \n\n* If some of them are failing, verify with your tech lead whether or not these are blockers for the release.\n* `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. \n* Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.",
+      "type": "text",
+      "id": "Field_14sg3k7"
+    },
+    {
+      "label": "Jenkins build url",
+      "type": "textfield",
+      "id": "Field_0r6pob4",
+      "key": "qa_build_jenkins_url"
+    }
+  ],
+  "type": "default",
+  "id": "qa_fix_problems",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_0q022uh">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Send message Recreate Benchmark\n\nIt seems your benchmark is no longer valid. You'll have to recreate the benchmark.\n\nTo do that, publish a message to the cluster. For example, using `zbctl`:\n\n```\nzbctl publish message recreate_benchmark --correlationKey \"1.3.0\"\n```\n\n&gt; Make sure you are using the correct API Client Credentials. You can check which Zeebe cluster your zbctl is connected to by running `zbctl status`.",
+      "type": "text",
+      "id": "Field_0xdhmcn"
+    }
+  ],
+  "type": "default",
+  "id": "qa-send-message-recreate-benchmark",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
     </bpmn:extensionElements>
     <bpmn:sequenceFlow id="Flow_1u6won8" sourceRef="build-ci-with-qa" targetRef="check-qa-results" />
     <bpmn:startEvent id="Event_0vq2qf4" name="Code Freezed">
@@ -258,300 +490,301 @@ correlation-key: release_version</bpmn:text>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-qa">
+      <bpmndi:BPMNShape id="TextAnnotation_1yvenpe_di" bpmnElement="TextAnnotation_1yvenpe">
+        <dc:Bounds x="160" y="130" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1t8yrh0_di" bpmnElement="TextAnnotation_1t8yrh0">
+        <dc:Bounds x="470" y="290" width="207" height="42" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1ewrj5i_di" bpmnElement="Flow_1ewrj5i">
-        <di:waypoint x="1645" y="300" />
-        <di:waypoint x="1702" y="300" />
+        <di:waypoint x="1645" y="240" />
+        <di:waypoint x="1702" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1s5mjw5_di" bpmnElement="Flow_1s5mjw5">
-        <di:waypoint x="940" y="275" />
-        <di:waypoint x="940" y="170" />
-        <di:waypoint x="1620" y="170" />
-        <di:waypoint x="1620" y="275" />
+        <di:waypoint x="940" y="215" />
+        <di:waypoint x="940" y="120" />
+        <di:waypoint x="1620" y="120" />
+        <di:waypoint x="1620" y="215" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="951" y="246" width="18" height="14" />
+          <dc:Bounds x="951" y="188" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0sinhos_di" bpmnElement="Flow_0sinhos">
-        <di:waypoint x="965" y="300" />
-        <di:waypoint x="1040" y="300" />
+        <di:waypoint x="965" y="240" />
+        <di:waypoint x="1040" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1g3lnif_di" bpmnElement="Flow_1g3lnif">
-        <di:waypoint x="1240" y="325" />
-        <di:waypoint x="1240" y="410" />
-        <di:waypoint x="578" y="410" />
+        <di:waypoint x="1240" y="265" />
+        <di:waypoint x="1240" y="350" />
+        <di:waypoint x="578" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cnrtm2_di" bpmnElement="Flow_0cnrtm2">
-        <di:waypoint x="542" y="410" />
-        <di:waypoint x="420" y="410" />
-        <di:waypoint x="420" y="340" />
+        <di:waypoint x="542" y="350" />
+        <di:waypoint x="420" y="350" />
+        <di:waypoint x="420" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1x9lmny_di" bpmnElement="Flow_1x9lmny">
-        <di:waypoint x="830" y="275" />
-        <di:waypoint x="830" y="160" />
+        <di:waypoint x="830" y="215" />
+        <di:waypoint x="830" y="120" />
+        <di:waypoint x="660" y="120" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="838" y="215" width="15" height="14" />
+          <dc:Bounds x="745" y="129" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02b0qqa_di" bpmnElement="Flow_02b0qqa">
-        <di:waypoint x="855" y="300" />
-        <di:waypoint x="915" y="300" />
+        <di:waypoint x="855" y="240" />
+        <di:waypoint x="915" y="240" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="993" y="282" width="15" height="14" />
+          <dc:Bounds x="993" y="222" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_172mjv0_di" bpmnElement="Flow_172mjv0">
-        <di:waypoint x="760" y="300" />
-        <di:waypoint x="805" y="300" />
+        <di:waypoint x="660" y="240" />
+        <di:waypoint x="805" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1puyfkr_di" bpmnElement="Flow_1puyfkr">
-        <di:waypoint x="780" y="120" />
+        <di:waypoint x="560" y="120" />
         <di:waypoint x="420" y="120" />
-        <di:waypoint x="420" y="260" />
+        <di:waypoint x="420" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_091kws4_di" bpmnElement="Flow_091kws4">
-        <di:waypoint x="1530" y="300" />
-        <di:waypoint x="1595" y="300" />
+        <di:waypoint x="1530" y="240" />
+        <di:waypoint x="1595" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10auxgf_di" bpmnElement="Flow_10auxgf">
-        <di:waypoint x="1368" y="300" />
-        <di:waypoint x="1430" y="300" />
+        <di:waypoint x="1368" y="240" />
+        <di:waypoint x="1430" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0epbj3m_di" bpmnElement="Flow_0epbj3m">
-        <di:waypoint x="1265" y="300" />
-        <di:waypoint x="1332" y="300" />
+        <di:waypoint x="1265" y="240" />
+        <di:waypoint x="1332" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ytbx0r_di" bpmnElement="Flow_0ytbx0r">
-        <di:waypoint x="1140" y="300" />
-        <di:waypoint x="1215" y="300" />
+        <di:waypoint x="1140" y="240" />
+        <di:waypoint x="1215" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10fj3ib_di" bpmnElement="Flow_10fj3ib">
-        <di:waypoint x="268" y="300" />
-        <di:waypoint x="370" y="300" />
+        <di:waypoint x="268" y="240" />
+        <di:waypoint x="370" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1u6won8_di" bpmnElement="Flow_1u6won8">
-        <di:waypoint x="470" y="300" />
-        <di:waypoint x="660" y="300" />
+        <di:waypoint x="470" y="240" />
+        <di:waypoint x="560" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0vq2qf4_di" bpmnElement="Event_0vq2qf4">
-        <dc:Bounds x="232" y="282" width="36" height="36" />
+        <dc:Bounds x="232" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="216" y="325" width="70" height="14" />
+          <dc:Bounds x="216" y="265" width="70" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1hvqv2b_di" bpmnElement="Activity_1imqbj3" isExpanded="true">
-        <dc:Bounds x="215" y="480" width="1185" height="600" />
+      <bpmndi:BPMNShape id="Activity_1jkgkns_di" bpmnElement="check-qa-results">
+        <dc:Bounds x="560" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_18xopoc_di" bpmnElement="Flow_18xopoc">
-        <di:waypoint x="1100" y="835" />
-        <di:waypoint x="1100" y="665" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_131el46_di" bpmnElement="Flow_131el46">
-        <di:waypoint x="1005" y="640" />
-        <di:waypoint x="1075" y="640" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0o0yeym_di" bpmnElement="Flow_0o0yeym">
-        <di:waypoint x="1235" y="640" />
-        <di:waypoint x="1272" y="640" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13ht5oh_di" bpmnElement="Flow_13ht5oh">
-        <di:waypoint x="440" y="615" />
-        <di:waypoint x="440" y="540" />
-        <di:waypoint x="1210" y="540" />
-        <di:waypoint x="1210" y="615" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="451" y="585" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0n59tzo_di" bpmnElement="Flow_0n59tzo">
-        <di:waypoint x="465" y="640" />
-        <di:waypoint x="560" y="640" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="482" y="622" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0pmk4ca_di" bpmnElement="Flow_0pmk4ca">
-        <di:waypoint x="635" y="980" />
-        <di:waypoint x="1100" y="980" />
-        <di:waypoint x="1100" y="890" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03ccwuo_di" bpmnElement="Flow_03ccwuo">
-        <di:waypoint x="610" y="860" />
-        <di:waypoint x="1075" y="860" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="629" y="842" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0m22asp_di" bpmnElement="Flow_0m22asp">
-        <di:waypoint x="1125" y="640" />
-        <di:waypoint x="1185" y="640" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_014nhup_di" bpmnElement="Flow_014nhup">
-        <di:waypoint x="585" y="885" />
-        <di:waypoint x="585" y="940" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="596" y="893" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ceu93t_di" bpmnElement="Flow_1ceu93t">
-        <di:waypoint x="585" y="790" />
-        <di:waypoint x="585" y="835" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1mc3iqv_di" bpmnElement="Flow_1mc3iqv">
-        <di:waypoint x="585" y="665" />
-        <di:waypoint x="585" y="710" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xui8t5_di" bpmnElement="Flow_0xui8t5">
-        <di:waypoint x="610" y="640" />
-        <di:waypoint x="675" y="640" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0edaypg_di" bpmnElement="Flow_0edaypg">
-        <di:waypoint x="875" y="750" />
-        <di:waypoint x="980" y="750" />
-        <di:waypoint x="980" y="665" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1c95oe2_di" bpmnElement="Flow_1c95oe2">
-        <di:waypoint x="825" y="665" />
-        <di:waypoint x="825" y="710" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="832" y="685" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14416rg_di" bpmnElement="Flow_14416rg">
-        <di:waypoint x="850" y="640" />
-        <di:waypoint x="955" y="640" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="854" y="622" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13l5xfp_di" bpmnElement="Flow_13l5xfp">
-        <di:waypoint x="775" y="640" />
-        <di:waypoint x="800" y="640" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ogr394_di" bpmnElement="Flow_0ogr394">
-        <di:waypoint x="343" y="640" />
-        <di:waypoint x="415" y="640" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1bo2qwj_di" bpmnElement="Event_1bo2qwj">
-        <dc:Bounds x="1272" y="622" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1263" y="665" width="56" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1y2ca4b_di" bpmnElement="daily-timer">
-        <dc:Bounds x="307" y="622" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="284" y="665" width="82" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1l4ylti_di" bpmnElement="Gateway_1l4ylti" isMarkerVisible="true">
-        <dc:Bounds x="800" y="615" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="783" y="585" width="85" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1606ocv_di" bpmnElement="Gateway_0hi2uxv">
-        <dc:Bounds x="560" y="615" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0q75lje_di" bpmnElement="Gateway_0q75lje" isMarkerVisible="true">
-        <dc:Bounds x="560" y="835" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="465" y="850" width="69" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0zxjf1l_di" bpmnElement="Gateway_0ewpjqn">
-        <dc:Bounds x="1075" y="615" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wivgj6_di" bpmnElement="check-benchmark">
-        <dc:Bounds x="675" y="600" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_16b8tf2_di" bpmnElement="check-new-commits">
-        <dc:Bounds x="535" y="710" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0y1zd1z_di" bpmnElement="create-issue">
-        <dc:Bounds x="775" y="710" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1flwbnz_di" bpmnElement="recreate-benchmark">
-        <dc:Bounds x="535" y="940" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1qmo6ll_di" bpmnElement="Gateway_1qmo6ll" isMarkerVisible="true">
-        <dc:Bounds x="415" y="615" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="412" y="672" width="57" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0kmv9zb_di" bpmnElement="Gateway_0kmv9zb" isMarkerVisible="true">
-        <dc:Bounds x="1185" y="615" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0ihocqm_di" bpmnElement="Gateway_0ihocqm" isMarkerVisible="true">
-        <dc:Bounds x="1075" y="835" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0wm06h0_di" bpmnElement="Gateway_0wm06h0" isMarkerVisible="true">
-        <dc:Bounds x="955" y="615" width="50" height="50" />
+      <bpmndi:BPMNShape id="Activity_1m98e75_di" bpmnElement="fix-problems">
+        <dc:Bounds x="560" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_09o8vm7_di" bpmnElement="Gateway_1sp4w8i">
-        <dc:Bounds x="1215" y="275" width="50" height="50" />
+        <dc:Bounds x="1215" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0mblydt_di" bpmnElement="Event_070p6xx">
-        <dc:Bounds x="1332" y="282" width="36" height="36" />
+        <dc:Bounds x="1332" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1311" y="325" width="79" height="14" />
+          <dc:Bounds x="1311" y="265" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dz2x1t_di" bpmnElement="Event_0dz2x1t">
-        <dc:Bounds x="1702" y="282" width="36" height="36" />
+        <dc:Bounds x="1702" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1690" y="325" width="61" height="14" />
+          <dc:Bounds x="1690" y="265" width="61" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0fglwop_di" bpmnElement="Gateway_0fglwop" isMarkerVisible="true">
-        <dc:Bounds x="805" y="275" width="50" height="50" />
+        <dc:Bounds x="805" y="215" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="798" y="332" width="65" height="14" />
+          <dc:Bounds x="798" y="272" width="65" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0l9bgk7_di" bpmnElement="Event_1q3nlli">
-        <dc:Bounds x="542" y="392" width="36" height="36" />
+        <dc:Bounds x="542" y="332" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="532" y="435" width="56" height="27" />
+          <dc:Bounds x="532" y="375" width="57" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_05plqia_di" bpmnElement="build-ci-with-qa">
-        <dc:Bounds x="370" y="260" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jkgkns_di" bpmnElement="check-qa-results">
-        <dc:Bounds x="660" y="260" width="100" height="80" />
+        <dc:Bounds x="370" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0wahmqz_di" bpmnElement="setup-benchmark">
-        <dc:Bounds x="1040" y="260" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1m98e75_di" bpmnElement="fix-problems">
-        <dc:Bounds x="780" y="80" width="100" height="80" />
+        <dc:Bounds x="1040" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0vceihq_di" bpmnElement="delete-benchmark">
-        <dc:Bounds x="1430" y="260" width="100" height="80" />
+        <dc:Bounds x="1430" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1wi99se_di" bpmnElement="Gateway_1wi99se" isMarkerVisible="true">
-        <dc:Bounds x="915" y="275" width="50" height="50" />
+        <dc:Bounds x="915" y="215" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="912" y="332" width="57" height="27" />
+          <dc:Bounds x="912" y="272" width="57" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0qr9yjh_di" bpmnElement="Gateway_0qr9yjh" isMarkerVisible="true">
-        <dc:Bounds x="1595" y="275" width="50" height="50" />
+        <dc:Bounds x="1595" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1yvenpe_di" bpmnElement="TextAnnotation_1yvenpe">
-        <dc:Bounds x="160" y="190" width="100" height="40" />
+      <bpmndi:BPMNShape id="Activity_1hvqv2b_di" bpmnElement="Activity_1imqbj3" isExpanded="true">
+        <dc:Bounds x="215" y="420" width="1185" height="600" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1t8yrh0_di" bpmnElement="TextAnnotation_1t8yrh0">
-        <dc:Bounds x="470" y="350" width="207" height="42" />
+      <bpmndi:BPMNEdge id="Flow_18xopoc_di" bpmnElement="Flow_18xopoc">
+        <di:waypoint x="1100" y="775" />
+        <di:waypoint x="1100" y="605" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_131el46_di" bpmnElement="Flow_131el46">
+        <di:waypoint x="1005" y="580" />
+        <di:waypoint x="1075" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o0yeym_di" bpmnElement="Flow_0o0yeym">
+        <di:waypoint x="1235" y="580" />
+        <di:waypoint x="1272" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13ht5oh_di" bpmnElement="Flow_13ht5oh">
+        <di:waypoint x="440" y="555" />
+        <di:waypoint x="440" y="480" />
+        <di:waypoint x="1210" y="480" />
+        <di:waypoint x="1210" y="555" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="451" y="525" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n59tzo_di" bpmnElement="Flow_0n59tzo">
+        <di:waypoint x="465" y="580" />
+        <di:waypoint x="560" y="580" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="482" y="562" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pmk4ca_di" bpmnElement="Flow_0pmk4ca">
+        <di:waypoint x="635" y="920" />
+        <di:waypoint x="1100" y="920" />
+        <di:waypoint x="1100" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ccwuo_di" bpmnElement="Flow_03ccwuo">
+        <di:waypoint x="610" y="800" />
+        <di:waypoint x="1075" y="800" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="629" y="782" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m22asp_di" bpmnElement="Flow_0m22asp">
+        <di:waypoint x="1125" y="580" />
+        <di:waypoint x="1185" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_014nhup_di" bpmnElement="Flow_014nhup">
+        <di:waypoint x="585" y="825" />
+        <di:waypoint x="585" y="880" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="596" y="833" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ceu93t_di" bpmnElement="Flow_1ceu93t">
+        <di:waypoint x="585" y="730" />
+        <di:waypoint x="585" y="775" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mc3iqv_di" bpmnElement="Flow_1mc3iqv">
+        <di:waypoint x="585" y="605" />
+        <di:waypoint x="585" y="650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xui8t5_di" bpmnElement="Flow_0xui8t5">
+        <di:waypoint x="610" y="580" />
+        <di:waypoint x="675" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0edaypg_di" bpmnElement="Flow_0edaypg">
+        <di:waypoint x="875" y="690" />
+        <di:waypoint x="980" y="690" />
+        <di:waypoint x="980" y="605" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c95oe2_di" bpmnElement="Flow_1c95oe2">
+        <di:waypoint x="825" y="605" />
+        <di:waypoint x="825" y="650" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="832" y="625" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14416rg_di" bpmnElement="Flow_14416rg">
+        <di:waypoint x="850" y="580" />
+        <di:waypoint x="955" y="580" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="854" y="562" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13l5xfp_di" bpmnElement="Flow_13l5xfp">
+        <di:waypoint x="775" y="580" />
+        <di:waypoint x="800" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ogr394_di" bpmnElement="Flow_0ogr394">
+        <di:waypoint x="343" y="580" />
+        <di:waypoint x="415" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1bo2qwj_di" bpmnElement="Event_1bo2qwj">
+        <dc:Bounds x="1272" y="562" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1263" y="605" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1y2ca4b_di" bpmnElement="daily-timer">
+        <dc:Bounds x="307" y="562" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="284" y="605" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1l4ylti_di" bpmnElement="Gateway_1l4ylti" isMarkerVisible="true">
+        <dc:Bounds x="800" y="555" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="783" y="525" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1606ocv_di" bpmnElement="Gateway_0hi2uxv">
+        <dc:Bounds x="560" y="555" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0q75lje_di" bpmnElement="Gateway_0q75lje" isMarkerVisible="true">
+        <dc:Bounds x="560" y="775" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="465" y="790" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zxjf1l_di" bpmnElement="Gateway_0ewpjqn">
+        <dc:Bounds x="1075" y="555" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wivgj6_di" bpmnElement="check-benchmark">
+        <dc:Bounds x="675" y="540" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16b8tf2_di" bpmnElement="check-new-commits">
+        <dc:Bounds x="535" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y1zd1z_di" bpmnElement="create-issue">
+        <dc:Bounds x="775" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1flwbnz_di" bpmnElement="recreate-benchmark">
+        <dc:Bounds x="535" y="880" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1qmo6ll_di" bpmnElement="Gateway_1qmo6ll" isMarkerVisible="true">
+        <dc:Bounds x="415" y="555" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="412" y="612" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0kmv9zb_di" bpmnElement="Gateway_0kmv9zb" isMarkerVisible="true">
+        <dc:Bounds x="1185" y="555" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ihocqm_di" bpmnElement="Gateway_0ihocqm" isMarkerVisible="true">
+        <dc:Bounds x="1075" y="775" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0wm06h0_di" bpmnElement="Gateway_0wm06h0" isMarkerVisible="true">
+        <dc:Bounds x="955" y="555" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0w2kh4q_di" bpmnElement="Association_0w2kh4q">
-        <di:waypoint x="243" y="284" />
-        <di:waypoint x="221" y="230" />
+        <di:waypoint x="243" y="224" />
+        <di:waypoint x="221" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0hkmor4_di" bpmnElement="Association_0hkmor4">
-        <di:waypoint x="548" y="397" />
-        <di:waypoint x="544" y="392" />
+        <di:waypoint x="548" y="337" />
+        <di:waypoint x="544" y="332" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
