@@ -1,8 +1,12 @@
 {
   "schemaVersion": 2,
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0-alpha.1"
+  },
   "components": [
     {
-      "text": "# Create release\n\nhttps://github.com/camunda-cloud/zeebe-process-test/releases/new\n\n## Alpha version\n1. Create a tag of this release version from the main branch\n2. Set the release version as the title\n3. Fill in the release notes\n4. Check the pre-release box\n5. Publish the release\n\n## Other\n1. Create a stable/X.Y branch from the main branch if it does not exist yet\n2. Create a tag of this release version from the newly created branch\n3. Set the release version as the title\n4. Fill in the release notes\n5. Publish the release",
+      "text": "# Create release\n\nhttps://github.com/camunda-cloud/zeebe-process-test/releases/new\n\n## Alpha version\n1. Create a tag of this release version from the main branch\n2. Set the release version as the title\n3. Fill in the release notes\n4. Check the pre-release box\n5. Publish the release\n\n## Other\nNote: The first release of ZPT is 1.4.0. Patches of versions < 1.4.0 are not required. The zeebe-process-test-release can be skipped in these cases. \n\n1. Create a stable/X.Y branch from the main branch if it does not exist yet\n2. Create a tag of this release version from the stable branch\n3. Set the release version as the title\n4. Fill in the release notes\n5. Publish the release",
       "type": "text",
       "id": "Field_1ntxcmv"
     },
