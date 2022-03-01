@@ -2,6 +2,12 @@
   "schemaVersion": 2,
   "components": [
     {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
       "text": "# Set a calendar appointment\n\nGo to Outlook, and create a new calendar appointment for the next applicable release (either ALPHA or MINOR), where X.Y.Z would be the next version:\n",
       "type": "text",
       "id": "Field_1ayukda"

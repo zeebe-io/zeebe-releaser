@@ -2,6 +2,12 @@
   "schemaVersion": 2,
   "components": [
     {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
       "text": "# Prepare the next stable branch\n\nIf you performed a new minor or major release, you should create a new `stable/0.x` branch. This branch will be used for patch releases for that particular version. To do that, first checkout the newly created tag. For example, if you just released 0.30.0, run `git checkout 0.30.0`, and create a new stable branch based on this.\n\n```shell\ngit checkout 0.x.0\ngit checkout -b stable/0.x\n```\n\nNext step is to prepare the next release version. Update all project manifests (`pom.xml`) to point to the next micro release. In the previous example, that would mean updating all the project versions to be `0.30.1-SNAPSHOT`. You can use the release plugin for this:\n\n```shell\nmvn release:update-versions -DdevelopmentVersion=0.x.1-SNAPSHOT\n```\n\nOnce done, commit those changes to your new stable branch, e.g.\n\n```shell\ngit commit -am\"chore(project): prepare for next release\"\n```\n\nThen push the branch to upstream.\n\n```shell\ngit push --set-upstream origin stable/0.x\n```",
       "type": "text",
       "id": "Field_0rj9o4v"
