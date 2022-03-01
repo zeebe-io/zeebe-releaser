@@ -9,13 +9,14 @@ fi
 
 source credentials
 
+zbctlCmd=zbctl
 # zbctl
 if [ ! "$(which zbctl)" ]
 then
   wget https://github.com/camunda-cloud/zeebe/releases/download/1.2.1/zbctl
   chmod +x zbctl
+  zbctlCmnd=./zbctl
 fi
 
-./zbctl status
-
-./zbctl create instance zeebe-patch-release-process
+$zbctlCmd status
+$zbctlCmd create instance zeebe-patch-release-process
