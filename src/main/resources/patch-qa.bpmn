@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1pwapqm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
+  <bpmn:process id="zeebe-release-patch-qa" name="Zeebe Release QA" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_1b9cav3">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1cj8fox",
+      "key": "release_version"
+    },
+    {
+      "text": "# Run CI Pipeline and QA\n\n[https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#perform-quality-assurance](https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#perform-quality-assurance)\n\n\n#### Run the CI pipeline (Automatically triggered when the branch is created)\n\nOur CI pipeline runs in an internal Jenkins, [here](https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/). The first thing you want to verify after creating the release branch is to verify that it builds and passes our CI pipeline. While it may take a little bit, eventually there will be a new Jenkins job which is building your branch, typically at the following URL: https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/job/release-X.Y.Z/. The job should already be building automatically after you pushed the branch, but if it isn't, you can always start a new build manually by clicking on `Run with parameters` and keeping the defaults.\n\n#### Run the Testbench QA\n\nWe make heavy use of [Testbench](https://github.com/zeebe-io/zeebe-cluster-testbench) for our QA as well, and we want to run those tests against the release branch as well. **From the Jenkins job, start a new build via `Run with parameters`, but this time check `SKIP_VERIFY` and also check `RUN_QA`.** This will start a build which will skip the normal automated tests (which we ran in the previous step), and instead just stage the release artifacts and run the tests in Camunda Cloud. You can then track the tests in [Operate](https://bru-3.operate.ultrawombat.com/7b2cd3f5-cfcc-4a65-ab22-0ccaa071e68e/) - filter the running instances by businessKey, with the value being the Jenkins build URL. \n\nHints:\n- The QA run will use the Zeebe image built by Jenkins from your branch. However, it needs to know the equivalent Operate, Tasklist, Elasticsearch, etc., versions to use in conjunction when spinning up a new cluster in the cloud. To solve this, we specify a _template_ generation which has all these things.\n- The template generation is used to set the version of Operate/Elasticsearch for the QA run. This must be a generation which already exists in Cloud on Int stage. It should also fit to the version you release (so if the next release is 0.24.2 the template generation probably is 0.24.1). You can check which generations exist in the Int stage using the cloud console (check under 'Generations' in the Document of Truth).\n- Jenkins will be notified of the result of the tests. If any test fails, the Jenkins build fails and test reports are available in the Google Sheet and a message is posted to Slack. Both Slack and Google Sheet contain a link to the build that started the QA run.\n- If the build gets stuck, have a look at Operate to see whether any incidents were raised. This is the one missing loophole, because Jenkins has no way of knowing when incidents were created\n\n",
+      "type": "text",
+      "id": "Field_17jz7bk"
+    },
+    {
+      "label": "Jenkins Build Link",
+      "type": "textfield",
+      "id": "Field_1ocluvy",
+      "key": "qa_build_jenkins_url",
+      "validate": {
+        "required": true
+      },
+      "description": "Add the link to jenkins build job"
+    }
+  ],
+  "type": "default",
+  "id": "qa_build",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_22t7hjl">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_0u3p898",
+      "key": "release_version"
+    },
+    {
+      "text": "# Check CI build pipeline and QA build\n\n\n#### Check CI build pipeline \n\nYou should verify that the latest build is green. If there are any non-green builds, you should analyze them and understand if they can be ignored. For example, `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.\n\nAnother thing to verify is that the number of tests that Jenkins reports it ran more or less matches the number that it reports for the `develop` branch. This is important to ensure that we did not lose test coverage due to build and/or pipeline changes.\n\n#### Check QA build\n\nYou will find the final test results [here](https://docs.google.com/spreadsheets/d/1ruQ1zmOj_Wed-WqDOU69wF79hsBHce5CvUAF5UEbC20/edit#gid=0), tagged with the business key which is the jenkins build url. Make sure that the tests all pass! If some of them are failing, verify with your tech lead whether or not these are blockers for the release.",
+      "type": "text",
+      "id": "Field_01jr12y"
+    },
+    {
+      "label": "Jenkins Build Url",
+      "type": "textfield",
+      "id": "Field_0eegfiv",
+      "key": "qa_build_jenkins_url"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "CI and QA Build Successful?",
+      "type": "radio",
+      "id": "Field_08de9fi",
+      "key": "qa_build_success",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_19ta2h0",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_37tnqqm">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Fix problems CI and QA build\n\nThe build failed. Check the url for details. \n\n* If some of them are failing, verify with your tech lead whether or not these are blockers for the release.\n* `ABORTED` builds (grey) can be ignored, but should be retried - these typically indicate the node running the build was restarted mid-way. \n* Red builds should be analyzed, but at times there may be a known flaky tests which should not block the release. If in doubt, ask your tech lead for advice.",
+      "type": "text",
+      "id": "Field_14sg3k7"
+    },
+    {
+      "label": "Jenkins build url",
+      "type": "textfield",
+      "id": "Field_0r6pob4",
+      "key": "qa_build_jenkins_url"
+    }
+  ],
+  "type": "default",
+  "id": "qa_fix_problems",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:sequenceFlow id="Flow_1u6won8" sourceRef="build-ci-with-qa" targetRef="check-qa-results" />
+    <bpmn:startEvent id="Event_0vq2qf4" name="Code Freezed">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>Flow_10fj3ib</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_10fj3ib" sourceRef="Event_0vq2qf4" targetRef="build-ci-with-qa" />
+    <bpmn:endEvent id="Event_0dz2x1t" name="QA Finished">
+      <bpmn:incoming>Flow_0kp1t0g</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1puyfkr" sourceRef="fix-problems" targetRef="build-ci-with-qa" />
+    <bpmn:sequenceFlow id="Flow_172mjv0" sourceRef="check-qa-results" targetRef="Gateway_0fglwop" />
+    <bpmn:exclusiveGateway id="Gateway_0fglwop" name="QA success?">
+      <bpmn:incoming>Flow_172mjv0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x9lmny</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0kp1t0g</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1x9lmny" name="No" sourceRef="Gateway_0fglwop" targetRef="fix-problems">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= qa_build_success = "false"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="build-ci-with-qa" name="Build CI with QA">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1b9cav3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10fj3ib</bpmn:incoming>
+      <bpmn:incoming>Flow_1puyfkr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1u6won8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="check-qa-results" name="Check QA results">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_22t7hjl" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1u6won8</bpmn:incoming>
+      <bpmn:outgoing>Flow_172mjv0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="fix-problems" name="Fix problems">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_37tnqqm" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1x9lmny</bpmn:incoming>
+      <bpmn:outgoing>Flow_1puyfkr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0kp1t0g" name="Yes" sourceRef="Gateway_0fglwop" targetRef="Event_0dz2x1t" />
+    <bpmn:textAnnotation id="TextAnnotation_1yvenpe">
+      <bpmn:text>Pass the Release date</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0w2kh4q" sourceRef="Event_0vq2qf4" targetRef="TextAnnotation_1yvenpe" />
+  </bpmn:process>
+  <bpmn:message id="Message_29jvtb5" name="recreate_benchmark">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="= release_version" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-patch-qa">
+      <bpmndi:BPMNEdge id="Flow_0kp1t0g_di" bpmnElement="Flow_0kp1t0g">
+        <di:waypoint x="745" y="230" />
+        <di:waypoint x="832" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="779" y="212" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x9lmny_di" bpmnElement="Flow_1x9lmny">
+        <di:waypoint x="720" y="205" />
+        <di:waypoint x="720" y="120" />
+        <di:waypoint x="640" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="742" y="129" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_172mjv0_di" bpmnElement="Flow_172mjv0">
+        <di:waypoint x="640" y="230" />
+        <di:waypoint x="695" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1puyfkr_di" bpmnElement="Flow_1puyfkr">
+        <di:waypoint x="540" y="120" />
+        <di:waypoint x="420" y="120" />
+        <di:waypoint x="420" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10fj3ib_di" bpmnElement="Flow_10fj3ib">
+        <di:waypoint x="268" y="230" />
+        <di:waypoint x="370" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u6won8_di" bpmnElement="Flow_1u6won8">
+        <di:waypoint x="470" y="230" />
+        <di:waypoint x="540" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0vq2qf4_di" bpmnElement="Event_0vq2qf4">
+        <dc:Bounds x="232" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="216" y="255" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0dz2x1t_di" bpmnElement="Event_0dz2x1t">
+        <dc:Bounds x="832" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="820" y="255" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0fglwop_di" bpmnElement="Gateway_0fglwop" isMarkerVisible="true">
+        <dc:Bounds x="695" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="688" y="262" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05plqia_di" bpmnElement="build-ci-with-qa">
+        <dc:Bounds x="370" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jkgkns_di" bpmnElement="check-qa-results">
+        <dc:Bounds x="540" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1m98e75_di" bpmnElement="fix-problems">
+        <dc:Bounds x="540" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1yvenpe_di" bpmnElement="TextAnnotation_1yvenpe">
+        <dc:Bounds x="160" y="120" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0w2kh4q_di" bpmnElement="Association_0w2kh4q">
+        <di:waypoint x="243" y="214" />
+        <di:waypoint x="221" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
