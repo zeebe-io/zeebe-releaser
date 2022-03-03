@@ -87,6 +87,37 @@ class ZeebeReleaseProcessTest {
     testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
   }
 
+  @Test
+  fun `should be able to complete patch release`() {
+    // when
+    val instanceEvent =
+        createInstance(hashMapOf("release_version" to "1.0.0", "release_type" to "patch"))
+
+    // then
+    testHelper.assertThatUserTaskActivated(
+        instanceEvent.processInstanceKey, "create-release-branch")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "create-release-branch")
+    testHelper.assertThatCalledProcessActivated(
+        instanceEvent.processInstanceKey, "zeebe-release-qa")
+    testHelper.assertThatCalledProcessCompleted(
+        instanceEvent.processInstanceKey, "zeebe-release-qa")
+    testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "trigger-release")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "trigger-release")
+    testHelper.assertThatUserTaskActivated(
+        instanceEvent.processInstanceKey, "release-on-maven-central")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "release-on-maven-central")
+    testHelper.assertThatCalledProcessActivated(
+        instanceEvent.processInstanceKey, "zeebe-process-test-release")
+    testHelper.assertThatCalledProcessCompleted(
+        instanceEvent.processInstanceKey, "zeebe-process-test-release")
+    testHelper.assertThatCalledProcessActivated(
+        instanceEvent.processInstanceKey, "zeebe-post-release")
+    testHelper.assertThatCalledProcessCompleted(
+        instanceEvent.processInstanceKey, "zeebe-post-release")
+
+    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+  }
+
   private fun deployProcess() {
     client.newDeployCommand().addResourceFromClasspath("zeebe_release.bpmn").send().join()
   }
