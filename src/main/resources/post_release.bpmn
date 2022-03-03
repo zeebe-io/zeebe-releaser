@@ -1,64 +1,281 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="4.11.1">
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="4.12.0">
   <process id="zeebe-post-release" name="Zeebe Post Release" isExecutable="true">
     <extensionElements>
-      <ns0:userTaskForm id="userTaskForm_25kpsi7">{   "schemaVersion": 2,   "components": [     {       "text": "# Notify other teams\nThere's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- Zeebe\n- Operate &amp; Tasklist\n- Shared Services\n- Optimize",       "type": "text",       "id": "Field_0zr0gl2"     },     {       "text": "`Hi :wave: team! There is a new Zeebe version MAJOR.MINOR.PATCH-ALPHA available that you can test against.`\n",       "type": "text",       "id": "Field_0f1lwfu"     }   ],   "type": "default",   "id": "Form_1hcmrar" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_115oou5">{   "schemaVersion": 2,   "components": [     {       "text": "# Generate the changelog\n\nIf you haven't yet, download and install the [Zeebe Changelog tool](https://github.com/zeebe-io/zeebe-changelog), `zcl`. Additionally, you'll also need a Github 'Personal Access Token' that can be generated in [your Github's settings](https://github.com/settings/tokens). The token needs to have `public_repo` scope. For completeness, we will pass the token into `zcl` as a parameter but you can set it as an environment variable `GITHUB_TOKEN`.\n\nBefore continuing, make sure to fetch the latest changes from the repository, as otherwise you may not get the right change log.\n\n```sh\ngit fetch --all --tags\ngit checkout release-MAJOR.MINOR.PATCH-ALPHA\ngit rebase\n```\n\nNext, add the release labels to release's issues, specifying the previous and current release in place of `ZCL_FROM_REV` and `ZCL_TARGET_REV`, respectively. `ZCL_TARGET_REV` should be replaced with the tag name for the version you are releasing, and `ZCL_FROM_REV` should be replaced as the tag name for the previous version, based on the release type:\n\n- ALPHA: the tag for the latest alpha on the current minor version. e.g. if you're releasing 1.2.0-alpha2, then `ZCL_FROM_REV=1.2.0-alpha1`. If there was no alpha version yet, then it would be the previous minor version. e.g. if you're releasing 1.2.0-alpha1, then `ZCL_FROM_REV=1.1.0`\n- PATCH: the tag for the previous patch version on the same minor branch. e.g. if you're releasing 1.2.3, then `ZCL_FROM_REV=1.2.2`.\n- MINOR: the tag for the previous minor version. e.g. if you're releasing 1.3.0, then `ZCL_FROM_REV=1.2.0`.\n\n&gt; As there may be many patch release on a single version, it's simpler for users to take the change log as the list of changes from version X since version X-1, as otherwise they would have to figure out where the versions branched off.\n\nRun the following from zeebe repository folder:\n\n```sh\nzcl add-labels --token=GITHUB_TOKEN --from=ZCL_FROM_REV --target=ZCL_TARGET_REV --label='Release: ZCL_TARGET_REV' --org camunda-cloud --repo zeebe\n```\n\nThis will add labels to the issues in GitHub. You can verify this step by looking at closed issues. They should now be tagged with the release.\n\nAfter that, generate the change log entries for the release:\n\n```sh\nzcl generate --token=GITHUB_TOKEN --label='Release: ZCL_TARGET_REV' --org camunda-cloud --repo zeebe\n```\nThis command will print markdown code to the console. You will need to manually insert this output into the release **draft**. See: https://github.com/camunda-cloud/zeebe/releases\n",       "type": "text",       "id": "Field_0rzoq4s"     }   ],   "type": "default",   "id": "Form_135pno4" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_1spbo98">{   "schemaVersion": 2,   "components": [     {       "text": "# Update the getting started guide\nUpdate the [getting started guide](https://github.com/camunda-cloud/camunda-cloud-get-started). At the very least, this means updating the default Zeebe version in POM files and any Docker (or docker-compose) files accordingly. Additionally, for minor and major releases, you may have to update the code such that it builds and all the examples work successfully. Finally, make sure that the examples do not use deprecated code as well.\n\nTo do so, make sure to clone the repository locally. Checkout a new branch, `zeebe-release-MAJOR.MINOR.PATCH-ALPHA`, and commit your changes to it. Then open a new PR for it, and assign it to another Zeebe team member. They will review and merge it.",       "type": "text",       "id": "Field_0bl348l"     }   ],   "type": "default",   "id": "Form_1ol2v9z" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_31lqr6i">{   "schemaVersion": 2,   "components": [     {       "text": "# Merge with develop\nAs the release job produces some additional commits, we need to merge them back into our development branch.",       "type": "text",       "id": "Field_1ukm08o"     },     {       "label": "Release branch name:",       "type": "textfield",       "id": "Field_04y67ox",       "key": "release_branch_name"     },     {       "text": "Before opening a PR, in case we disabled the upgrade test suite due to backwards incompatible changes, make sure to re-enable it them here, and commit these changes. Now, create a PR for the release branch targeting this base branch, and assign someone from the Zeebe team to review it.",       "type": "text",       "id": "Field_04cb5kr"     }   ],   "type": "default",   "id": "merge_to_develop_form" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_3d306nv">{   "schemaVersion": 2,   "components": [     {       "text": "# Merge with Master\nThis ensures anybody hitting master will always see the latest version of the code.",       "type": "text",       "id": "Field_1ukm08o"     },     {       "label": "Release branch name:",       "type": "textfield",       "id": "Field_04y67ox",       "key": "release_branch_name"     }   ],   "type": "default",   "id": "merge_to_master_form" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_3dd5opg">{   "schemaVersion": 2,   "components": [     {       "text": "# Prepare the next stable branch\n\nIf you performed a new minor or major release, you should create a new `stable/0.x` branch. This branch will be used for patch releases for that particular version. To do that, first checkout the newly created tag. For example, if you just released 0.30.0, run `git checkout 0.30.0`, and create a new stable branch based on this.\n\n```shell\ngit checkout 0.x.0\ngit checkout -b stable/0.x\n```\n\nNext step is to prepare the next release version. Update all project manifests (`pom.xml`) to point to the next micro release. In the previous example, that would mean updating all the project versions to be `0.30.1-SNAPSHOT`. You can use the release plugin for this:\n\n```shell\nmvn release:update-versions -DdevelopmentVersion=0.x.1-SNAPSHOT\n```\n\nOnce done, commit those changes to your new stable branch, e.g.\n\n```shell\ngit commit -am\"chore(project): prepare for next release\"\n```\n\nThen push the branch to upstream.\n\n```shell\ngit push --set-upstream origin stable/0.x\n```",       "type": "text",       "id": "Field_0rj9o4v"     }   ],   "type": "default",   "id": "Form_04k4orn" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_1es2a5o">{   "schemaVersion": 2,   "components": [     {       "text": "# Build the benchmark images\n\nNext step is to build the worker and starter images we use for our continuous load tests. First, checkout the tag you just released, then navigate to the benchmark project folder, and from there we can build and push the images.\n\n```sh\nexport ZEEBE_VERSION=MAJOR.MINOR.PATCH-ALPHA\nexport DOCKER_BUILDKIT=1\ngit checkout $ZEEBE_VERSION\ncd benchmarks/project\ndocker build -t \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\" --target starter .\ndocker push \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\"\ndocker build -t \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\" --target worker .\ndocker push \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\"\n```",       "type": "text",       "id": "Field_0do8ch5"     }   ],   "type": "default",   "id": "Form_1sslv4v" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_0gi1aut">{   "schemaVersion": 2,   "components": [     {       "text": "# Update benchmarks\nAs part of our continuous testing efforts, we also run long running load tests for the various supported versions:\n\n- One benchmark for the latest major version (which can be updated to each new minor release), e.g. `release-1-x`\n- One benchmark for each supported minor version (updated to their latest patch release), e.g. `release-1-1-x` and `release-1-0-x`\n- One benchmark for the latest alpha version, e.g. `release-1-2-0-alpha1`\n\nOnce a new version is released, we need to update all of these benchmarks depending on the release type. _Only execute the steps below for the release type that you are performing!_\n\nLong running benchmark deployments can be found in the main repository by checking out the branch `medic-cw-benchmarks`, under `benchmarks/setup`. There you will find a folder with the name of the benchmark. Each release benchmark is prefixed with `release-`, and then the version _with dashes instead of periods as separator_, e.g. `release-1-0` or `release-2-3-1-alpha1`. [See our documentation for more](https://github.com/camunda-cloud/zeebe/tree/develop/benchmarks/setup).\n\nAs a first step, checkout this branch and navigate there. Then set the Kubernetes context to the long running cluster, where the long running load tests live.\n\n```sh\ngit checkout medic-cw-benchmarks\ncd benchmarks/setup\nkubectx gke_zeebe-io_europe-west1-b_zeebe-long-running\n```\n\n#### ALPHA\n\nIf performing an alpha release, the first step is to remove the load test for the previous alpha release. From the `benchmarks/setup` folder, we can use the script `./deleteBenchmark.sh` for this.\n\n```sh\n./deleteBenchmark.sh release-MAJOR-MINOR-0-ALPHA\n```\n\nFor example, if you're releasing `1.2.0-alpha2`, then you would be deleting the previous `1.2.0-alpha1` benchmark, e.g. `./deleteBenchmark release-1-2-0-alpha1`.\n\nOnce done, we need to create a new benchmark for your version.\n\n```sh\n./newBenchmark.sh release-MAJOR-MINOR-PATCH-ALPHA\n```\n\nThen update the Zeebe, worker, and starter image tags, which are set to `SNAPSHOT` by default. Navigate to your benchmark folder, and from there simply run (replace `NEW_VERSION` with your version):\n- macOS: `sed -i '' 's/SNAPSHOT/NEW_VERSION/g' ./*`\n- Other: `sed -i 's/SNAPSHOT/NEW_VERSION/g' ./*`\n\nThen start the benchmark. Verify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\n```sh\nmake zeebe worker starter\n```\n\n#### PATCH\n\nIf performing a patch release, simply update the existing benchmark for the same minor version. This means, if you are releasing 1.1.2, then you would update the existing `release-1-1-x` benchmark. To update a benchmark, navigate to the existing benchmark folder (in our example, you would go to `release-1-1-x`). From there, update the Zeebe image tag.\n\n1. Check the current `image.tag` in `zeebe-values.yaml`\n2. Replace the version with the next in all files (replace `OLD_VERSION` and `NEW_VERSION` with the actual versions):\n2. - macOS: `sed -i '' 's/OLD_VERSION/NEW_VERSION/g' ./*`\n2. - Other: `sed -i 's/OLD_VERSION/NEW_VERSION/g' ./*`\n\nAfterwards, we need to update the Helm release by running the following. Be sure the update the version in the release name, e.g. `release-1-1-x`.\n\n```sh\nmake update\nmake worker starter\n```\n\nVerify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\n#### MINOR\n\nIf you're performing a minor release, the first step is to delete the oldest minor load test - that is, for the version which will stop being supported. From the `benchmarks/setup` folder, we can use the script `./deleteBenchmark.sh` for this.\n\n```sh\n./deleteBenchmark.sh release-MAJOR-MINOR-x\n```\n\nFor example, with our current 3 months release cadence, if you're releasing `1.2.0`, then you would be deleting the previous `1.0.x` benchmark, e.g. `./deleteBenchmark release-1-0-x`.\n\nOnce done, we need to create a new benchmark for your version.\n\n```sh\n./newBenchmark.sh release-MAJOR-MINOR-x\n```\n\nThen update the Zeebe, worker, and starter image tags, which are set to `SNAPSHOT` by default. Navigate to your benchmark folder, and from there simply run (replacing `NEW_VERSION` with your version):\n- macOS: `sed -i '' 's/SNAPSHOT/NEW_VERSION/g' ./*`\n- Other: `sed -i 's/SNAPSHOT/NEW_VERSION/g' ./*`\n\nThen start the benchmark.\n\n```sh\nmake zeebe worker starter\n```\n\nVerify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\nYou'll also need to update the benchmark for the latest major version to this new minor version.\n\nSimply navigate to the benchmark folder (e.g. `release-1-x`), and from there simply run (replacing the `OLD_VERSION` and `NEW_VERSION` values):\n\n- macOS: `sed -i '' 's/OLD_VERSION/NEW_VERSION/g' ./*`\n- Others: `sed -i 's/OLD_VERSION/NEW_VERSION/g' ./*`\n\nand update the deployment using:\n\n```sh\nmake update\nmake worker starter\n```\n\n#### Commit the benchmark files\n\nAt the end, when the benchmark is running correctly, remember to commit the benchmark setup files.\n\n```sh\ngit add release-MAJOR-MINOR-ALPHA\ngit commit -m\"test(benchmark): setup MAJOR.MINOR.PATCH.ALPHA benchmark\"\ngit push\n```",       "type": "text",       "id": "Field_1rfqdzy"     }   ],   "type": "default",   "id": "Form_0qq681s" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_0koj8jh">{   "schemaVersion": 2,   "components": [     {       "text": "# Set a calendar appointment\n\nGo to Outlook, and create a new calendar appointment for the next applicable release (either ALPHA or MINOR), where X.Y.Z would be the next version:\n",       "type": "text",       "id": "Field_1ayukda"     },     {       "text": "Subject: Zeebe Release X.Y.Z\n\nHey all,\n\nWe will build a new Zeebe release: 0.X.0-alphaY.\n\nRelease manager is: RELEASE-MANAGER\n\nHave a nice week!",       "type": "text",       "id": "Field_1g8m768"     },     {       "text": "Make sure to invite the next release manager as required, and the following as optional:\n\n- zeebe@camunda.com\n- operate@camunda.com\n- sre@camunda.com",       "type": "text",       "id": "Field_1cpj19r"     }   ],   "type": "default",   "id": "Form_1rwhxvm" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_2hidn1i">{   "schemaVersion": 2,   "components": [     {       "text": "# Celebrate the release\n\nMake an appointment for the team at the bar around 4/5pm or via zoom to have a beverage of their choice. Talk about new features and the next steps.",       "type": "text",       "id": "Field_1bh8t3w"     }   ],   "type": "default",   "id": "Form_1cpheid" }</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_25kpsi7">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Notify other teams\nThere's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- Zeebe\n- Operate &amp; Tasklist\n- Shared Services\n- Optimize",
+      "type": "text",
+      "id": "Field_0zr0gl2"
+    },
+    {
+      "text": "`Hi :wave: team! There is a new Zeebe version MAJOR.MINOR.PATCH-ALPHA available that you can test against.`\n",
+      "type": "text",
+      "id": "Field_0f1lwfu"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1hcmrar"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_115oou5">{
+  "schemaVersion": 2,
+  "components": [    
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Generate the changelog\n\nIf you haven't yet, download and install the [Zeebe Changelog tool](https://github.com/zeebe-io/zeebe-changelog), `zcl`. Additionally, you'll also need a Github 'Personal Access Token' that can be generated in [your Github's settings](https://github.com/settings/tokens). The token needs to have `public_repo` scope. For completeness, we will pass the token into `zcl` as a parameter but you can set it as an environment variable `GITHUB_TOKEN`.\n\nBefore continuing, make sure to fetch the latest changes from the repository, as otherwise you may not get the right change log.\n\n```sh\ngit fetch --all --tags\ngit checkout release-MAJOR.MINOR.PATCH-ALPHA\ngit rebase\n```\n\nNext, add the release labels to release's issues, specifying the previous and current release in place of `ZCL_FROM_REV` and `ZCL_TARGET_REV`, respectively. `ZCL_TARGET_REV` should be replaced with the tag name for the version you are releasing, and `ZCL_FROM_REV` should be replaced as the tag name for the previous version, based on the release type:\n\n- ALPHA: the tag for the latest alpha on the current minor version. e.g. if you're releasing 1.2.0-alpha2, then `ZCL_FROM_REV=1.2.0-alpha1`. If there was no alpha version yet, then it would be the previous minor version. e.g. if you're releasing 1.2.0-alpha1, then `ZCL_FROM_REV=1.1.0`\n- PATCH: the tag for the previous patch version on the same minor branch. e.g. if you're releasing 1.2.3, then `ZCL_FROM_REV=1.2.2`.\n- MINOR: the tag for the previous minor version. e.g. if you're releasing 1.3.0, then `ZCL_FROM_REV=1.2.0`.\n\n&gt; As there may be many patch release on a single version, it's simpler for users to take the change log as the list of changes from version X since version X-1, as otherwise they would have to figure out where the versions branched off.\n\nRun the following from zeebe repository folder:\n\n```sh\nzcl add-labels --token=GITHUB_TOKEN --from=ZCL_FROM_REV --target=ZCL_TARGET_REV --label='Release: ZCL_TARGET_REV' --org camunda-cloud --repo zeebe\n```\n\nThis will add labels to the issues in GitHub. You can verify this step by looking at closed issues. They should now be tagged with the release.\n\nAfter that, generate the change log entries for the release:\n\n```sh\nzcl generate --token=GITHUB_TOKEN --label='Release: ZCL_TARGET_REV' --org camunda-cloud --repo zeebe\n```\nThis command will print markdown code to the console. You will need to manually insert this output into the release **draft**. See: https://github.com/camunda-cloud/zeebe/releases\n",
+      "type": "text",
+      "id": "Field_0rzoq4s"
+    }
+  ],
+  "type": "default",
+  "id": "Form_135pno4"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_1spbo98">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Update the getting started guide\nUpdate the [getting started guide](https://github.com/camunda-cloud/camunda-cloud-get-started). At the very least, this means updating the default Zeebe version in POM files and any Docker (or docker-compose) files accordingly. Additionally, for minor and major releases, you may have to update the code such that it builds and all the examples work successfully. Finally, make sure that the examples do not use deprecated code as well.\n\nTo do so, make sure to clone the repository locally. Checkout a new branch, `zeebe-release-MAJOR.MINOR.PATCH-ALPHA`, and commit your changes to it. Then open a new PR for it, and assign it to another Zeebe team member. They will review and merge it.",
+      "type": "text",
+      "id": "Field_0bl348l"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1ol2v9z"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_31lqr6i">{
+  "schemaVersion": 2,
+  "components": [    
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Merge with main\nAs the release job produces some additional commits, we need to merge them back into our development branch.",
+      "type": "text",
+      "id": "Field_1ukm08o"
+    },
+    {
+      "label": "Release branch name:",
+      "type": "textfield",
+      "id": "Field_04y67ox",
+      "key": "release_branch_name"
+    },
+    {
+      "text": "Before opening a PR, in case we disabled the upgrade test suite due to backwards incompatible changes, make sure to re-enable it them here, and commit these changes. Now, create a PR for the release branch targeting this base branch, and assign someone from the Zeebe team to review it.",
+      "type": "text",
+      "id": "Field_04cb5kr"
+    }
+  ],
+  "type": "default",
+  "id": "merge_to_develop_form"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_3dd5opg">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Prepare the next stable branch\n\nIf you performed a new minor or major release, you should create a new `stable/0.x` branch. This branch will be used for patch releases for that particular version. To do that, first checkout the newly created tag. For example, if you just released 0.30.0, run `git checkout 0.30.0`, and create a new stable branch based on this.\n\n```shell\ngit checkout 0.x.0\ngit checkout -b stable/0.x\n```\n\nNext step is to prepare the next release version. Update all project manifests (`pom.xml`) to point to the next micro release. In the previous example, that would mean updating all the project versions to be `0.30.1-SNAPSHOT`. You can use the release plugin for this:\n\n```shell\nmvn release:update-versions -DdevelopmentVersion=0.x.1-SNAPSHOT\n```\n\nOnce done, commit those changes to your new stable branch, e.g.\n\n```shell\ngit commit -am\"chore(project): prepare for next release\"\n```\n\nThen push the branch to upstream.\n\n```shell\ngit push --set-upstream origin stable/0.x\n```",
+      "type": "text",
+      "id": "Field_0rj9o4v"
+    }
+  ],
+  "type": "default",
+  "id": "Form_04k4orn"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_1es2a5o">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Build the benchmark images\n\nNext step is to build the worker and starter images we use for our continuous load tests. First, checkout the tag you just released, then navigate to the benchmark project folder, and from there we can build and push the images.\n\n```sh\nexport ZEEBE_VERSION=MAJOR.MINOR.PATCH-ALPHA\nexport DOCKER_BUILDKIT=1\ngit checkout $ZEEBE_VERSION\ncd benchmarks/project\ndocker build -t \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\" --target starter .\ndocker push \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\"\ndocker build -t \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\" --target worker .\ndocker push \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\"\n```",
+      "type": "text",
+      "id": "Field_0do8ch5"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1sslv4v"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_0gi1aut">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Update benchmarks\nAs part of our continuous testing efforts, we also run long running load tests for the various supported versions:\n\n- One benchmark for the latest major version (which can be updated to each new minor release), e.g. `release-1-x`\n- One benchmark for each supported minor version (updated to their latest patch release), e.g. `release-1-1-x` and `release-1-0-x`\n- One benchmark for the latest alpha version, e.g. `release-1-2-0-alpha1`\n\nOnce a new version is released, we need to update all of these benchmarks depending on the release type. _Only execute the steps below for the release type that you are performing!_\n\nLong running benchmark deployments can be found in the main repository by checking out the branch `medic-cw-benchmarks`, under `benchmarks/setup`. There you will find a folder with the name of the benchmark. Each release benchmark is prefixed with `release-`, and then the version _with dashes instead of periods as separator_, e.g. `release-1-0` or `release-2-3-1-alpha1`. [See our documentation for more](https://github.com/camunda-cloud/zeebe/tree/develop/benchmarks/setup).\n\nAs a first step, checkout this branch and navigate there. Then set the Kubernetes context to the long running cluster, where the long running load tests live.\n\n```sh\ngit checkout medic-cw-benchmarks\ncd benchmarks/setup\nkubectx gke_zeebe-io_europe-west1-b_zeebe-long-running\n```\n\n#### ALPHA\n\nIf performing an alpha release, the first step is to remove the load test for the previous alpha release. From the `benchmarks/setup` folder, we can use the script `./deleteBenchmark.sh` for this.\n\n```sh\n./deleteBenchmark.sh release-MAJOR-MINOR-0-ALPHA\n```\n\nFor example, if you're releasing `1.2.0-alpha2`, then you would be deleting the previous `1.2.0-alpha1` benchmark, e.g. `./deleteBenchmark release-1-2-0-alpha1`.\n\nOnce done, we need to create a new benchmark for your version.\n\n```sh\n./newBenchmark.sh release-MAJOR-MINOR-PATCH-ALPHA\n```\n\nThen update the Zeebe, worker, and starter image tags, which are set to `SNAPSHOT` by default. Navigate to your benchmark folder, and from there simply run (replace `NEW_VERSION` with your version):\n- macOS: `sed -i '' 's/SNAPSHOT/NEW_VERSION/g' ./*`\n- Other: `sed -i 's/SNAPSHOT/NEW_VERSION/g' ./*`\n\nThen start the benchmark. Verify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\n```sh\nmake zeebe worker starter\n```\n\n#### PATCH\n\nIf performing a patch release, simply update the existing benchmark for the same minor version. This means, if you are releasing 1.1.2, then you would update the existing `release-1-1-x` benchmark. To update a benchmark, navigate to the existing benchmark folder (in our example, you would go to `release-1-1-x`). From there, update the Zeebe image tag.\n\n1. Check the current `image.tag` in `zeebe-values.yaml`\n2. Replace the version with the next in all files (replace `OLD_VERSION` and `NEW_VERSION` with the actual versions):\n2. - macOS: `sed -i '' 's/OLD_VERSION/NEW_VERSION/g' ./*`\n2. - Other: `sed -i 's/OLD_VERSION/NEW_VERSION/g' ./*`\n\nAfterwards, we need to update the Helm release by running the following. Be sure the update the version in the release name, e.g. `release-1-1-x`.\n\n```sh\nmake update\nmake worker starter\n```\n\nVerify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\n#### MINOR\n\nIf you're performing a minor release, the first step is to delete the oldest minor load test - that is, for the version which will stop being supported. From the `benchmarks/setup` folder, we can use the script `./deleteBenchmark.sh` for this.\n\n```sh\n./deleteBenchmark.sh release-MAJOR-MINOR-x\n```\n\nFor example, with our current 3 months release cadence, if you're releasing `1.2.0`, then you would be deleting the previous `1.0.x` benchmark, e.g. `./deleteBenchmark release-1-0-x`.\n\nOnce done, we need to create a new benchmark for your version.\n\n```sh\n./newBenchmark.sh release-MAJOR-MINOR-x\n```\n\nThen update the Zeebe, worker, and starter image tags, which are set to `SNAPSHOT` by default. Navigate to your benchmark folder, and from there simply run (replacing `NEW_VERSION` with your version):\n- macOS: `sed -i '' 's/SNAPSHOT/NEW_VERSION/g' ./*`\n- Other: `sed -i 's/SNAPSHOT/NEW_VERSION/g' ./*`\n\nThen start the benchmark.\n\n```sh\nmake zeebe worker starter\n```\n\nVerify that it's running properly by [checking the long-running Grafana](http://35.189.240.202)\n\nYou'll also need to update the benchmark for the latest major version to this new minor version.\n\nSimply navigate to the benchmark folder (e.g. `release-1-x`), and from there simply run (replacing the `OLD_VERSION` and `NEW_VERSION` values):\n\n- macOS: `sed -i '' 's/OLD_VERSION/NEW_VERSION/g' ./*`\n- Others: `sed -i 's/OLD_VERSION/NEW_VERSION/g' ./*`\n\nand update the deployment using:\n\n```sh\nmake update\nmake worker starter\n```\n\n#### Commit the benchmark files\n\nAt the end, when the benchmark is running correctly, remember to commit the benchmark setup files.\n\n```sh\ngit add release-MAJOR-MINOR-ALPHA\ngit commit -m\"test(benchmark): setup MAJOR.MINOR.PATCH.ALPHA benchmark\"\ngit push\n```",
+      "type": "text",
+      "id": "Field_1rfqdzy"
+    }
+  ],
+  "type": "default",
+  "id": "Form_0qq681s"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_0koj8jh">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Set a calendar appointment\n\nGo to Outlook, and create a new calendar appointment for the next applicable release (either ALPHA or MINOR), where X.Y.Z would be the next version:\n",
+      "type": "text",
+      "id": "Field_1ayukda"
+    },
+    {
+      "text": "Subject: Zeebe Release X.Y.Z\n\nHey all,\n\nWe will build a new Zeebe release: 0.X.0-alphaY.\n\nRelease manager is: RELEASE-MANAGER\n\nHave a nice week!",
+      "type": "text",
+      "id": "Field_1g8m768"
+    },
+    {
+      "text": "Make sure to invite the next release manager as required, and the following as optional:\n\n- zeebe@camunda.com\n- operate@camunda.com\n- sre@camunda.com",
+      "type": "text",
+      "id": "Field_1cpj19r"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1rwhxvm"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_2hidn1i">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Celebrate the release\n\nMake an appointment for the team at the bar around 4/5pm or via zoom to have a beverage of their choice. Talk about new features and the next steps.",
+      "type": "text",
+      "id": "Field_1bh8t3w"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1cpheid"
+}</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_01m96lq">{   "schemaVersion": 2,   "components": [     {       "text": "# Data about next release",       "type": "text",       "id": "Field_18uxmez"     },     {       "label": "Release version",       "type": "textfield",       "id": "Field_0q04txm",       "key": "release_version",       "description": "MAJOR.MINOR.PATCH-ALPHA (Eg:- 1.3.0-alpha1)"     },     {       "label": "Release date",       "type": "textfield",       "id": "Field_1jl2q1w",       "key": "release_date",       "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T00:00:00Z)"     },     {       "label": "Code Freeze date",       "type": "textfield",       "id": "Field_0w4n3mw",       "key": "code_freeze_date",       "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T00:00:00Z)"     },     {       "values": [         {           "label": "Philipp",           "value": "philipp"         },         {           "label": "Chris",           "value": "chris"         },         {           "label": "Peter",           "value": "peter"         },         {           "value": "deepthi",           "label": "Deepthi"         },         {           "label": "Nico",           "value": "nico"         },         {           "label": "Remco",           "value": "remco"         },         {           "label": "Ole",           "value": "ole"         },         {           "label": "Nicolas",           "value": "nicolas"         }       ],       "label": "Release Manager",       "type": "select",       "id": "Field_08k3xs4",       "key": "release_manager"     },     {       "values": [         {           "label": "Major",           "value": "major"         },         {           "label": "Minor",           "value": "minor"         },         {           "label": "Alpha",           "value": "alpha"         }       ],       "label": "The release is",       "type": "radio",       "id": "Field_01mvgma",       "key": "release_type"     }   ],   "type": "default",   "id": "release_collect_data",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_3e5brtf">{   "schemaVersion": 2,   "components": [     {       "text": "# Merge with Stable\n\nAs the release job produces some additional commits, we need to merge them back into our development branch. This should be the same base branch as the one you used when creating the release branch at the very beginning. So for alpha, minor, and major releases, this will be develop. For patch releases, this will be the appropriate stable/MAJOR.MINOR branch.",       "type": "text",       "id": "Field_1ukm08o"     },     {       "label": "Release branch name:",       "type": "textfield",       "id": "Field_04y67ox",       "key": "release_branch_name"     }   ],   "type": "default",   "id": "merge_to_master_form" }</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_3e5brtf">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Merge with Stable\n\nAs the release job produces some additional commits, we need to merge them back into our development branch. This should be the same base branch as the one you used when creating the release branch at the very beginning. So for alpha, minor, and major releases, this will be develop. For patch releases, this will be the appropriate stable/MAJOR.MINOR branch.",
+      "type": "text",
+      "id": "Field_1ukm08o"
+    },
+    {
+      "label": "Release branch name:",
+      "type": "textfield",
+      "id": "Field_04y67ox",
+      "key": "release_branch_name"
+    }
+  ],
+  "type": "default",
+  "id": "merge_to_master_form"
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_24oj0f5">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Github Labels\n\nIn order to run our changelog tool (zcl) we need to create first a new release label in our Zeebe repo.\n\nGo to [labels](https://github.com/camunda-cloud/zeebe/labels), and click on **New Label**. The label should be similar named as the previous release labels.\n\nE.g. *Release: X.Y.Z-alpha*",
+      "type": "text",
+      "id": "Field_0j0822v"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1djdvy0"
+}</ns0:userTaskForm>
     </extensionElements>
     <startEvent id="Event_1bzj58u" name="Released on maven central">
       <outgoing>Flow_17x96fw</outgoing>
     </startEvent>
     <sequenceFlow id="Flow_17x96fw" sourceRef="Event_1bzj58u" targetRef="Gateway_14u4b2y" />
-    <sequenceFlow id="Flow_1dbpr3h" sourceRef="Gateway_14u4b2y" targetRef="Activity_0uxjuhz" />
+    <sequenceFlow id="Flow_1dbpr3h" sourceRef="Gateway_14u4b2y" targetRef="notify-others" />
     <parallelGateway id="Gateway_14u4b2y">
       <incoming>Flow_17x96fw</incoming>
       <outgoing>Flow_1dbpr3h</outgoing>
       <outgoing>Flow_1a1ucq4</outgoing>
       <outgoing>Flow_1r12izo</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_1a1ucq4" sourceRef="Gateway_14u4b2y" targetRef="Activity_1jbrh22" />
-    <sequenceFlow id="Flow_1yxpc4s" sourceRef="Activity_1jbrh22" targetRef="Activity_0y0cwvf" />
-    <sequenceFlow id="Flow_1xzxsjq" sourceRef="Activity_0y0cwvf" targetRef="Activity_0uvoirh" />
-    <userTask id="Activity_0uxjuhz" name="Notify other teams">
+    <sequenceFlow id="Flow_1a1ucq4" sourceRef="Gateway_14u4b2y" targetRef="github-release-labels" />
+    <sequenceFlow id="Flow_1yxpc4s" sourceRef="github-release-labels" targetRef="github-generate-changelog" />
+    <sequenceFlow id="Flow_1xzxsjq" sourceRef="github-generate-changelog" targetRef="Gateway_0kj2l1z" />
+    <userTask id="notify-others" name="Notify other teams">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_25kpsi7" />
       </extensionElements>
       <incoming>Flow_1dbpr3h</incoming>
       <outgoing>Flow_1dmkd6y</outgoing>
     </userTask>
-    <userTask id="Activity_1jbrh22" name="Add release label to GitHub issues">
+    <userTask id="github-release-labels" name="Add release label to GitHub">
+      <extensionElements>
+        <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_24oj0f5" />
+      </extensionElements>
       <incoming>Flow_1a1ucq4</incoming>
       <outgoing>Flow_1yxpc4s</outgoing>
     </userTask>
-    <userTask id="Activity_0y0cwvf" name="Generate changelog">
+    <userTask id="github-generate-changelog" name="Generate changelog">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_115oou5" />
       </extensionElements>
       <incoming>Flow_1yxpc4s</incoming>
       <outgoing>Flow_1xzxsjq</outgoing>
     </userTask>
-    <userTask id="Activity_0uvoirh" name="Copy changelog to Github release page">
-      <incoming>Flow_1xzxsjq</incoming>
-      <outgoing>Flow_03azwil</outgoing>
-    </userTask>
-    <sequenceFlow id="Flow_1dmkd6y" sourceRef="Activity_0uxjuhz" targetRef="Gateway_0kj2l1z" />
+    <sequenceFlow id="Flow_1dmkd6y" sourceRef="notify-others" targetRef="Gateway_0kj2l1z" />
     <parallelGateway id="Gateway_0kj2l1z">
-      <incoming>Flow_1dmkd6y</incoming>
-      <incoming>Flow_03azwil</incoming>
       <incoming>Flow_004201w</incoming>
+      <incoming>Flow_1dmkd6y</incoming>
+      <incoming>Flow_1xzxsjq</incoming>
       <outgoing>Flow_0gtz7qb</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_03azwil" sourceRef="Activity_0uvoirh" targetRef="Gateway_0kj2l1z" />
     <sequenceFlow id="Flow_1r12izo" sourceRef="Gateway_14u4b2y" targetRef="Gateway_1m24vub" />
     <exclusiveGateway id="Gateway_1m24vub" name="Release type" default="Flow_0yl4sw3">
       <incoming>Flow_1r12izo</incoming>
@@ -74,114 +291,94 @@
       <outgoing>Flow_0ysso60</outgoing>
       <outgoing>Flow_151ugke</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_0ysso60" sourceRef="Gateway_03s2p31" targetRef="Activity_0fq4a43" />
+    <sequenceFlow id="Flow_0ysso60" sourceRef="Gateway_03s2p31" targetRef="update-getting-started" />
     <sequenceFlow id="Flow_151ugke" sourceRef="Gateway_03s2p31" targetRef="Gateway_08xyc0i" />
-    <sequenceFlow id="Flow_0rn3fe6" sourceRef="Activity_0hplmjw" targetRef="Activity_1bk7x2b" />
-    <sequenceFlow id="Flow_0hfrzaj" sourceRef="Activity_1bk7x2b" targetRef="Activity_0p24d5f" />
-    <sequenceFlow id="Flow_1e04bck" sourceRef="Activity_0p24d5f" targetRef="Gateway_0hz7kvb" />
+    <sequenceFlow id="Flow_0rn3fe6" sourceRef="merge-with-main" targetRef="prepare-next-stable" />
+    <sequenceFlow id="Flow_1e04bck" sourceRef="prepare-next-stable" targetRef="Gateway_0hz7kvb" />
     <parallelGateway id="Gateway_0dpkt4r">
       <incoming>Flow_1q2u3un</incoming>
       <incoming>Flow_1xchhzg</incoming>
       <outgoing>Flow_0r71vpd</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_1q2u3un" sourceRef="Activity_0fq4a43" targetRef="Gateway_0dpkt4r" />
+    <sequenceFlow id="Flow_1q2u3un" sourceRef="update-getting-started" targetRef="Gateway_0dpkt4r" />
     <sequenceFlow id="Flow_0r71vpd" sourceRef="Gateway_0dpkt4r" targetRef="Gateway_0rbz8gw" />
-    <sequenceFlow id="Flow_0j0srfi" sourceRef="Activity_01me846" targetRef="Activity_08nyyfd" />
-    <sequenceFlow id="Flow_0xuse6x" sourceRef="Activity_08nyyfd" targetRef="Gateway_04bbzjp" />
+    <sequenceFlow id="Flow_0j0srfi" sourceRef="build-benchmark-images" targetRef="update-long-running" />
+    <sequenceFlow id="Flow_0xuse6x" sourceRef="update-long-running" targetRef="Gateway_0jqqw0n" />
     <parallelGateway id="Gateway_04bbzjp">
-      <incoming>Flow_0xuse6x</incoming>
-      <outgoing>Flow_1uaiw7b</outgoing>
+      <incoming>Flow_1ib3xky</incoming>
       <outgoing>Flow_0bqz7va</outgoing>
-      <outgoing>Flow_11hya94</outgoing>
       <outgoing>Flow_010kmt4</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_1uaiw7b" sourceRef="Gateway_04bbzjp" targetRef="Activity_18zrvuf" />
-    <sequenceFlow id="Flow_0bqz7va" sourceRef="Gateway_04bbzjp" targetRef="Activity_173xvcg" />
-    <sequenceFlow id="Flow_11hya94" sourceRef="Gateway_04bbzjp" targetRef="Activity_1o19fut" />
-    <sequenceFlow id="Flow_0cri5kh" sourceRef="Activity_18zrvuf" targetRef="Gateway_0c41kcg" />
+    <sequenceFlow id="Flow_0bqz7va" sourceRef="Gateway_04bbzjp" targetRef="invite-team-to-celebrate" />
     <parallelGateway id="Gateway_0c41kcg">
-      <incoming>Flow_0cri5kh</incoming>
       <incoming>Flow_1jznwig</incoming>
-      <incoming>Flow_18wmm8h</incoming>
       <incoming>Flow_0v38vir</incoming>
       <outgoing>Flow_1xo3036</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_1jznwig" sourceRef="Activity_173xvcg" targetRef="Gateway_0c41kcg" />
-    <sequenceFlow id="Flow_18wmm8h" sourceRef="Activity_1o19fut" targetRef="Gateway_0c41kcg" />
+    <sequenceFlow id="Flow_1jznwig" sourceRef="invite-team-to-celebrate" targetRef="Gateway_0c41kcg" />
     <endEvent id="Event_0rk4u8i" name="Released">
-      <incoming>Flow_1xo3036</incoming>
+      <incoming>Flow_1fm2o6c</incoming>
     </endEvent>
-    <sequenceFlow id="Flow_1xo3036" sourceRef="Gateway_0c41kcg" targetRef="Event_0rk4u8i" />
-    <userTask id="Activity_0fq4a43" name="Update getting started guide">
+    <sequenceFlow id="Flow_1xo3036" sourceRef="Gateway_0c41kcg" targetRef="Gateway_0jh4pf2" />
+    <userTask id="update-getting-started" name="Update getting started guide">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1spbo98" />
       </extensionElements>
       <incoming>Flow_0ysso60</incoming>
       <outgoing>Flow_1q2u3un</outgoing>
     </userTask>
-    <userTask id="Activity_0hplmjw" name="Merge with develop">
+    <userTask id="merge-with-main" name="Merge with main">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_31lqr6i" />
       </extensionElements>
       <incoming>Flow_02gv5rz</incoming>
       <outgoing>Flow_0rn3fe6</outgoing>
     </userTask>
-    <userTask id="Activity_1bk7x2b" name="Merge with master">
-      <extensionElements>
-        <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_3d306nv" />
-      </extensionElements>
-      <incoming>Flow_0rn3fe6</incoming>
-      <outgoing>Flow_0hfrzaj</outgoing>
-    </userTask>
-    <userTask id="Activity_0p24d5f" name="Prepare next stable branch">
+    <userTask id="prepare-next-stable" name="Prepare next stable branch">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_3dd5opg" />
       </extensionElements>
-      <incoming>Flow_0hfrzaj</incoming>
+      <incoming>Flow_0rn3fe6</incoming>
       <outgoing>Flow_1e04bck</outgoing>
     </userTask>
-    <userTask id="Activity_01me846" name="Build benchmark images">
+    <userTask id="build-benchmark-images" name="Build benchmark images">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1es2a5o" />
       </extensionElements>
       <incoming>Flow_0gtz7qb</incoming>
       <outgoing>Flow_0j0srfi</outgoing>
     </userTask>
-    <userTask id="Activity_08nyyfd" name="Update long running benchmarks">
+    <userTask id="update-long-running" name="Update long running benchmarks">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0gi1aut" />
       </extensionElements>
       <incoming>Flow_0j0srfi</incoming>
       <outgoing>Flow_0xuse6x</outgoing>
     </userTask>
-    <userTask id="Activity_18zrvuf" name="Announce the release in the Zeebe + Operate slack">
-      <incoming>Flow_1uaiw7b</incoming>
-      <outgoing>Flow_0cri5kh</outgoing>
-    </userTask>
-    <userTask id="Activity_173xvcg" name="Invite the team to celebrate the release">
+    <userTask id="invite-team-to-celebrate" name="Invite the team to celebrate">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_2hidn1i" />
       </extensionElements>
       <incoming>Flow_0bqz7va</incoming>
       <outgoing>Flow_1jznwig</outgoing>
     </userTask>
-    <userTask id="Activity_1o19fut" name="Create a calendar appointment for the next release">
+    <userTask id="create-appointment-for-next" name="Create a calendar appointment for the next release">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0koj8jh" />
       </extensionElements>
-      <incoming>Flow_11hya94</incoming>
-      <outgoing>Flow_18wmm8h</outgoing>
+      <incoming>Flow_15ria6d</incoming>
+      <outgoing>Flow_1fm2o6c</outgoing>
     </userTask>
-    <sequenceFlow id="Flow_010kmt4" sourceRef="Gateway_04bbzjp" targetRef="Activity_11swko3" />
-    <sequenceFlow id="Flow_0v38vir" sourceRef="Activity_11swko3" targetRef="Gateway_0c41kcg" />
-    <userTask id="Activity_11swko3" name="Collect required data for next release">
+    <sequenceFlow id="Flow_010kmt4" sourceRef="Gateway_04bbzjp" targetRef="collect-data" />
+    <sequenceFlow id="Flow_0v38vir" sourceRef="collect-data" targetRef="Gateway_0c41kcg" />
+    <userTask id="collect-data" name="Collect data for next release">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_01m96lq" />
       </extensionElements>
       <incoming>Flow_010kmt4</incoming>
       <outgoing>Flow_0v38vir</outgoing>
     </userTask>
-    <sequenceFlow id="Flow_0gtz7qb" sourceRef="Gateway_0kj2l1z" targetRef="Activity_01me846" />
+    <sequenceFlow id="Flow_0gtz7qb" sourceRef="Gateway_0kj2l1z" targetRef="build-benchmark-images" />
     <exclusiveGateway id="Gateway_0rbz8gw">
       <incoming>Flow_0116ifi</incoming>
       <incoming>Flow_0r71vpd</incoming>
@@ -192,8 +389,8 @@
       <outgoing>Flow_02gv5rz</outgoing>
       <outgoing>Flow_1y09u6a</outgoing>
     </exclusiveGateway>
-    <sequenceFlow id="Flow_02gv5rz" name="No" sourceRef="Gateway_08xyc0i" targetRef="Activity_0hplmjw" />
-    <sequenceFlow id="Flow_1y09u6a" name="Yes" sourceRef="Gateway_08xyc0i" targetRef="Activity_1n1gvix">
+    <sequenceFlow id="Flow_02gv5rz" name="No" sourceRef="Gateway_08xyc0i" targetRef="merge-with-main" />
+    <sequenceFlow id="Flow_1y09u6a" name="Yes" sourceRef="Gateway_08xyc0i" targetRef="merge-with-stable">
       <conditionExpression xsi:type="tFormalExpression">= release_type = "patch"</conditionExpression>
     </sequenceFlow>
     <exclusiveGateway id="Gateway_0hz7kvb">
@@ -202,15 +399,31 @@
       <outgoing>Flow_1xchhzg</outgoing>
     </exclusiveGateway>
     <sequenceFlow id="Flow_1xchhzg" sourceRef="Gateway_0hz7kvb" targetRef="Gateway_0dpkt4r" />
-    <sequenceFlow id="Flow_0bxq922" sourceRef="Activity_1n1gvix" targetRef="Gateway_0hz7kvb" />
+    <sequenceFlow id="Flow_0bxq922" sourceRef="merge-with-stable" targetRef="Gateway_0hz7kvb" />
     <sequenceFlow id="Flow_004201w" sourceRef="Gateway_0rbz8gw" targetRef="Gateway_0kj2l1z" />
-    <userTask id="Activity_1n1gvix" name="Merge with stable">
+    <userTask id="merge-with-stable" name="Merge with stable">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_3e5brtf" />
       </extensionElements>
       <incoming>Flow_1y09u6a</incoming>
       <outgoing>Flow_0bxq922</outgoing>
     </userTask>
+    <exclusiveGateway id="Gateway_0jqqw0n" name="Patch release?" default="Flow_1ib3xky">
+      <incoming>Flow_0xuse6x</incoming>
+      <outgoing>Flow_1ib3xky</outgoing>
+      <outgoing>Flow_0aulmee</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_1ib3xky" name="No" sourceRef="Gateway_0jqqw0n" targetRef="Gateway_04bbzjp" />
+    <exclusiveGateway id="Gateway_0jh4pf2">
+      <incoming>Flow_1xo3036</incoming>
+      <incoming>Flow_0aulmee</incoming>
+      <outgoing>Flow_15ria6d</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_15ria6d" sourceRef="Gateway_0jh4pf2" targetRef="create-appointment-for-next" />
+    <sequenceFlow id="Flow_0aulmee" name="Yes" sourceRef="Gateway_0jqqw0n" targetRef="Gateway_0jh4pf2">
+      <conditionExpression xsi:type="tFormalExpression">= release_type = "patch"</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1fm2o6c" sourceRef="create-appointment-for-next" targetRef="Event_0rk4u8i" />
   </process>
   <message id="message_76e3344e-f874-4648-8aae-3418680a9926" name="message_eventSubProcess_id_9">
     <extensionElements>
@@ -231,261 +444,256 @@
   </message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_cf8297c4-1b01-4c89-a2a1-87ac60eb83ba">
     <bpmndi:BPMNPlane id="BPMNPlane_d215a1c8-1f52-448c-aa98-de25f8336c52" bpmnElement="zeebe-post-release">
+      <bpmndi:BPMNEdge id="Flow_1fm2o6c_di" bpmnElement="Flow_1fm2o6c">
+        <di:waypoint x="2150" y="240" />
+        <di:waypoint x="2212" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0aulmee_di" bpmnElement="Flow_0aulmee">
+        <di:waypoint x="1410" y="265" />
+        <di:waypoint x="1410" y="400" />
+        <di:waypoint x="1970" y="400" />
+        <di:waypoint x="1970" y="265" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1681" y="382" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15ria6d_di" bpmnElement="Flow_15ria6d">
+        <di:waypoint x="1995" y="240" />
+        <di:waypoint x="2050" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ib3xky_di" bpmnElement="Flow_1ib3xky">
+        <di:waypoint x="1435" y="240" />
+        <di:waypoint x="1505" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1463" y="222" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_004201w_di" bpmnElement="Flow_004201w">
-        <di:waypoint x="1160" y="355" />
-        <di:waypoint x="1160" y="145" />
+        <di:waypoint x="970" y="325" />
+        <di:waypoint x="970" y="265" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0bxq922_di" bpmnElement="Flow_0bxq922">
-        <di:waypoint x="960" y="640" />
-        <di:waypoint x="1230" y="640" />
-        <di:waypoint x="1230" y="555" />
+        <di:waypoint x="680" y="620" />
+        <di:waypoint x="840" y="620" />
+        <di:waypoint x="840" y="505" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xchhzg_di" bpmnElement="Flow_1xchhzg">
-        <di:waypoint x="1255" y="530" />
-        <di:waypoint x="1275" y="530" />
+        <di:waypoint x="865" y="480" />
+        <di:waypoint x="945" y="480" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1y09u6a_di" bpmnElement="Flow_1y09u6a">
-        <di:waypoint x="570" y="555" />
-        <di:waypoint x="570" y="640" />
-        <di:waypoint x="860" y="640" />
+        <di:waypoint x="420" y="505" />
+        <di:waypoint x="420" y="620" />
+        <di:waypoint x="580" y="620" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="576" y="595" width="18" height="14" />
+          <dc:Bounds x="426" y="562" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02gv5rz_di" bpmnElement="Flow_02gv5rz">
-        <di:waypoint x="595" y="530" />
-        <di:waypoint x="710" y="530" />
+        <di:waypoint x="445" y="480" />
+        <di:waypoint x="500" y="480" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="645" y="512" width="15" height="14" />
+          <dc:Bounds x="462" y="462" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gtz7qb_di" bpmnElement="Flow_0gtz7qb">
-        <di:waypoint x="1185" y="120" />
-        <di:waypoint x="1280" y="120" />
+        <di:waypoint x="995" y="240" />
+        <di:waypoint x="1050" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0v38vir_di" bpmnElement="Flow_0v38vir">
-        <di:waypoint x="1890" y="450" />
-        <di:waypoint x="2000" y="450" />
-        <di:waypoint x="2000" y="145" />
+        <di:waypoint x="1740" y="310" />
+        <di:waypoint x="1850" y="310" />
+        <di:waypoint x="1850" y="265" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_010kmt4_di" bpmnElement="Flow_010kmt4">
-        <di:waypoint x="1680" y="145" />
-        <di:waypoint x="1680" y="450" />
-        <di:waypoint x="1790" y="450" />
+        <di:waypoint x="1530" y="265" />
+        <di:waypoint x="1530" y="310" />
+        <di:waypoint x="1640" y="310" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xo3036_di" bpmnElement="Flow_1xo3036">
-        <di:waypoint x="2025" y="120" />
-        <di:waypoint x="2112" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18wmm8h_di" bpmnElement="Flow_18wmm8h">
-        <di:waypoint x="1890" y="340" />
-        <di:waypoint x="2000" y="340" />
-        <di:waypoint x="2000" y="145" />
+        <di:waypoint x="1875" y="240" />
+        <di:waypoint x="1945" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jznwig_di" bpmnElement="Flow_1jznwig">
-        <di:waypoint x="1890" y="230" />
-        <di:waypoint x="2000" y="230" />
-        <di:waypoint x="2000" y="145" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cri5kh_di" bpmnElement="Flow_0cri5kh">
-        <di:waypoint x="1890" y="120" />
-        <di:waypoint x="1975" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11hya94_di" bpmnElement="Flow_11hya94">
-        <di:waypoint x="1680" y="145" />
-        <di:waypoint x="1680" y="340" />
-        <di:waypoint x="1790" y="340" />
+        <di:waypoint x="1740" y="170" />
+        <di:waypoint x="1850" y="170" />
+        <di:waypoint x="1850" y="215" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0bqz7va_di" bpmnElement="Flow_0bqz7va">
-        <di:waypoint x="1680" y="145" />
-        <di:waypoint x="1680" y="230" />
-        <di:waypoint x="1790" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1uaiw7b_di" bpmnElement="Flow_1uaiw7b">
-        <di:waypoint x="1705" y="120" />
-        <di:waypoint x="1790" y="120" />
+        <di:waypoint x="1530" y="215" />
+        <di:waypoint x="1530" y="170" />
+        <di:waypoint x="1640" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xuse6x_di" bpmnElement="Flow_0xuse6x">
-        <di:waypoint x="1540" y="120" />
-        <di:waypoint x="1655" y="120" />
+        <di:waypoint x="1330" y="240" />
+        <di:waypoint x="1385" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0j0srfi_di" bpmnElement="Flow_0j0srfi">
-        <di:waypoint x="1380" y="120" />
-        <di:waypoint x="1440" y="120" />
+        <di:waypoint x="1150" y="240" />
+        <di:waypoint x="1230" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0r71vpd_di" bpmnElement="Flow_0r71vpd">
-        <di:waypoint x="1300" y="505" />
-        <di:waypoint x="1300" y="380" />
-        <di:waypoint x="1185" y="380" />
+        <di:waypoint x="970" y="455" />
+        <di:waypoint x="970" y="375" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1q2u3un_di" bpmnElement="Flow_1q2u3un">
-        <di:waypoint x="960" y="740" />
-        <di:waypoint x="1300" y="740" />
-        <di:waypoint x="1300" y="555" />
+        <di:waypoint x="680" y="730" />
+        <di:waypoint x="970" y="730" />
+        <di:waypoint x="970" y="505" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1e04bck_di" bpmnElement="Flow_1e04bck">
-        <di:waypoint x="1130" y="530" />
-        <di:waypoint x="1205" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0hfrzaj_di" bpmnElement="Flow_0hfrzaj">
-        <di:waypoint x="960" y="530" />
-        <di:waypoint x="1030" y="530" />
+        <di:waypoint x="750" y="480" />
+        <di:waypoint x="815" y="480" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rn3fe6_di" bpmnElement="Flow_0rn3fe6">
-        <di:waypoint x="810" y="530" />
-        <di:waypoint x="860" y="530" />
+        <di:waypoint x="600" y="480" />
+        <di:waypoint x="650" y="480" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_151ugke_di" bpmnElement="Flow_151ugke">
-        <di:waypoint x="505" y="530" />
-        <di:waypoint x="545" y="530" />
+        <di:waypoint x="345" y="480" />
+        <di:waypoint x="395" y="480" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ysso60_di" bpmnElement="Flow_0ysso60">
-        <di:waypoint x="480" y="555" />
-        <di:waypoint x="480" y="740" />
-        <di:waypoint x="860" y="740" />
+        <di:waypoint x="320" y="505" />
+        <di:waypoint x="320" y="730" />
+        <di:waypoint x="580" y="730" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yl4sw3_di" bpmnElement="Flow_0yl4sw3">
-        <di:waypoint x="385" y="530" />
-        <di:waypoint x="455" y="530" />
+        <di:waypoint x="320" y="375" />
+        <di:waypoint x="320" y="455" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="394" y="512" width="52" height="14" />
+          <dc:Bounds x="333" y="398" width="53" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0116ifi_di" bpmnElement="Flow_0116ifi">
-        <di:waypoint x="360" y="505" />
-        <di:waypoint x="360" y="380" />
-        <di:waypoint x="1135" y="380" />
+        <di:waypoint x="345" y="350" />
+        <di:waypoint x="945" y="350" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="365" y="453" width="29" height="14" />
+          <dc:Bounds x="595" y="363" width="30" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r12izo_di" bpmnElement="Flow_1r12izo">
-        <di:waypoint x="320" y="145" />
-        <di:waypoint x="320" y="530" />
-        <di:waypoint x="335" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03azwil_di" bpmnElement="Flow_03azwil">
-        <di:waypoint x="910" y="230" />
-        <di:waypoint x="1160" y="230" />
-        <di:waypoint x="1160" y="145" />
+        <di:waypoint x="320" y="265" />
+        <di:waypoint x="320" y="325" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1dmkd6y_di" bpmnElement="Flow_1dmkd6y">
-        <di:waypoint x="540" y="120" />
-        <di:waypoint x="1135" y="120" />
+        <di:waypoint x="680" y="120" />
+        <di:waypoint x="970" y="120" />
+        <di:waypoint x="970" y="215" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xzxsjq_di" bpmnElement="Flow_1xzxsjq">
-        <di:waypoint x="720" y="230" />
-        <di:waypoint x="810" y="230" />
+        <di:waypoint x="750" y="240" />
+        <di:waypoint x="945" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1yxpc4s_di" bpmnElement="Flow_1yxpc4s">
-        <di:waypoint x="540" y="230" />
-        <di:waypoint x="620" y="230" />
+        <di:waypoint x="600" y="240" />
+        <di:waypoint x="650" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1a1ucq4_di" bpmnElement="Flow_1a1ucq4">
-        <di:waypoint x="320" y="145" />
-        <di:waypoint x="320" y="230" />
-        <di:waypoint x="440" y="230" />
+        <di:waypoint x="345" y="240" />
+        <di:waypoint x="500" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1dbpr3h_di" bpmnElement="Flow_1dbpr3h">
-        <di:waypoint x="345" y="120" />
-        <di:waypoint x="440" y="120" />
+        <di:waypoint x="320" y="215" />
+        <di:waypoint x="320" y="120" />
+        <di:waypoint x="580" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17x96fw_di" bpmnElement="Flow_17x96fw">
-        <di:waypoint x="218" y="120" />
-        <di:waypoint x="295" y="120" />
+        <di:waypoint x="238" y="240" />
+        <di:waypoint x="295" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1bzj58u_di" bpmnElement="Event_1bzj58u">
-        <dc:Bounds x="182" y="102" width="36" height="36" />
+        <dc:Bounds x="202" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="165" y="145" width="70" height="27" />
+          <dc:Bounds x="185" y="265" width="70" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_13c7c3m_di" bpmnElement="Gateway_14u4b2y">
-        <dc:Bounds x="295" y="95" width="50" height="50" />
+        <dc:Bounds x="295" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03rg5cw_di" bpmnElement="Activity_0uxjuhz">
-        <dc:Bounds x="440" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_03rg5cw_di" bpmnElement="notify-others">
+        <dc:Bounds x="580" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_17xias7_di" bpmnElement="Activity_1jbrh22">
-        <dc:Bounds x="440" y="190" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_17xias7_di" bpmnElement="github-release-labels">
+        <dc:Bounds x="500" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pmyeap_di" bpmnElement="Activity_0y0cwvf">
-        <dc:Bounds x="620" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1mgf7zd_di" bpmnElement="Activity_0uvoirh">
-        <dc:Bounds x="810" y="190" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0pmyeap_di" bpmnElement="github-generate-changelog">
+        <dc:Bounds x="650" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0vmp0ew_di" bpmnElement="Gateway_0kj2l1z">
-        <dc:Bounds x="1135" y="95" width="50" height="50" />
+        <dc:Bounds x="945" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0mc61tc_di" bpmnElement="Gateway_1m24vub" isMarkerVisible="true">
-        <dc:Bounds x="335" y="505" width="50" height="50" />
+        <dc:Bounds x="295" y="325" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="327" y="563" width="65" height="14" />
+          <dc:Bounds x="219.5" y="343" width="65" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1o7q449_di" bpmnElement="Gateway_03s2p31">
-        <dc:Bounds x="455" y="505" width="50" height="50" />
+        <dc:Bounds x="295" y="455" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0nf8g9j_di" bpmnElement="Gateway_0dpkt4r">
-        <dc:Bounds x="1275" y="505" width="50" height="50" />
+        <dc:Bounds x="945" y="455" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1d3rou3_di" bpmnElement="Gateway_04bbzjp">
-        <dc:Bounds x="1655" y="95" width="50" height="50" />
+        <dc:Bounds x="1505" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_19pet65_di" bpmnElement="Gateway_0c41kcg">
-        <dc:Bounds x="1975" y="95" width="50" height="50" />
+        <dc:Bounds x="1825" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0rk4u8i_di" bpmnElement="Event_0rk4u8i">
-        <dc:Bounds x="2112" y="102" width="36" height="36" />
+        <dc:Bounds x="2212" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2107" y="145" width="47" height="14" />
+          <dc:Bounds x="2207" y="265" width="47" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1mpk96m_di" bpmnElement="Activity_0fq4a43">
-        <dc:Bounds x="860" y="700" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1mpk96m_di" bpmnElement="update-getting-started">
+        <dc:Bounds x="580" y="690" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0826zu4_di" bpmnElement="Activity_0hplmjw">
-        <dc:Bounds x="710" y="490" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0826zu4_di" bpmnElement="merge-with-main">
+        <dc:Bounds x="500" y="440" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ulx4zz_di" bpmnElement="Activity_1bk7x2b">
-        <dc:Bounds x="860" y="490" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1jyc766_di" bpmnElement="prepare-next-stable">
+        <dc:Bounds x="650" y="440" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jyc766_di" bpmnElement="Activity_0p24d5f">
-        <dc:Bounds x="1030" y="490" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1xfsspz_di" bpmnElement="build-benchmark-images">
+        <dc:Bounds x="1050" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1xfsspz_di" bpmnElement="Activity_01me846">
-        <dc:Bounds x="1280" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1cg71mw_di" bpmnElement="update-long-running">
+        <dc:Bounds x="1230" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1cg71mw_di" bpmnElement="Activity_08nyyfd">
-        <dc:Bounds x="1440" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_06mb042_di" bpmnElement="invite-team-to-celebrate">
+        <dc:Bounds x="1640" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ehj6gb_di" bpmnElement="Activity_18zrvuf">
-        <dc:Bounds x="1790" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1c50liq_di" bpmnElement="create-appointment-for-next">
+        <dc:Bounds x="2050" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_06mb042_di" bpmnElement="Activity_173xvcg">
-        <dc:Bounds x="1790" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1c50liq_di" bpmnElement="Activity_1o19fut">
-        <dc:Bounds x="1790" y="300" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05uye4r_di" bpmnElement="Activity_11swko3">
-        <dc:Bounds x="1790" y="410" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_05uye4r_di" bpmnElement="collect-data">
+        <dc:Bounds x="1640" y="270" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0rbz8gw_di" bpmnElement="Gateway_0rbz8gw" isMarkerVisible="true">
-        <dc:Bounds x="1135" y="355" width="50" height="50" />
+        <dc:Bounds x="945" y="325" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_08xyc0i_di" bpmnElement="Gateway_08xyc0i" isMarkerVisible="true">
-        <dc:Bounds x="545" y="505" width="50" height="50" />
+        <dc:Bounds x="395" y="455" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="531" y="475" width="78" height="14" />
+          <dc:Bounds x="381" y="425" width="78" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0hz7kvb_di" bpmnElement="Gateway_0hz7kvb" isMarkerVisible="true">
-        <dc:Bounds x="1205" y="505" width="50" height="50" />
+        <dc:Bounds x="815" y="455" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0grrx5b_di" bpmnElement="Activity_1n1gvix">
-        <dc:Bounds x="860" y="600" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0grrx5b_di" bpmnElement="merge-with-stable">
+        <dc:Bounds x="580" y="580" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jqqw0n_di" bpmnElement="Gateway_0jqqw0n" isMarkerVisible="true">
+        <dc:Bounds x="1385" y="215" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1373" y="191" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jh4pf2_di" bpmnElement="Gateway_0jh4pf2" isMarkerVisible="true">
+        <dc:Bounds x="1945" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

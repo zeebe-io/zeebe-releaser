@@ -2,6 +2,12 @@
   "schemaVersion": 2,
   "components": [
     {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
       "text": "# Send message Recreate Benchmark\n\nIt seems your benchmark is no longer valid. You'll have to recreate the benchmark.\n\nTo do that, publish a message to the cluster. For example, using `zbctl`:\n\n```\nzbctl publish message recreate_benchmark --correlationKey \"1.3.0\"\n```\n\n> Make sure you are using the correct API Client Credentials. You can check which Zeebe cluster your zbctl is connected to by running `zbctl status`.",
       "type": "text",
       "id": "Field_0xdhmcn"

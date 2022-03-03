@@ -30,7 +30,11 @@ class ZeebeReleaseProcessTest {
         "zeebe-post-release",
         hashMapOf(
             "release_date" to
-                "date and time(\"${dateFormatter.format(ZonedDateTime.now().plusHours(1))}\")",
+                "date and time(\"${
+                            dateFormatter.format(
+                                ZonedDateTime.now().plusHours(1)
+                            )
+                        }\")",
             "code_freeze_date" to "date and time(\"${dateFormatter.format(ZonedDateTime.now())}\")",
             "release_type" to "\"minor\"",
             "release_manager" to "\"The R4l34z0r\""))
@@ -48,7 +52,8 @@ class ZeebeReleaseProcessTest {
   @Test
   fun `should be able to complete the instance`() {
     // when
-    val instanceEvent = createInstance(hashMapOf("release_version" to "1.0.0"))
+    val instanceEvent =
+        createInstance(hashMapOf("release_version" to "1.0.0", "release_type" to "major"))
 
     // then
     testHelper.assertThatUserTaskActivated(
@@ -61,6 +66,37 @@ class ZeebeReleaseProcessTest {
     testHelper.assertThatUserTaskActivated(
         instanceEvent.processInstanceKey, "collect-release-notes")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "collect-release-notes")
+    testHelper.assertThatCalledProcessActivated(
+        instanceEvent.processInstanceKey, "zeebe-release-qa")
+    testHelper.assertThatCalledProcessCompleted(
+        instanceEvent.processInstanceKey, "zeebe-release-qa")
+    testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "trigger-release")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "trigger-release")
+    testHelper.assertThatUserTaskActivated(
+        instanceEvent.processInstanceKey, "release-on-maven-central")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "release-on-maven-central")
+    testHelper.assertThatCalledProcessActivated(
+        instanceEvent.processInstanceKey, "zeebe-process-test-release")
+    testHelper.assertThatCalledProcessCompleted(
+        instanceEvent.processInstanceKey, "zeebe-process-test-release")
+    testHelper.assertThatCalledProcessActivated(
+        instanceEvent.processInstanceKey, "zeebe-post-release")
+    testHelper.assertThatCalledProcessCompleted(
+        instanceEvent.processInstanceKey, "zeebe-post-release")
+
+    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+  }
+
+  @Test
+  fun `should be able to complete patch release`() {
+    // when
+    val instanceEvent =
+        createInstance(hashMapOf("release_version" to "1.0.0", "release_type" to "patch"))
+
+    // then
+    testHelper.assertThatUserTaskActivated(
+        instanceEvent.processInstanceKey, "create-release-branch")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "create-release-branch")
     testHelper.assertThatCalledProcessActivated(
         instanceEvent.processInstanceKey, "zeebe-release-qa")
     testHelper.assertThatCalledProcessCompleted(

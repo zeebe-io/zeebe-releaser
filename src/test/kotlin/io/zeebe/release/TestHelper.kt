@@ -21,8 +21,7 @@ class TestHelper(val client: ZeebeClient, val recordStream: RecordStreamSource) 
               .withProcessInstanceKey(processInstanceKey)
               .withElementType(BpmnElementType.USER_TASK)
               .withIntent(ProcessInstanceIntent.ELEMENT_ACTIVATED)
-              .filter { record -> record.value.elementId == elementId }
-              .count()
+              .count { record -> record.value.elementId == elementId }
 
       Assertions.assertThat(amountOfActivatedTasks).isEqualTo(amount)
     }

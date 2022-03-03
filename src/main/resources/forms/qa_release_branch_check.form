@@ -2,6 +2,12 @@
   "schemaVersion": 2,
   "components": [
     {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
       "text": "# Check release branch for new commits\n\n\nIf there are new bugfixes backported to the release branch, we may have to re-create the benchmark.",
       "type": "text",
       "id": "Field_1aqkm7x"
