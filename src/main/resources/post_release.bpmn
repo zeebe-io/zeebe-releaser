@@ -238,38 +238,38 @@
       <outgoing>Flow_17x96fw</outgoing>
     </startEvent>
     <sequenceFlow id="Flow_17x96fw" sourceRef="Event_1bzj58u" targetRef="Gateway_14u4b2y" />
-    <sequenceFlow id="Flow_1dbpr3h" sourceRef="Gateway_14u4b2y" targetRef="Activity_0uxjuhz" />
+    <sequenceFlow id="Flow_1dbpr3h" sourceRef="Gateway_14u4b2y" targetRef="notify-others" />
     <parallelGateway id="Gateway_14u4b2y">
       <incoming>Flow_17x96fw</incoming>
       <outgoing>Flow_1dbpr3h</outgoing>
       <outgoing>Flow_1a1ucq4</outgoing>
       <outgoing>Flow_1r12izo</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_1a1ucq4" sourceRef="Gateway_14u4b2y" targetRef="Activity_1jbrh22" />
-    <sequenceFlow id="Flow_1yxpc4s" sourceRef="Activity_1jbrh22" targetRef="Activity_0y0cwvf" />
-    <sequenceFlow id="Flow_1xzxsjq" sourceRef="Activity_0y0cwvf" targetRef="Gateway_0kj2l1z" />
-    <userTask id="Activity_0uxjuhz" name="Notify other teams">
+    <sequenceFlow id="Flow_1a1ucq4" sourceRef="Gateway_14u4b2y" targetRef="github-release-labels" />
+    <sequenceFlow id="Flow_1yxpc4s" sourceRef="github-release-labels" targetRef="github-generate-changelog" />
+    <sequenceFlow id="Flow_1xzxsjq" sourceRef="github-generate-changelog" targetRef="Gateway_0kj2l1z" />
+    <userTask id="notify-others" name="Notify other teams">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_25kpsi7" />
       </extensionElements>
       <incoming>Flow_1dbpr3h</incoming>
       <outgoing>Flow_1dmkd6y</outgoing>
     </userTask>
-    <userTask id="Activity_1jbrh22" name="Add release label to GitHub">
+    <userTask id="github-release-labels" name="Add release label to GitHub">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_24oj0f5" />
       </extensionElements>
       <incoming>Flow_1a1ucq4</incoming>
       <outgoing>Flow_1yxpc4s</outgoing>
     </userTask>
-    <userTask id="Activity_0y0cwvf" name="Generate changelog">
+    <userTask id="github-generate-changelog" name="Generate changelog">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_115oou5" />
       </extensionElements>
       <incoming>Flow_1yxpc4s</incoming>
       <outgoing>Flow_1xzxsjq</outgoing>
     </userTask>
-    <sequenceFlow id="Flow_1dmkd6y" sourceRef="Activity_0uxjuhz" targetRef="Gateway_0kj2l1z" />
+    <sequenceFlow id="Flow_1dmkd6y" sourceRef="notify-others" targetRef="Gateway_0kj2l1z" />
     <parallelGateway id="Gateway_0kj2l1z">
       <incoming>Flow_004201w</incoming>
       <incoming>Flow_1dmkd6y</incoming>
@@ -291,94 +291,94 @@
       <outgoing>Flow_0ysso60</outgoing>
       <outgoing>Flow_151ugke</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_0ysso60" sourceRef="Gateway_03s2p31" targetRef="Activity_0fq4a43" />
+    <sequenceFlow id="Flow_0ysso60" sourceRef="Gateway_03s2p31" targetRef="update-getting-started" />
     <sequenceFlow id="Flow_151ugke" sourceRef="Gateway_03s2p31" targetRef="Gateway_08xyc0i" />
-    <sequenceFlow id="Flow_0rn3fe6" sourceRef="Activity_0hplmjw" targetRef="Activity_0p24d5f" />
-    <sequenceFlow id="Flow_1e04bck" sourceRef="Activity_0p24d5f" targetRef="Gateway_0hz7kvb" />
+    <sequenceFlow id="Flow_0rn3fe6" sourceRef="merge-with-main" targetRef="prepare-next-stable" />
+    <sequenceFlow id="Flow_1e04bck" sourceRef="prepare-next-stable" targetRef="Gateway_0hz7kvb" />
     <parallelGateway id="Gateway_0dpkt4r">
       <incoming>Flow_1q2u3un</incoming>
       <incoming>Flow_1xchhzg</incoming>
       <outgoing>Flow_0r71vpd</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_1q2u3un" sourceRef="Activity_0fq4a43" targetRef="Gateway_0dpkt4r" />
+    <sequenceFlow id="Flow_1q2u3un" sourceRef="update-getting-started" targetRef="Gateway_0dpkt4r" />
     <sequenceFlow id="Flow_0r71vpd" sourceRef="Gateway_0dpkt4r" targetRef="Gateway_0rbz8gw" />
-    <sequenceFlow id="Flow_0j0srfi" sourceRef="Activity_01me846" targetRef="Activity_08nyyfd" />
-    <sequenceFlow id="Flow_0xuse6x" sourceRef="Activity_08nyyfd" targetRef="Gateway_0jqqw0n" />
+    <sequenceFlow id="Flow_0j0srfi" sourceRef="build-benchmark-images" targetRef="update-long-running" />
+    <sequenceFlow id="Flow_0xuse6x" sourceRef="update-long-running" targetRef="Gateway_0jqqw0n" />
     <parallelGateway id="Gateway_04bbzjp">
       <incoming>Flow_1ib3xky</incoming>
       <outgoing>Flow_0bqz7va</outgoing>
       <outgoing>Flow_010kmt4</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_0bqz7va" sourceRef="Gateway_04bbzjp" targetRef="Activity_173xvcg" />
+    <sequenceFlow id="Flow_0bqz7va" sourceRef="Gateway_04bbzjp" targetRef="invite-team-to-celebrate" />
     <parallelGateway id="Gateway_0c41kcg">
       <incoming>Flow_1jznwig</incoming>
       <incoming>Flow_0v38vir</incoming>
       <outgoing>Flow_1xo3036</outgoing>
     </parallelGateway>
-    <sequenceFlow id="Flow_1jznwig" sourceRef="Activity_173xvcg" targetRef="Gateway_0c41kcg" />
+    <sequenceFlow id="Flow_1jznwig" sourceRef="invite-team-to-celebrate" targetRef="Gateway_0c41kcg" />
     <endEvent id="Event_0rk4u8i" name="Released">
       <incoming>Flow_1fm2o6c</incoming>
     </endEvent>
     <sequenceFlow id="Flow_1xo3036" sourceRef="Gateway_0c41kcg" targetRef="Gateway_0jh4pf2" />
-    <userTask id="Activity_0fq4a43" name="Update getting started guide">
+    <userTask id="update-getting-started" name="Update getting started guide">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1spbo98" />
       </extensionElements>
       <incoming>Flow_0ysso60</incoming>
       <outgoing>Flow_1q2u3un</outgoing>
     </userTask>
-    <userTask id="Activity_0hplmjw" name="Merge with main">
+    <userTask id="merge-with-main" name="Merge with main">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_31lqr6i" />
       </extensionElements>
       <incoming>Flow_02gv5rz</incoming>
       <outgoing>Flow_0rn3fe6</outgoing>
     </userTask>
-    <userTask id="Activity_0p24d5f" name="Prepare next stable branch">
+    <userTask id="prepare-next-stable" name="Prepare next stable branch">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_3dd5opg" />
       </extensionElements>
       <incoming>Flow_0rn3fe6</incoming>
       <outgoing>Flow_1e04bck</outgoing>
     </userTask>
-    <userTask id="Activity_01me846" name="Build benchmark images">
+    <userTask id="build-benchmark-images" name="Build benchmark images">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1es2a5o" />
       </extensionElements>
       <incoming>Flow_0gtz7qb</incoming>
       <outgoing>Flow_0j0srfi</outgoing>
     </userTask>
-    <userTask id="Activity_08nyyfd" name="Update long running benchmarks">
+    <userTask id="update-long-running" name="Update long running benchmarks">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0gi1aut" />
       </extensionElements>
       <incoming>Flow_0j0srfi</incoming>
       <outgoing>Flow_0xuse6x</outgoing>
     </userTask>
-    <userTask id="Activity_173xvcg" name="Invite the team to celebrate">
+    <userTask id="invite-team-to-celebrate" name="Invite the team to celebrate">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_2hidn1i" />
       </extensionElements>
       <incoming>Flow_0bqz7va</incoming>
       <outgoing>Flow_1jznwig</outgoing>
     </userTask>
-    <userTask id="Activity_1o19fut" name="Create a calendar appointment for the next release">
+    <userTask id="create-appointment-for-next" name="Create a calendar appointment for the next release">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0koj8jh" />
       </extensionElements>
       <incoming>Flow_15ria6d</incoming>
       <outgoing>Flow_1fm2o6c</outgoing>
     </userTask>
-    <sequenceFlow id="Flow_010kmt4" sourceRef="Gateway_04bbzjp" targetRef="Activity_11swko3" />
-    <sequenceFlow id="Flow_0v38vir" sourceRef="Activity_11swko3" targetRef="Gateway_0c41kcg" />
-    <userTask id="Activity_11swko3" name="Collect data for next release">
+    <sequenceFlow id="Flow_010kmt4" sourceRef="Gateway_04bbzjp" targetRef="collect-data" />
+    <sequenceFlow id="Flow_0v38vir" sourceRef="collect-data" targetRef="Gateway_0c41kcg" />
+    <userTask id="collect-data" name="Collect data for next release">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_01m96lq" />
       </extensionElements>
       <incoming>Flow_010kmt4</incoming>
       <outgoing>Flow_0v38vir</outgoing>
     </userTask>
-    <sequenceFlow id="Flow_0gtz7qb" sourceRef="Gateway_0kj2l1z" targetRef="Activity_01me846" />
+    <sequenceFlow id="Flow_0gtz7qb" sourceRef="Gateway_0kj2l1z" targetRef="build-benchmark-images" />
     <exclusiveGateway id="Gateway_0rbz8gw">
       <incoming>Flow_0116ifi</incoming>
       <incoming>Flow_0r71vpd</incoming>
@@ -389,8 +389,8 @@
       <outgoing>Flow_02gv5rz</outgoing>
       <outgoing>Flow_1y09u6a</outgoing>
     </exclusiveGateway>
-    <sequenceFlow id="Flow_02gv5rz" name="No" sourceRef="Gateway_08xyc0i" targetRef="Activity_0hplmjw" />
-    <sequenceFlow id="Flow_1y09u6a" name="Yes" sourceRef="Gateway_08xyc0i" targetRef="Activity_1n1gvix">
+    <sequenceFlow id="Flow_02gv5rz" name="No" sourceRef="Gateway_08xyc0i" targetRef="merge-with-main" />
+    <sequenceFlow id="Flow_1y09u6a" name="Yes" sourceRef="Gateway_08xyc0i" targetRef="merge-with-stable">
       <conditionExpression xsi:type="tFormalExpression">= release_type = "patch"</conditionExpression>
     </sequenceFlow>
     <exclusiveGateway id="Gateway_0hz7kvb">
@@ -399,9 +399,9 @@
       <outgoing>Flow_1xchhzg</outgoing>
     </exclusiveGateway>
     <sequenceFlow id="Flow_1xchhzg" sourceRef="Gateway_0hz7kvb" targetRef="Gateway_0dpkt4r" />
-    <sequenceFlow id="Flow_0bxq922" sourceRef="Activity_1n1gvix" targetRef="Gateway_0hz7kvb" />
+    <sequenceFlow id="Flow_0bxq922" sourceRef="merge-with-stable" targetRef="Gateway_0hz7kvb" />
     <sequenceFlow id="Flow_004201w" sourceRef="Gateway_0rbz8gw" targetRef="Gateway_0kj2l1z" />
-    <userTask id="Activity_1n1gvix" name="Merge with stable">
+    <userTask id="merge-with-stable" name="Merge with stable">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_3e5brtf" />
       </extensionElements>
@@ -419,11 +419,11 @@
       <incoming>Flow_0aulmee</incoming>
       <outgoing>Flow_15ria6d</outgoing>
     </exclusiveGateway>
-    <sequenceFlow id="Flow_15ria6d" sourceRef="Gateway_0jh4pf2" targetRef="Activity_1o19fut" />
+    <sequenceFlow id="Flow_15ria6d" sourceRef="Gateway_0jh4pf2" targetRef="create-appointment-for-next" />
     <sequenceFlow id="Flow_0aulmee" name="Yes" sourceRef="Gateway_0jqqw0n" targetRef="Gateway_0jh4pf2">
       <conditionExpression xsi:type="tFormalExpression">= release_type = "patch"</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="Flow_1fm2o6c" sourceRef="Activity_1o19fut" targetRef="Event_0rk4u8i" />
+    <sequenceFlow id="Flow_1fm2o6c" sourceRef="create-appointment-for-next" targetRef="Event_0rk4u8i" />
   </process>
   <message id="message_76e3344e-f874-4648-8aae-3418680a9926" name="message_eventSubProcess_id_9">
     <extensionElements>
@@ -611,13 +611,13 @@
       <bpmndi:BPMNShape id="Gateway_13c7c3m_di" bpmnElement="Gateway_14u4b2y">
         <dc:Bounds x="295" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03rg5cw_di" bpmnElement="Activity_0uxjuhz">
+      <bpmndi:BPMNShape id="Activity_03rg5cw_di" bpmnElement="notify-others">
         <dc:Bounds x="580" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_17xias7_di" bpmnElement="Activity_1jbrh22">
+      <bpmndi:BPMNShape id="Activity_17xias7_di" bpmnElement="github-release-labels">
         <dc:Bounds x="500" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pmyeap_di" bpmnElement="Activity_0y0cwvf">
+      <bpmndi:BPMNShape id="Activity_0pmyeap_di" bpmnElement="github-generate-changelog">
         <dc:Bounds x="650" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0vmp0ew_di" bpmnElement="Gateway_0kj2l1z">
@@ -647,28 +647,28 @@
           <dc:Bounds x="2207" y="265" width="47" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1mpk96m_di" bpmnElement="Activity_0fq4a43">
+      <bpmndi:BPMNShape id="Activity_1mpk96m_di" bpmnElement="update-getting-started">
         <dc:Bounds x="580" y="690" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0826zu4_di" bpmnElement="Activity_0hplmjw">
+      <bpmndi:BPMNShape id="Activity_0826zu4_di" bpmnElement="merge-with-main">
         <dc:Bounds x="500" y="440" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jyc766_di" bpmnElement="Activity_0p24d5f">
+      <bpmndi:BPMNShape id="Activity_1jyc766_di" bpmnElement="prepare-next-stable">
         <dc:Bounds x="650" y="440" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1xfsspz_di" bpmnElement="Activity_01me846">
+      <bpmndi:BPMNShape id="Activity_1xfsspz_di" bpmnElement="build-benchmark-images">
         <dc:Bounds x="1050" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1cg71mw_di" bpmnElement="Activity_08nyyfd">
+      <bpmndi:BPMNShape id="Activity_1cg71mw_di" bpmnElement="update-long-running">
         <dc:Bounds x="1230" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_06mb042_di" bpmnElement="Activity_173xvcg">
+      <bpmndi:BPMNShape id="Activity_06mb042_di" bpmnElement="invite-team-to-celebrate">
         <dc:Bounds x="1640" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1c50liq_di" bpmnElement="Activity_1o19fut">
+      <bpmndi:BPMNShape id="Activity_1c50liq_di" bpmnElement="create-appointment-for-next">
         <dc:Bounds x="2050" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05uye4r_di" bpmnElement="Activity_11swko3">
+      <bpmndi:BPMNShape id="Activity_05uye4r_di" bpmnElement="collect-data">
         <dc:Bounds x="1640" y="270" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0rbz8gw_di" bpmnElement="Gateway_0rbz8gw" isMarkerVisible="true">
@@ -683,7 +683,7 @@
       <bpmndi:BPMNShape id="Gateway_0hz7kvb_di" bpmnElement="Gateway_0hz7kvb" isMarkerVisible="true">
         <dc:Bounds x="815" y="455" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0grrx5b_di" bpmnElement="Activity_1n1gvix">
+      <bpmndi:BPMNShape id="Activity_0grrx5b_di" bpmnElement="merge-with-stable">
         <dc:Bounds x="580" y="580" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0jqqw0n_di" bpmnElement="Gateway_0jqqw0n" isMarkerVisible="true">
