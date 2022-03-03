@@ -52,7 +52,8 @@ class ZeebeReleaseProcessTest {
   @Test
   fun `should be able to complete the instance`() {
     // when
-    val instanceEvent = createInstance(hashMapOf("release_version" to "1.0.0"))
+    val instanceEvent =
+        createInstance(hashMapOf("release_version" to "1.0.0", "release_type" to "major"))
 
     // then
     testHelper.assertThatUserTaskActivated(
