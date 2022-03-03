@@ -30,7 +30,11 @@ class ZeebeReleaseProcessTest {
         "zeebe-post-release",
         hashMapOf(
             "release_date" to
-                "date and time(\"${dateFormatter.format(ZonedDateTime.now().plusHours(1))}\")",
+                "date and time(\"${
+                            dateFormatter.format(
+                                ZonedDateTime.now().plusHours(1)
+                            )
+                        }\")",
             "code_freeze_date" to "date and time(\"${dateFormatter.format(ZonedDateTime.now())}\")",
             "release_type" to "\"minor\"",
             "release_manager" to "\"The R4l34z0r\""))
