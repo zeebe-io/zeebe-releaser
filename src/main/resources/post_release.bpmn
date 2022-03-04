@@ -12,7 +12,7 @@
       "key": "release_version"
     },
     {
-      "text": "# Notify other teams\nThere's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- Zeebe\n- Operate &amp; Tasklist\n- Shared Services\n- Optimize",
+      "text": "# Notify other teams\nThere's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- [Zeebe](https://app.slack.com/client/T0PM0P1SA/CSQ2E3BT4)\n- [Operate &amp; Tasklist](https://app.slack.com/client/T0PM0P1SA/C9B5270DA)\n- [Identity](https://app.slack.com/client/T0PM0P1SA/CRQAL5A1M)\n- [Optimize](https://app.slack.com/client/T0PM0P1SA/C55U06YRG)",
       "type": "text",
       "id": "Field_0zr0gl2"
     },
@@ -164,7 +164,7 @@
       "id": "Field_1g8m768"
     },
     {
-      "text": "Make sure to invite the next release manager as required, and the following as optional:\n\n- zeebe@camunda.com\n- operate@camunda.com\n- sre@camunda.com",
+      "text": "Make sure to invite the next release manager as required, and the following as optional:\n\n- zeebe@camunda.com\n- operate@camunda.com\n- sre@camunda.com\n- identity@camunda.com\n- optimize@camunda.com",
       "type": "text",
       "id": "Field_1cpj19r"
     }
@@ -201,7 +201,7 @@
       "key": "release_version"
     },
     {
-      "text": "# Merge with Stable\n\nAs the release job produces some additional commits, we need to merge them back into our development branch. This should be the same base branch as the one you used when creating the release branch at the very beginning. So for alpha, minor, and major releases, this will be develop. For patch releases, this will be the appropriate stable/MAJOR.MINOR branch.",
+      "text": "# Merge with Stable\n\nAs the release job produces some additional commits, we need to merge them back. This should be the same base branch as the one you used when creating the release branch at the very beginning. So for patch releases, this will be the appropriate stable/MAJOR.MINOR branch.\n\nCreate a PR and pick a reviewer to merge it via bors.",
       "type": "text",
       "id": "Field_1ukm08o"
     },

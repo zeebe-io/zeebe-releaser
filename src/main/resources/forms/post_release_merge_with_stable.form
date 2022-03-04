@@ -8,7 +8,7 @@
       "key": "release_version"
     },
     {
-      "text": "# Merge with Stable\n\nAs the release job produces some additional commits, we need to merge them back into our development branch. This should be the same base branch as the one you used when creating the release branch at the very beginning. So for alpha, minor, and major releases, this will be develop. For patch releases, this will be the appropriate stable/MAJOR.MINOR branch.",
+      "text": "# Merge with Stable\n\nAs the release job produces some additional commits, we need to merge them back. This should be the same base branch as the one you used when creating the release branch at the very beginning. So for patch releases, this will be the appropriate stable/MAJOR.MINOR branch.\n\nCreate a PR and pick a reviewer to merge it via bors.",
       "type": "text",
       "id": "Field_1ukm08o"
     },
