@@ -164,7 +164,7 @@
       "id": "Field_1g8m768"
     },
     {
-      "text": "Make sure to invite the next release manager as required, and the following as optional:\n\n- zeebe@camunda.com\n- operate@camunda.com\n- sre@camunda.com",
+      "text": "Make sure to invite the next release manager as required, and the following as optional:\n\n- zeebe@camunda.com\n- operate@camunda.com\n- sre@camunda.com\n- identity@camunda.com\n- optimize@camunda.com",
       "type": "text",
       "id": "Field_1cpj19r"
     }
