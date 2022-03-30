@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: oleschoenburg/zbctl-action@v0.0.7
+      - uses: zeebe-io/zbctl-action@v0.0.7
         with:
           version: '1.2.1'
           command: 'deploy src/main/resources/*.bpmn'
