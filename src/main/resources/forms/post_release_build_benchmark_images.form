@@ -1,5 +1,4 @@
 {
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release process",
@@ -8,11 +7,16 @@
       "key": "release_version"
     },
     {
-      "text": "# Build the benchmark images\n\nNext step is to build the worker and starter images we use for our continuous load tests. First, checkout the tag you just released, then navigate to the benchmark project folder, and from there we can build and push the images.\n\n```sh\nexport ZEEBE_VERSION=MAJOR.MINOR.PATCH-ALPHA\nexport DOCKER_BUILDKIT=1\ngit checkout $ZEEBE_VERSION\ncd benchmarks/project\ndocker build -t \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\" --target starter .\ndocker push \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\"\ndocker build -t \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\" --target worker .\ndocker push \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\"\n```",
+      "text": "# Build the benchmark images\n\nNext step is to build the worker and starter images we use for our continuous load tests. First, make sure to pull all tags from upstream.\n\n```sh\ngit fetch --all\n```\n\nNext, we can use the release script available in the project folder. From the root of the project:\n\n```sh\ncd benchmark/project\n./release -p <MAJOR.MINOR.PATCH-ALPHA>\n```\n\nThis will build the worker and starter images for this tag, and push them. If you wish to test them before pushing, you can omit the `-p` flag; the images will be built locally but will not be pushed.\n\nThis script is safe to run in parallel multiple times if you wish to run multiple releases.",
       "type": "text",
       "id": "Field_0do8ch5"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "Form_1sslv4v"
+  "id": "Form_1sslv4v",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
 }

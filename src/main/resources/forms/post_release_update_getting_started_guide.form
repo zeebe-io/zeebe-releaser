@@ -1,5 +1,4 @@
 {
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release process",
@@ -8,11 +7,16 @@
       "key": "release_version"
     },
     {
-      "text": "# Update the getting started guide\nUpdate the [getting started guide](https://github.com/camunda-cloud/camunda-cloud-get-started). At the very least, this means updating the default Zeebe version in POM files and any Docker (or docker-compose) files accordingly. Additionally, for minor and major releases, you may have to update the code such that it builds and all the examples work successfully. Finally, make sure that the examples do not use deprecated code as well.\n\nTo do so, make sure to clone the repository locally. Checkout a new branch, `zeebe-release-MAJOR.MINOR.PATCH-ALPHA`, and commit your changes to it. Then open a new PR for it, and assign it to another Zeebe team member. They will review and merge it.",
+      "text": "# Update the getting started guide\nUpdate the [getting started guide](https://github.com/camunda/camunda-platform-get-started).\n\nUpdate the Zeebe version in POM files for the Java and Spring examples.\n\nUpdate the version for the Go example as well by navigating to the `go` folder, and running:\n\n```sh\ngo get github.com/camunda/zeebe/clients/go/v8@v<MAJOR.MINOR.PATCH-ALPHA>\n```\n\nAdditionally, for minor and major releases, you may have to update the code such that it builds and all the examples work successfully. Finally, make sure that the examples do not use deprecated code as well.\n\nTo do so, make sure to clone the repository locally. Checkout a new branch, `zeebe-release-MAJOR.MINOR.PATCH-ALPHA`, and commit your changes to it. Then open a new PR for it, and assign it to another Zeebe team member. They will review and merge it.",
       "type": "text",
       "id": "Field_0bl348l"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "Form_1ol2v9z"
+  "id": "Form_1ol2v9z",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
 }
