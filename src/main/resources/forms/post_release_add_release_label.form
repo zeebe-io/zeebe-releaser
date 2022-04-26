@@ -1,5 +1,4 @@
 {
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release process",
@@ -8,11 +7,16 @@
       "key": "release_version"
     },
     {
-      "text": "# Github Labels\n\nIn order to run our changelog tool (zcl) we need to create first a new release label in our Zeebe repo.\n\nGo to [labels](https://github.com/camunda-cloud/zeebe/labels), and click on **New Label**. The label should be similar named as the previous release labels.\n\nE.g. *Release: X.Y.Z-alpha*",
+      "text": "# Github Labels\n\nIn order to run our changelog tool (zcl) we need to create first a new release label in our Zeebe repo.\n\nGo to [labels](https://github.com/camunda-cloud/zeebe/labels), and click on **New Label**. The label should be similar named as the previous release labels.\n\nE.g. *release/X.Y.Z-alpha*",
       "type": "text",
       "id": "Field_0j0822v"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "Form_1djdvy0"
+  "id": "Form_1djdvy0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
 }

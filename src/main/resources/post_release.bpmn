@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="4.12.0">
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.0.0">
   <process id="zeebe-post-release" name="Zeebe Post Release" isExecutable="true">
     <extensionElements>
       <ns0:userTaskForm id="userTaskForm_25kpsi7">{
@@ -26,25 +26,6 @@
   "id": "Form_1hcmrar"
 }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_115oou5">{
-  "schemaVersion": 2,
-  "components": [    
-    {
-      "label": "Current release process",
-      "type": "textfield",
-      "id": "Field_1nljf6y",
-      "key": "release_version"
-    },
-    {
-      "text": "# Generate the changelog\n\nIf you haven't yet, download and install the [Zeebe Changelog tool](https://github.com/zeebe-io/zeebe-changelog), `zcl`. Additionally, you'll also need a Github 'Personal Access Token' that can be generated in [your Github's settings](https://github.com/settings/tokens). The token needs to have `public_repo` scope. For completeness, we will pass the token into `zcl` as a parameter but you can set it as an environment variable `GITHUB_TOKEN`.\n\nBefore continuing, make sure to fetch the latest changes from the repository, as otherwise you may not get the right change log.\n\n```sh\ngit fetch --all --tags\ngit checkout release-MAJOR.MINOR.PATCH-ALPHA\ngit rebase\n```\n\nNext, add the release labels to release's issues, specifying the previous and current release in place of `ZCL_FROM_REV` and `ZCL_TARGET_REV`, respectively. `ZCL_TARGET_REV` should be replaced with the tag name for the version you are releasing, and `ZCL_FROM_REV` should be replaced as the tag name for the previous version, based on the release type:\n\n- ALPHA: the tag for the latest alpha on the current minor version. e.g. if you're releasing 1.2.0-alpha2, then `ZCL_FROM_REV=1.2.0-alpha1`. If there was no alpha version yet, then it would be the previous minor version. e.g. if you're releasing 1.2.0-alpha1, then `ZCL_FROM_REV=1.1.0`\n- PATCH: the tag for the previous patch version on the same minor branch. e.g. if you're releasing 1.2.3, then `ZCL_FROM_REV=1.2.2`.\n- MINOR: the tag for the previous minor version. e.g. if you're releasing 1.3.0, then `ZCL_FROM_REV=1.2.0`.\n\n&gt; As there may be many patch release on a single version, it's simpler for users to take the change log as the list of changes from version X since version X-1, as otherwise they would have to figure out where the versions branched off.\n\nRun the following from zeebe repository folder:\n\n```sh\nzcl add-labels --token=GITHUB_TOKEN --from=ZCL_FROM_REV --target=ZCL_TARGET_REV --label='Release: ZCL_TARGET_REV' --org camunda-cloud --repo zeebe\n```\n\nThis will add labels to the issues in GitHub. You can verify this step by looking at closed issues. They should now be tagged with the release.\n\nAfter that, generate the change log entries for the release:\n\n```sh\nzcl generate --token=GITHUB_TOKEN --label='Release: ZCL_TARGET_REV' --org camunda-cloud --repo zeebe\n```\nThis command will print markdown code to the console. You will need to manually insert this output into the release **draft**. See: https://github.com/camunda-cloud/zeebe/releases\n",
-      "type": "text",
-      "id": "Field_0rzoq4s"
-    }
-  ],
-  "type": "default",
-  "id": "Form_135pno4"
-}</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_1spbo98">{
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release process",
@@ -53,13 +34,40 @@
       "key": "release_version"
     },
     {
-      "text": "# Update the getting started guide\nUpdate the [getting started guide](https://github.com/camunda-cloud/camunda-cloud-get-started). At the very least, this means updating the default Zeebe version in POM files and any Docker (or docker-compose) files accordingly. Additionally, for minor and major releases, you may have to update the code such that it builds and all the examples work successfully. Finally, make sure that the examples do not use deprecated code as well.\n\nTo do so, make sure to clone the repository locally. Checkout a new branch, `zeebe-release-MAJOR.MINOR.PATCH-ALPHA`, and commit your changes to it. Then open a new PR for it, and assign it to another Zeebe team member. They will review and merge it.",
+      "text": "# Generate the changelog\n\nIf you haven't yet, download and install the [Zeebe Changelog tool](https://github.com/zeebe-io/zeebe-changelog), `zcl`. Additionally, you'll also need a Github 'Personal Access Token' that can be generated in [your Github's settings](https://github.com/settings/tokens). The token needs to have `public_repo` scope. For completeness, we will pass the token into `zcl` as a parameter but you can set it as an environment variable `GITHUB_TOKEN`.\n\nBefore continuing, make sure to fetch the latest changes from the repository, as otherwise you may not get the right change log.\n\n```sh\ngit fetch --all --tags\ngit checkout release-MAJOR.MINOR.PATCH-ALPHA\ngit rebase\n```\n\nNext, add the release labels to release's issues, specifying the previous and current release in place of `ZCL_FROM_REV` and `ZCL_TARGET_REV`, respectively. `ZCL_TARGET_REV` should be replaced with the tag name for the version you are releasing, and `ZCL_FROM_REV` should be replaced as the tag name for the previous version, based on the release type:\n\n- ALPHA: the tag for the latest alpha on the current minor version. e.g. if you're releasing 1.2.0-alpha2, then `ZCL_FROM_REV=1.2.0-alpha1`. If there was no alpha version yet, then it would be the previous minor version. e.g. if you're releasing 1.2.0-alpha1, then `ZCL_FROM_REV=1.1.0`\n- PATCH: the tag for the previous patch version on the same minor branch. e.g. if you're releasing 1.2.3, then `ZCL_FROM_REV=1.2.2`.\n- MINOR: the tag for the previous minor version. e.g. if you're releasing 1.3.0, then `ZCL_FROM_REV=1.2.0`.\n\n&gt; As there may be many patch release on a single version, it's simpler for users to take the change log as the list of changes from version X since version X-1, as otherwise they would have to figure out where the versions branched off.\n\nRun the following from zeebe repository folder:\n\n```sh\nzcl add-labels --token=GITHUB_TOKEN --from=ZCL_FROM_REV --target=ZCL_TARGET_REV --label='release/ZCL_TARGET_REV' --org camunda-cloud --repo zeebe\n```\n\nThis will add labels to the issues in GitHub. You can verify this step by looking at closed issues. They should now be tagged with the release.\n\nAfter that, generate the change log entries for the release:\n\n```sh\nzcl generate --token=GITHUB_TOKEN --label='release/ZCL_TARGET_REV' --org camunda-cloud --repo zeebe\n```\nThis command will print markdown code to the console. You will need to manually insert this output into the release **draft**. See: https://github.com/camunda-cloud/zeebe/releases\n",
+      "type": "text",
+      "id": "Field_0rzoq4s"
+    }
+  ],
+  "schemaVersion": 4,
+  "type": "default",
+  "id": "Form_135pno4",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
+}</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_1spbo98">{
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_1nljf6y",
+      "key": "release_version"
+    },
+    {
+      "text": "# Update the getting started guide\nUpdate the [getting started guide](https://github.com/camunda/camunda-platform-get-started).\n\nUpdate the Zeebe version in POM files for the Java and Spring examples.\n\nUpdate the version for the Go example as well by navigating to the `go` folder, and running:\n\n```sh\ngo get github.com/camunda/zeebe/clients/go/v8@v&lt;MAJOR.MINOR.PATCH-ALPHA&gt;\n```\n\nAdditionally, for minor and major releases, you may have to update the code such that it builds and all the examples work successfully. Finally, make sure that the examples do not use deprecated code as well.\n\nTo do so, make sure to clone the repository locally. Checkout a new branch, `zeebe-release-MAJOR.MINOR.PATCH-ALPHA`, and commit your changes to it. Then open a new PR for it, and assign it to another Zeebe team member. They will review and merge it.",
       "type": "text",
       "id": "Field_0bl348l"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "Form_1ol2v9z"
+  "id": "Form_1ol2v9z",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
 }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_31lqr6i">{
   "schemaVersion": 2,
@@ -109,7 +117,6 @@
   "id": "Form_04k4orn"
 }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_1es2a5o">{
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release process",
@@ -118,13 +125,18 @@
       "key": "release_version"
     },
     {
-      "text": "# Build the benchmark images\n\nNext step is to build the worker and starter images we use for our continuous load tests. First, checkout the tag you just released, then navigate to the benchmark project folder, and from there we can build and push the images.\n\n```sh\nexport ZEEBE_VERSION=MAJOR.MINOR.PATCH-ALPHA\nexport DOCKER_BUILDKIT=1\ngit checkout $ZEEBE_VERSION\ncd benchmarks/project\ndocker build -t \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\" --target starter .\ndocker push \"gcr.io/zeebe-io/starter:$ZEEBE_VERSION\"\ndocker build -t \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\" --target worker .\ndocker push \"gcr.io/zeebe-io/worker:$ZEEBE_VERSION\"\n```",
+      "text": "# Build the benchmark images\n\nNext step is to build the worker and starter images we use for our continuous load tests. First, make sure to pull all tags from upstream.\n\n```sh\ngit fetch --all\n```\n\nNext, we can use the release script available in the project folder. From the root of the project:\n\n```sh\ncd benchmark/project\n./release -p &lt;MAJOR.MINOR.PATCH-ALPHA&gt;\n```\n\nThis will build the worker and starter images for this tag, and push them. If you wish to test them before pushing, you can omit the `-p` flag; the images will be built locally but will not be pushed.\n\nThis script is safe to run in parallel multiple times if you wish to run multiple releases.",
       "type": "text",
       "id": "Field_0do8ch5"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "Form_1sslv4v"
+  "id": "Form_1sslv4v",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
 }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_0gi1aut">{
   "schemaVersion": 2,
@@ -216,7 +228,6 @@
   "id": "merge_to_master_form"
 }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_24oj0f5">{
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release process",
@@ -225,13 +236,18 @@
       "key": "release_version"
     },
     {
-      "text": "# Github Labels\n\nIn order to run our changelog tool (zcl) we need to create first a new release label in our Zeebe repo.\n\nGo to [labels](https://github.com/camunda-cloud/zeebe/labels), and click on **New Label**. The label should be similar named as the previous release labels.\n\nE.g. *Release: X.Y.Z-alpha*",
+      "text": "# Github Labels\n\nIn order to run our changelog tool (zcl) we need to create first a new release label in our Zeebe repo.\n\nGo to [labels](https://github.com/camunda-cloud/zeebe/labels), and click on **New Label**. The label should be similar named as the previous release labels.\n\nE.g. *release/X.Y.Z-alpha*",
       "type": "text",
       "id": "Field_0j0822v"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "Form_1djdvy0"
+  "id": "Form_1djdvy0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
 }</ns0:userTaskForm>
     </extensionElements>
     <startEvent id="Event_1bzj58u" name="Released on maven central">
