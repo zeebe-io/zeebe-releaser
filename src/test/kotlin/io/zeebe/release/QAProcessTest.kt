@@ -28,7 +28,7 @@ class QAProcessTest {
   lateinit var clock: ZeebeEngineClock
   lateinit var testHelper: TestHelper
   private val dateFormatter: DateTimeFormatter =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
   @BeforeEach
   fun beforeEach() {
@@ -84,11 +84,11 @@ class QAProcessTest {
     // given
     val date = ZonedDateTime.now()
     val variables =
-        hashMapOf(
-            "qa_build_success" to "true",
-            "release_type" to "minor",
-            "release_date" to date.format(dateFormatter),
-            "release_version" to "1.3.0")
+      hashMapOf(
+        "qa_build_success" to "true",
+        "release_type" to "minor",
+        "release_date" to date.format(dateFormatter),
+        "release_version" to "1.3.0")
 
     // when
     val instanceEvent = createInstance(variables)
@@ -110,11 +110,11 @@ class QAProcessTest {
     // given
     val date = ZonedDateTime.now().plusHours(1)
     val variables =
-        hashMapOf(
-            "qa_build_success" to "true",
-            "release_type" to "minor",
-            "release_date" to dateFormatter.format(date),
-            "release_version" to "1.3.0")
+      hashMapOf(
+        "qa_build_success" to "true",
+        "release_type" to "minor",
+        "release_date" to dateFormatter.format(date),
+        "release_version" to "1.3.0")
 
     // when
     val instanceEvent = createInstance(variables)
@@ -127,11 +127,11 @@ class QAProcessTest {
     testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "setup-benchmark")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
     client
-        .newPublishMessageCommand()
-        .messageName("recreate_benchmark")
-        .correlationKey("1.3.0")
-        .send()
-        .join()
+      .newPublishMessageCommand()
+      .messageName("recreate_benchmark")
+      .correlationKey("1.3.0")
+      .send()
+      .join()
     testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "build-ci-with-qa", 2)
   }
 
@@ -144,11 +144,11 @@ class QAProcessTest {
     val instanceEvent = createInstance(variables)
     await.untilAsserted {
       val timerRecord =
-          recordStream
-              .timerRecords()
-              .withIntent(TimerIntent.CREATED)
-              .filter { record -> record.value.targetElementId == "daily-timer" }
-              .firstOrNull()
+        recordStream
+          .timerRecords()
+          .withIntent(TimerIntent.CREATED)
+          .filter { record -> record.value.targetElementId == "daily-timer" }
+          .firstOrNull()
       assertThat(timerRecord).isNotNull
     }
     clock.increaseTime(getDurationToNextWeekday())
@@ -156,12 +156,12 @@ class QAProcessTest {
     // then
     await.untilAsserted {
       val eventSubProcessRecord =
-          recordStream
-              .processInstanceRecords()
-              .withProcessInstanceKey(instanceEvent.processInstanceKey)
-              .withElementType(BpmnElementType.EVENT_SUB_PROCESS)
-              .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
-              .firstOrNull()
+        recordStream
+          .processInstanceRecords()
+          .withProcessInstanceKey(instanceEvent.processInstanceKey)
+          .withElementType(BpmnElementType.EVENT_SUB_PROCESS)
+          .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
+          .firstOrNull()
 
       assertThat(eventSubProcessRecord).isNotNull
     }
@@ -171,20 +171,18 @@ class QAProcessTest {
   fun `daily task should create tasks for non-patch release`() {
     // given
     val variables =
-        hashMapOf(
-            "release_type" to "minor",
-            "qa_benchmark_ok" to "false",
-            "qa_benchmark_outdated" to "true")
+      hashMapOf(
+        "release_type" to "minor", "qa_benchmark_ok" to "false", "qa_benchmark_outdated" to "true")
 
     // when
     val instanceEvent = createInstance(variables)
     await.untilAsserted {
       val timerRecord =
-          recordStream
-              .timerRecords()
-              .withIntent(TimerIntent.CREATED)
-              .filter { record -> record.value.targetElementId == "daily-timer" }
-              .firstOrNull()
+        recordStream
+          .timerRecords()
+          .withIntent(TimerIntent.CREATED)
+          .filter { record -> record.value.targetElementId == "daily-timer" }
+          .firstOrNull()
       assertThat(timerRecord).isNotNull
     }
     clock.increaseTime(getDurationToNextWeekday())
@@ -206,12 +204,12 @@ class QAProcessTest {
 
   private fun createInstance(variables: Map<String, Any>): ProcessInstanceEvent {
     return client
-        .newCreateInstanceCommand()
-        .bpmnProcessId("zeebe-release-qa")
-        .latestVersion()
-        .variables(variables)
-        .send()
-        .join()
+      .newCreateInstanceCommand()
+      .bpmnProcessId("zeebe-release-qa")
+      .latestVersion()
+      .variables(variables)
+      .send()
+      .join()
   }
 
   private fun getDurationToNextWeekday(): Duration {
