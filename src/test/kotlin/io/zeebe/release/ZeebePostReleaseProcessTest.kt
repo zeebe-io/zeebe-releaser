@@ -16,7 +16,7 @@ class ZeebePostReleaseProcessTest {
   lateinit var recordStream: RecordStreamSource
   lateinit var testHelper: TestHelper
   private val dateFormatter: DateTimeFormatter =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
   @BeforeEach
   fun beforeEach() {
@@ -37,7 +37,7 @@ class ZeebePostReleaseProcessTest {
   fun `should be able to complete the instance`() {
     // when
     val instanceEvent =
-        createInstance(hashMapOf("release_version" to "1.0.0", "release_type" to "major"))
+      createInstance(hashMapOf("release_version" to "1.0.0", "release_type" to "major"))
 
     // then
     // branch 1
@@ -75,7 +75,7 @@ class ZeebePostReleaseProcessTest {
   fun `should be able to complete the instance for patch release`() {
     // when
     val instanceEvent =
-        createInstance(hashMapOf("release_version" to "1.0.0-alpha1", "release_type" to "alpha"))
+      createInstance(hashMapOf("release_version" to "1.0.0-alpha1", "release_type" to "alpha"))
 
     // then
     // branch 1
@@ -103,7 +103,7 @@ class ZeebePostReleaseProcessTest {
   fun `should be able to complete the instance for alpha release`() {
     // when
     val instanceEvent =
-        createInstance(hashMapOf("release_version" to "1.0.1", "release_type" to "patch"))
+      createInstance(hashMapOf("release_version" to "1.0.1", "release_type" to "patch"))
 
     // then
     // branch 1
@@ -140,11 +140,11 @@ class ZeebePostReleaseProcessTest {
 
   private fun createInstance(variables: Map<String, Any>): ProcessInstanceEvent {
     return client
-        .newCreateInstanceCommand()
-        .bpmnProcessId("zeebe-post-release")
-        .latestVersion()
-        .variables(variables)
-        .send()
-        .join()
+      .newCreateInstanceCommand()
+      .bpmnProcessId("zeebe-post-release")
+      .latestVersion()
+      .variables(variables)
+      .send()
+      .join()
   }
 }

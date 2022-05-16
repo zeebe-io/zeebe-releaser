@@ -37,12 +37,12 @@ class ZeebeProcessTestReleaseTest {
 
     // then
     testHelper.assertThatUserTaskActivated(
-        instanceEvent.processInstanceKey, "upgrade-zeebe-version")
+      instanceEvent.processInstanceKey, "upgrade-zeebe-version")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "upgrade-zeebe-version")
     testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "create-release")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "create-release")
     testHelper.assertThatUserTaskActivated(
-        instanceEvent.processInstanceKey, "release-on-maven-central")
+      instanceEvent.processInstanceKey, "release-on-maven-central")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "release-on-maven-central")
 
     testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
@@ -50,18 +50,18 @@ class ZeebeProcessTestReleaseTest {
 
   private fun deployProcess() {
     client
-        .newDeployCommand()
-        .addResourceFromClasspath("zeebe-process-test-release.bpmn")
-        .send()
-        .join()
+      .newDeployCommand()
+      .addResourceFromClasspath("zeebe-process-test-release.bpmn")
+      .send()
+      .join()
   }
 
   private fun createInstance(): ProcessInstanceEvent {
     return client
-        .newCreateInstanceCommand()
-        .bpmnProcessId("zeebe-process-test-release")
-        .latestVersion()
-        .send()
-        .join()
+      .newCreateInstanceCommand()
+      .bpmnProcessId("zeebe-process-test-release")
+      .latestVersion()
+      .send()
+      .join()
   }
 }

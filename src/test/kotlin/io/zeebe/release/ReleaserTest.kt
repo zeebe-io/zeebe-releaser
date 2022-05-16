@@ -25,14 +25,14 @@ class ReleaserTest {
 
     // when
     val processInstanceResult =
-        client
-            .newCreateInstanceCommand()
-            .bpmnProcessId("process")
-            .latestVersion()
-            .variables(mapOf("x" to 1))
-            .withResult()
-            .send()
-            .join()
+      client
+        .newCreateInstanceCommand()
+        .bpmnProcessId("process")
+        .latestVersion()
+        .variables(mapOf("x" to 1))
+        .withResult()
+        .send()
+        .join()
 
     // then
     assertThat(processInstanceResult.variablesAsMap).containsEntry("x", 1)

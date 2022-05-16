@@ -45,17 +45,17 @@ class PatchReleaseProcessTest {
 
     // then
     testHelper.assertThatUserTaskActivated(
-        instanceEvent.processInstanceKey, "collect-required-data")
+      instanceEvent.processInstanceKey, "collect-required-data")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "collect-required-data")
 
     await.untilAsserted {
       val callActivityRecord =
-          recordStream
-              .processInstanceRecords()
-              .withProcessInstanceKey(instanceEvent.processInstanceKey)
-              .withElementType(BpmnElementType.CALL_ACTIVITY)
-              .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
-              .firstOrNull()
+        recordStream
+          .processInstanceRecords()
+          .withProcessInstanceKey(instanceEvent.processInstanceKey)
+          .withElementType(BpmnElementType.CALL_ACTIVITY)
+          .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
+          .firstOrNull()
 
       assertThat(callActivityRecord).isNotNull
     }
@@ -69,20 +69,20 @@ class PatchReleaseProcessTest {
 
   private fun deployCallActivityMockProcess() {
     client
-        .newDeployCommand()
-        .addProcessModel(
-            Bpmn.createExecutableProcess("zeebe-release-process").startEvent().endEvent().done(),
-            "zeebe-release-process.bpmn")
-        .send()
-        .join()
+      .newDeployCommand()
+      .addProcessModel(
+        Bpmn.createExecutableProcess("zeebe-release-process").startEvent().endEvent().done(),
+        "zeebe-release-process.bpmn")
+      .send()
+      .join()
   }
 
   private fun createInstance(): ProcessInstanceEvent {
     return client
-        .newCreateInstanceCommand()
-        .bpmnProcessId("zeebe-patch-release-process")
-        .latestVersion()
-        .send()
-        .join()
+      .newCreateInstanceCommand()
+      .bpmnProcessId("zeebe-patch-release-process")
+      .latestVersion()
+      .send()
+      .join()
   }
 }
