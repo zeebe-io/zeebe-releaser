@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
   <bpmn:process id="zeebe-release-process" name="Zeebe release" isExecutable="true">
     <bpmn:extensionElements>
       <zeebe:userTaskForm id="userTaskForm_0uh0d7s">{
@@ -165,9 +165,9 @@
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_32rn8gp" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_05sub3t</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ttdn03</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0vzb5ay</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0ttdn03" sourceRef="release-on-maven-central" targetRef="release-zeebe-process-test" />
+    <bpmn:sequenceFlow id="Flow_0ttdn03" sourceRef="Gateway_0qyx5r4" targetRef="release-zeebe-process-test" />
     <bpmn:callActivity id="Activity_0ll9m9k" name="Start Zeebe post release process">
       <bpmn:extensionElements>
         <zeebe:calledElement processId="zeebe-post-release" propagateAllChildVariables="false" />
@@ -183,9 +183,9 @@
       <bpmn:outgoing>Flow_0zhm3wb</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_0sbhiuc" name="Released">
-      <bpmn:incoming>Flow_0zhm3wb</bpmn:incoming>
+      <bpmn:incoming>Flow_0v65v05</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0zhm3wb" sourceRef="Activity_0ll9m9k" targetRef="Event_0sbhiuc" />
+    <bpmn:sequenceFlow id="Flow_0zhm3wb" sourceRef="Activity_0ll9m9k" targetRef="Gateway_1wq2h17" />
     <bpmn:sequenceFlow id="Flow_1getqr6" sourceRef="create-code-freeze-backport-label" targetRef="Gateway_038v8ud" />
     <bpmn:userTask id="create-code-freeze-backport-label" name="Create Code Freeze Backport Label">
       <bpmn:extensionElements>
@@ -197,13 +197,13 @@
       <bpmn:incoming>Flow_1ca8m5f</bpmn:incoming>
       <bpmn:outgoing>Flow_1getqr6</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_1epwomt" sourceRef="release-zeebe-process-test" targetRef="Activity_0ll9m9k" />
+    <bpmn:sequenceFlow id="Flow_1epwomt" sourceRef="Gateway_0qyx5r4" targetRef="Activity_0ll9m9k" />
     <bpmn:callActivity id="release-zeebe-process-test" name="Release Zeebe process test">
       <bpmn:extensionElements>
         <zeebe:calledElement processId="zeebe-process-test-release" propagateAllChildVariables="false" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ttdn03</bpmn:incoming>
-      <bpmn:outgoing>Flow_1epwomt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1qzzlnv</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:exclusiveGateway id="Gateway_1afx4hl" name="Is major or minor?" default="Flow_1n61zbo">
       <bpmn:incoming>Flow_12ar9lm</bpmn:incoming>
@@ -223,6 +223,19 @@
     <bpmn:sequenceFlow id="Flow_12ar9lm" sourceRef="create-release-branch" targetRef="Gateway_1afx4hl" />
     <bpmn:sequenceFlow id="Flow_1ca8m5f" sourceRef="Gateway_113spke" targetRef="create-code-freeze-backport-label" />
     <bpmn:sequenceFlow id="Flow_0oxw9zk" sourceRef="Activity_19s3dm7" targetRef="trigger-release" />
+    <bpmn:sequenceFlow id="Flow_0vzb5ay" sourceRef="release-on-maven-central" targetRef="Gateway_0qyx5r4" />
+    <bpmn:parallelGateway id="Gateway_0qyx5r4">
+      <bpmn:incoming>Flow_0vzb5ay</bpmn:incoming>
+      <bpmn:outgoing>Flow_1epwomt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ttdn03</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1qzzlnv" sourceRef="release-zeebe-process-test" targetRef="Gateway_1wq2h17" />
+    <bpmn:sequenceFlow id="Flow_0v65v05" sourceRef="Gateway_1wq2h17" targetRef="Event_0sbhiuc" />
+    <bpmn:parallelGateway id="Gateway_1wq2h17">
+      <bpmn:incoming>Flow_1qzzlnv</bpmn:incoming>
+      <bpmn:incoming>Flow_0zhm3wb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0v65v05</bpmn:outgoing>
+    </bpmn:parallelGateway>
     <bpmn:textAnnotation id="TextAnnotation_15g9k3f">
       <bpmn:text>req: release_version: string</bpmn:text>
     </bpmn:textAnnotation>
@@ -263,20 +276,21 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1epwomt_di" bpmnElement="Flow_1epwomt">
-        <di:waypoint x="1620" y="187" />
-        <di:waypoint x="1670" y="187" />
+        <di:waypoint x="1585" y="187" />
+        <di:waypoint x="1660" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1getqr6_di" bpmnElement="Flow_1getqr6">
         <di:waypoint x="820" y="187" />
         <di:waypoint x="875" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zhm3wb_di" bpmnElement="Flow_0zhm3wb">
-        <di:waypoint x="1770" y="187" />
-        <di:waypoint x="1852" y="187" />
+        <di:waypoint x="1760" y="187" />
+        <di:waypoint x="1825" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ttdn03_di" bpmnElement="Flow_0ttdn03">
-        <di:waypoint x="1480" y="187" />
-        <di:waypoint x="1520" y="187" />
+        <di:waypoint x="1560" y="212" />
+        <di:waypoint x="1560" y="320" />
+        <di:waypoint x="1660" y="320" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_05sub3t_di" bpmnElement="Flow_05sub3t">
         <di:waypoint x="1340" y="187" />
@@ -299,6 +313,19 @@
       <bpmndi:BPMNEdge id="Flow_1ew46h4_di" bpmnElement="Flow_1ew46h4">
         <di:waypoint x="248" y="187" />
         <di:waypoint x="350" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vzb5ay_di" bpmnElement="Flow_0vzb5ay">
+        <di:waypoint x="1480" y="187" />
+        <di:waypoint x="1535" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qzzlnv_di" bpmnElement="Flow_1qzzlnv">
+        <di:waypoint x="1760" y="320" />
+        <di:waypoint x="1850" y="320" />
+        <di:waypoint x="1850" y="212" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v65v05_di" bpmnElement="Flow_0v65v05">
+        <di:waypoint x="1875" y="187" />
+        <di:waypoint x="1942" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="212" y="169" width="36" height="36" />
@@ -327,20 +354,8 @@
       <bpmndi:BPMNShape id="Activity_1oqpj5t_di" bpmnElement="release-on-maven-central">
         <dc:Bounds x="1380" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1aw1lim_di" bpmnElement="Activity_0ll9m9k">
-        <dc:Bounds x="1670" y="147" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0sbhiuc_di" bpmnElement="Event_0sbhiuc">
-        <dc:Bounds x="1852" y="169" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1847" y="212" width="47" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_01azq7b_di" bpmnElement="create-code-freeze-backport-label">
         <dc:Bounds x="720" y="147" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_076iy65_di" bpmnElement="release-zeebe-process-test">
-        <dc:Bounds x="1520" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1afx4hl_di" bpmnElement="Gateway_1afx4hl" isMarkerVisible="true">
         <dc:Bounds x="495" y="162" width="50" height="50" />
@@ -353,6 +368,24 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_15g9k3f_di" bpmnElement="TextAnnotation_15g9k3f">
         <dc:Bounds x="160" y="120" width="360" height="26" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1t0xcjj_di" bpmnElement="Gateway_0qyx5r4">
+        <dc:Bounds x="1535" y="162" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1aw1lim_di" bpmnElement="Activity_0ll9m9k">
+        <dc:Bounds x="1660" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_076iy65_di" bpmnElement="release-zeebe-process-test">
+        <dc:Bounds x="1660" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0sbhiuc_di" bpmnElement="Event_0sbhiuc">
+        <dc:Bounds x="1942" y="169" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1937" y="212" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ibg4oe_di" bpmnElement="Gateway_1wq2h17">
+        <dc:Bounds x="1825" y="162" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0uafnuq_di" bpmnElement="Association_0uafnuq">
         <di:waypoint x="224" y="170" />
