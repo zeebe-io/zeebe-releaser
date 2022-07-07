@@ -3,7 +3,6 @@
   <process id="zeebe-post-release" name="Zeebe Post Release" isExecutable="true">
     <extensionElements>
       <ns0:userTaskForm id="userTaskForm_25kpsi7">{
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release process",
@@ -12,7 +11,7 @@
       "key": "release_version"
     },
     {
-      "text": "# Notify other teams\nThere's a few teams at Camunda that need to be made aware when there is a new Zeebe version. You should notify them via Slack:\n- [Zeebe](https://app.slack.com/client/T0PM0P1SA/CSQ2E3BT4)\n- [Operate &amp; Tasklist](https://app.slack.com/client/T0PM0P1SA/C9B5270DA)\n- [Identity](https://app.slack.com/client/T0PM0P1SA/CRQAL5A1M)\n- [Optimize](https://app.slack.com/client/T0PM0P1SA/C55U06YRG)",
+      "text": "# Notify other teams\nPost an announcement of the new release on slack in the [#c8-release-announcements channel](http://camunda.slack.com/channels/c8-release-announcements)",
       "type": "text",
       "id": "Field_0zr0gl2"
     },
@@ -22,8 +21,13 @@
       "id": "Field_0f1lwfu"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "Form_1hcmrar"
+  "id": "Form_1hcmrar",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  }
 }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_115oou5">{
   "components": [
