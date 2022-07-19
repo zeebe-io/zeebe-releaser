@@ -2,19 +2,17 @@ package io.zeebe.release
 
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.model.bpmn.Bpmn
+import io.camunda.zeebe.process.test.api.ZeebeTestEngine
+import io.camunda.zeebe.process.test.extension.testcontainer.ZeebeProcessTest
 import org.assertj.core.api.Assertions.assertThat
-import org.camunda.community.eze.EmbeddedZeebeEngine
-import org.camunda.community.eze.RecordStreamSource
-import org.camunda.community.eze.ZeebeEngineClock
 import org.junit.jupiter.api.Test
 
-@EmbeddedZeebeEngine
+@ZeebeProcessTest
 class ReleaserTest {
 
   // the extension injects the fields before running the test
   lateinit var client: ZeebeClient
-  lateinit var recordStream: RecordStreamSource
-  lateinit var clock: ZeebeEngineClock
+  lateinit var engine: ZeebeTestEngine
 
   @Test
   fun `should complete process`() {

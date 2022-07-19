@@ -1,85 +1,63 @@
 package io.zeebe.release
 
 import io.camunda.zeebe.client.ZeebeClient
+import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
+import io.camunda.zeebe.process.test.api.ZeebeTestEngine
+import io.camunda.zeebe.process.test.assertions.BpmnAssert
+import io.camunda.zeebe.process.test.filters.RecordStream
+import io.camunda.zeebe.process.test.filters.StreamFilter
+import io.camunda.zeebe.protocol.record.Record
 import io.camunda.zeebe.protocol.record.intent.JobIntent
-import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent
-import io.camunda.zeebe.protocol.record.value.BpmnElementType
+import io.camunda.zeebe.protocol.record.value.JobRecordValue
 import org.assertj.core.api.Assertions
 import org.awaitility.kotlin.await
-import org.camunda.community.eze.RecordStream.withElementType
-import org.camunda.community.eze.RecordStream.withIntent
-import org.camunda.community.eze.RecordStream.withProcessInstanceKey
-import org.camunda.community.eze.RecordStreamSource
+import java.time.Duration
+import java.util.stream.Collectors
 
-class TestHelper(val client: ZeebeClient, val recordStream: RecordStreamSource) {
+class TestHelper(val client: ZeebeClient, val engine: ZeebeTestEngine) {
 
-  fun assertThatUserTaskActivated(processInstanceKey: Long, elementId: String, amount: Int = 1) {
-    await.untilAsserted {
-      val amountOfActivatedTasks =
-        recordStream
-          .processInstanceRecords()
-          .withProcessInstanceKey(processInstanceKey)
-          .withElementType(BpmnElementType.USER_TASK)
-          .withIntent(ProcessInstanceIntent.ELEMENT_ACTIVATED)
-          .count { record -> record.value.elementId == elementId }
-
-      Assertions.assertThat(amountOfActivatedTasks).isEqualTo(amount)
+    fun assertThatElementIsActive(processInstanceEvent: ProcessInstanceEvent, elementId: String) {
+        engine.waitForIdleState(Duration.ofSeconds(3))
+        BpmnAssert.assertThat(processInstanceEvent).isWaitingAtElements(elementId)
     }
-  }
 
-  fun completeUserTask(processInstanceKey: Long, elementId: String) {
-    await.untilAsserted {
-      val userTaskJob =
-        recordStream
-          .jobRecords()
-          .withJobType("io.camunda.zeebe:userTask")
-          .withIntent(JobIntent.CREATED)
-          .findLast { record -> record.value.elementId == elementId }
+    fun completeUserTask(processInstanceKey: Long, elementId: String) {
+        await.untilAsserted {
+            val userTaskJobs =
+                StreamFilter.jobRecords(RecordStream.of(engine.recordStreamSource))
+                    .withElementId(elementId)
+                    .withIntent(JobIntent.CREATED)
+                    .stream().collect(Collectors.toList())
 
-      Assertions.assertThat(userTaskJob).isNotNull
-      Assertions.assertThat(userTaskJob?.value?.processInstanceKey).isEqualTo(processInstanceKey)
-      Assertions.assertThat(userTaskJob?.value?.elementId).isEqualTo(elementId)
-      client.newCompleteCommand(userTaskJob!!.key).send().join()
+            var userTaskJob: Record<JobRecordValue>? = null
+            if (userTaskJobs.size != 0) {
+                userTaskJob = userTaskJobs[userTaskJobs.size - 1]
+            }
+
+            Assertions.assertThat(userTaskJob).isNotNull
+            Assertions.assertThat(userTaskJob?.value?.processInstanceKey).isEqualTo(processInstanceKey)
+            Assertions.assertThat(userTaskJob?.value?.elementId).isEqualTo(elementId)
+            client.newCompleteCommand(userTaskJob!!.key).send().join()
+        }
+        engine.waitForIdleState(Duration.ofSeconds(3))
     }
-  }
 
-  fun assertThatProcessIsCompleted(processInstanceKey: Long) {
-    await.untilAsserted {
-      val processCompletedRecord =
-        recordStream
-          .processInstanceRecords()
-          .withProcessInstanceKey(processInstanceKey)
-          .withElementType(BpmnElementType.PROCESS)
-          .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
-          .firstOrNull()
-
-      Assertions.assertThat(processCompletedRecord).isNotNull
+    fun assertThatProcessIsCompleted(processInstanceEvent: ProcessInstanceEvent) {
+        engine.waitForIdleState(Duration.ofSeconds(3))
+        BpmnAssert.assertThat(processInstanceEvent).isCompleted;
     }
-  }
 
-  fun assertThatCalledProcessActivated(processInstanceKey: Long, processId: String) {
-    await.untilAsserted {
-      Assertions.assertThat(
-          recordStream
-            .processInstanceRecords()
-            .withParentProcessInstanceKey(processInstanceKey)
-            .withBpmnProcessId(processId)
-            .withIntent(ProcessInstanceIntent.ELEMENT_ACTIVATED)
-            .firstOrNull())
-        .isNotNull
+    fun assertThatCalledProcessActivated(processInstanceEvent: ProcessInstanceEvent, processId: String) {
+        engine.waitForIdleState(Duration.ofSeconds(3))
+        BpmnAssert.assertThat(processInstanceEvent)
+            .extractingLatestCalledProcess(processId)
+            .isActive
     }
-  }
 
-  fun assertThatCalledProcessCompleted(processInstanceKey: Long, processId: String) {
-    await.untilAsserted {
-      Assertions.assertThat(
-          recordStream
-            .processInstanceRecords()
-            .withParentProcessInstanceKey(processInstanceKey)
-            .withBpmnProcessId(processId)
-            .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
-            .firstOrNull())
-        .isNotNull
+    fun assertThatCalledProcessCompleted(processInstanceEvent: ProcessInstanceEvent, processId: String) {
+        engine.waitForIdleState(Duration.ofSeconds(3))
+        BpmnAssert.assertThat(processInstanceEvent)
+            .extractingLatestCalledProcess(processId)
+            .isCompleted
     }
-  }
 }
