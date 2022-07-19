@@ -4,7 +4,7 @@ import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
 import io.camunda.zeebe.process.test.api.ZeebeTestEngine
 import io.camunda.zeebe.process.test.assertions.BpmnAssert
-import io.camunda.zeebe.process.test.extension.testcontainer.ZeebeProcessTest
+import io.camunda.zeebe.process.test.extension.ZeebeProcessTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
