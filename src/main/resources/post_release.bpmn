@@ -2,33 +2,6 @@
 <definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.0.0">
   <process id="zeebe-post-release" name="Zeebe Post Release" isExecutable="true">
     <extensionElements>
-      <ns0:userTaskForm id="userTaskForm_25kpsi7">{
-  "components": [
-    {
-      "label": "Current release process",
-      "type": "textfield",
-      "id": "Field_1nljf6y",
-      "key": "release_version"
-    },
-    {
-      "text": "# Notify other teams\nPost an announcement of the new release on slack in the [#c8-release-announcements channel](http://camunda.slack.com/channels/c8-release-announcements)",
-      "type": "text",
-      "id": "Field_0zr0gl2"
-    },
-    {
-      "text": "`Hi :wave: team! There is a new Zeebe version MAJOR.MINOR.PATCH-ALPHA available that you can test against.`\n",
-      "type": "text",
-      "id": "Field_0f1lwfu"
-    }
-  ],
-  "schemaVersion": 4,
-  "type": "default",
-  "id": "Form_1hcmrar",
-  "exporter": {
-    "name": "Camunda Modeler",
-    "version": "5.0.0"
-  }
-}</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_115oou5">{
   "components": [
     {
@@ -206,7 +179,101 @@
   "type": "default",
   "id": "Form_1cpheid"
 }</ns0:userTaskForm>
-      <ns0:userTaskForm id="userTaskForm_01m96lq">{   "schemaVersion": 2,   "components": [     {       "text": "# Data about next release",       "type": "text",       "id": "Field_18uxmez"     },     {       "label": "Release version",       "type": "textfield",       "id": "Field_0q04txm",       "key": "release_version",       "description": "MAJOR.MINOR.PATCH-ALPHA (Eg:- 1.3.0-alpha1)"     },     {       "label": "Release date",       "type": "textfield",       "id": "Field_1jl2q1w",       "key": "release_date",       "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T00:00:00Z)"     },     {       "label": "Code Freeze date",       "type": "textfield",       "id": "Field_0w4n3mw",       "key": "code_freeze_date",       "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T00:00:00Z)"     },     {       "values": [         {           "label": "Philipp",           "value": "philipp"         },         {           "label": "Chris",           "value": "chris"         },         {           "label": "Peter",           "value": "peter"         },         {           "value": "deepthi",           "label": "Deepthi"         },         {           "label": "Nico",           "value": "nico"         },         {           "label": "Remco",           "value": "remco"         },         {           "label": "Ole",           "value": "ole"         },         {           "label": "Nicolas",           "value": "nicolas"         }       ],       "label": "Release Manager",       "type": "select",       "id": "Field_08k3xs4",       "key": "release_manager"     },     {       "values": [         {           "label": "Major",           "value": "major"         },         {           "label": "Minor",           "value": "minor"         },         {           "label": "Alpha",           "value": "alpha"         }       ],       "label": "The release is",       "type": "radio",       "id": "Field_01mvgma",       "key": "release_type"     }   ],   "type": "default",   "id": "release_collect_data",   "executionPlatform": "Camunda Cloud",   "executionPlatformVersion": "1.2" }</ns0:userTaskForm>
+      <ns0:userTaskForm id="userTaskForm_01m96lq">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "text": "# Data about next release",
+      "type": "text",
+      "id": "Field_18uxmez"
+    },
+    {
+      "label": "Release version",
+      "type": "textfield",
+      "id": "Field_0q04txm",
+      "key": "release_version",
+      "description": "MAJOR.MINOR.PATCH-ALPHA (Eg:- 1.3.0-alpha1)"
+    },
+    {
+      "label": "Release date",
+      "type": "textfield",
+      "id": "Field_1jl2q1w",
+      "key": "release_date",
+      "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T00:00:00Z)"
+    },
+    {
+      "label": "Code Freeze date",
+      "type": "textfield",
+      "id": "Field_0w4n3mw",
+      "key": "code_freeze_date",
+      "description": "Format: yyyy-MM-dd'T'HH:mm:ss@ZoneId (Eg:- 2021-10-20T00:00:00Z)"
+    },
+    {
+      "values": [
+        {
+          "label": "Philipp",
+          "value": "philipp"
+        },
+        {
+          "label": "Chris",
+          "value": "chris"
+        },
+        {
+          "label": "Peter",
+          "value": "peter"
+        },
+        {
+          "value": "deepthi",
+          "label": "Deepthi"
+        },
+        {
+          "label": "Nico",
+          "value": "nico"
+        },
+        {
+          "label": "Remco",
+          "value": "remco"
+        },
+        {
+          "label": "Ole",
+          "value": "ole"
+        },
+        {
+          "label": "Nicolas",
+          "value": "nicolas"
+        }
+      ],
+      "label": "Release Manager",
+      "type": "select",
+      "id": "Field_08k3xs4",
+      "key": "release_manager"
+    },
+    {
+      "values": [
+        {
+          "label": "Major",
+          "value": "major"
+        },
+        {
+          "label": "Minor",
+          "value": "minor"
+        },
+        {
+          "label": "Alpha",
+          "value": "alpha"
+        }
+      ],
+      "label": "The release is",
+      "type": "radio",
+      "id": "Field_01mvgma",
+      "key": "release_type"
+    }
+  ],
+  "type": "default",
+  "id": "release_collect_data",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "1.2"
+}</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_3e5brtf">{
   "schemaVersion": 2,
   "components": [
@@ -268,13 +335,6 @@
     <sequenceFlow id="Flow_1a1ucq4" sourceRef="Gateway_14u4b2y" targetRef="github-release-labels" />
     <sequenceFlow id="Flow_1yxpc4s" sourceRef="github-release-labels" targetRef="github-generate-changelog" />
     <sequenceFlow id="Flow_1xzxsjq" sourceRef="github-generate-changelog" targetRef="Gateway_0kj2l1z" />
-    <userTask id="notify-others" name="Notify other teams">
-      <extensionElements>
-        <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_25kpsi7" />
-      </extensionElements>
-      <incoming>Flow_1dbpr3h</incoming>
-      <outgoing>Flow_1dmkd6y</outgoing>
-    </userTask>
     <userTask id="github-release-labels" name="Add release label to GitHub">
       <extensionElements>
         <ns0:formDefinition formKey="camunda-forms:bpmn:userTaskForm_24oj0f5" />
@@ -444,6 +504,23 @@
       <conditionExpression xsi:type="tFormalExpression">= release_type = "patch"</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="Flow_1fm2o6c" sourceRef="create-appointment-for-next" targetRef="Event_0rk4u8i" />
+    <serviceTask id="notify-others" name="Notify other teams" ns0:modelerTemplate="io.camunda.connectors.Slack.v1" ns0:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <extensionElements>
+        <ns0:taskDefinition type="io.camunda:slack:1" />
+        <ns0:ioMapping>
+          <ns0:input source="chat.postMessage" target="method" />
+          <ns0:input source="secrets.SLACK_OAUTH_TOKEN" target="token" />
+          <ns0:input source="= &#34;Hi :wave: team! There is a new Zeebe version &#34; + release_version + &#34;available that you can test against.&#34;" target="data.text" />
+          <ns0:input source="#c8-release-announcements" target="data.channel" />
+        </ns0:ioMapping>
+        <ns0:taskHeaders>
+          <ns0:header key="resultVariable" />
+          <ns0:header key="resultExpression" />
+        </ns0:taskHeaders>
+      </extensionElements>
+      <incoming>Flow_1dbpr3h</incoming>
+      <outgoing>Flow_1dmkd6y</outgoing>
+    </serviceTask>
   </process>
   <message id="message_76e3344e-f874-4648-8aae-3418680a9926" name="message_eventSubProcess_id_9">
     <extensionElements>
@@ -631,9 +708,6 @@
       <bpmndi:BPMNShape id="Gateway_13c7c3m_di" bpmnElement="Gateway_14u4b2y">
         <dc:Bounds x="295" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03rg5cw_di" bpmnElement="notify-others">
-        <dc:Bounds x="580" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_17xias7_di" bpmnElement="github-release-labels">
         <dc:Bounds x="500" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -714,6 +788,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0jh4pf2_di" bpmnElement="Gateway_0jh4pf2" isMarkerVisible="true">
         <dc:Bounds x="1945" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v48l92_di" bpmnElement="notify-others">
+        <dc:Bounds x="580" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Definitions_0zpzfne" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <decision id="get-slack-id" name="Get release manager slack id">
+    <informationRequirement id="InformationRequirement_1uv87qn">
+      <requiredInput href="#InputData_1r8lc3k" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0rtxw8z">
+      <input id="Input_1" label="Release manager">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>release_manager</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Slack Id" name="slack_id" typeRef="string" />
+      <rule id="DecisionRule_1s3gy3r">
+        <inputEntry id="UnaryTests_0nb6enf">
+          <text>"philipp"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0sbqdae">
+          <text>"U33NJANQZ"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_09q78s2">
+        <inputEntry id="UnaryTests_0rcfdfo">
+          <text>"chris"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1yvtazj">
+          <text>"U2T9EAW3D"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_13rca1c">
+        <inputEntry id="UnaryTests_0qrr5se">
+          <text>"deepthi"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_16iv6w0">
+          <text>"UEL4W4HU6"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1txaxcl">
+        <inputEntry id="UnaryTests_0cld13i">
+          <text>"nico"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1eqwede">
+          <text>"UTT0CLCVB"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0pg0ocy">
+        <inputEntry id="UnaryTests_08ovv7l">
+          <text>"remco"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0f72553">
+          <text>"U02CYMDAYE8"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ujbgq3">
+        <inputEntry id="UnaryTests_08nmml5">
+          <text>"ole"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1b5nkpn">
+          <text>"U02EKGJCTQV"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0s54qk7">
+        <inputEntry id="UnaryTests_0l730d9">
+          <text>"nicolas"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0i3bcu9">
+          <text>"UAV8FQS1H"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0u9wx4e">
+        <inputEntry id="UnaryTests_0pa08mc">
+          <text>"peter"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0muxhfg">
+          <text>"USQLJAMDJ"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1r8lc3k" name="release_manager" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="get-slack-id">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1i079ok" dmnElementRef="InputData_1r8lc3k">
+        <dc:Bounds height="45" width="125" x="187" y="337" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0hxcyhj" dmnElementRef="InformationRequirement_1uv87qn">
+        <di:waypoint x="250" y="337" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
