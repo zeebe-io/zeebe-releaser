@@ -36,13 +36,11 @@ class ZeebeProcessTestReleaseTest {
     val instanceEvent = createInstance()
 
     // then
-    testHelper.assertThatElementIsActive(
-      instanceEvent, "upgrade-zeebe-version")
+    testHelper.assertThatElementIsActive(instanceEvent, "upgrade-zeebe-version")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "upgrade-zeebe-version")
     testHelper.assertThatElementIsActive(instanceEvent, "create-release")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "create-release")
-    testHelper.assertThatElementIsActive(
-      instanceEvent, "release-on-maven-central")
+    testHelper.assertThatElementIsActive(instanceEvent, "release-on-maven-central")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "release-on-maven-central")
 
     testHelper.assertThatProcessIsCompleted(instanceEvent)

@@ -15,7 +15,7 @@ class ZeebePostReleaseProcessTest {
   lateinit var engine: ZeebeTestEngine
   lateinit var testHelper: TestHelper
 
-    @BeforeEach
+  @BeforeEach
   fun beforeEach() {
     testHelper = TestHelper(client, engine)
     deployProcess()
