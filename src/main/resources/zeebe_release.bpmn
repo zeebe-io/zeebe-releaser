@@ -111,6 +111,11 @@
 }</zeebe:userTaskForm>
     </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1" name="Release started">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="= release_manager" target="current_release_manager" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1ew46h4</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1ew46h4" sourceRef="StartEvent_1" targetRef="create-release-branch" />
@@ -236,6 +241,36 @@
       <bpmn:incoming>Flow_0zhm3wb</bpmn:incoming>
       <bpmn:outgoing>Flow_0v65v05</bpmn:outgoing>
     </bpmn:parallelGateway>
+    <bpmn:subProcess id="Activity_0lywzc8" name="Release reminder" triggeredByEvent="true">
+      <bpmn:startEvent id="Event_002h8ps" isInterrupting="false">
+        <bpmn:outgoing>Flow_1khohx9</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_1ych0oi">
+          <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1khohx9" sourceRef="Event_002h8ps" targetRef="Activity_1pj3quo" />
+      <bpmn:serviceTask id="Activity_1pj3quo" name="Remind release manager about release" zeebe:modelerTemplate="io.camunda.connectors.Slack.v1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="io.camunda:slack:1" />
+          <zeebe:ioMapping>
+            <zeebe:input source="chat.postMessage" target="method" />
+            <zeebe:input source="secrets.SLACK_OAUTH_TOKEN" target="token" />
+            <zeebe:input source="= &#34;:warning: The release process is still running. Please have a look if any steps require action!&#10;&#10;\\cc  &#60;@&#34; + slackId + &#34;&#62;&#34;" target="data.text" />
+            <zeebe:input source="#ask-zeebe" target="data.channel" />
+          </zeebe:ioMapping>
+          <zeebe:taskHeaders>
+            <zeebe:header key="resultVariable" />
+            <zeebe:header key="resultExpression" />
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1khohx9</bpmn:incoming>
+        <bpmn:outgoing>Flow_1oe0aef</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="Event_09hnipm">
+        <bpmn:incoming>Flow_1oe0aef</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1oe0aef" sourceRef="Activity_1pj3quo" targetRef="Event_09hnipm" />
+    </bpmn:subProcess>
     <bpmn:textAnnotation id="TextAnnotation_15g9k3f">
       <bpmn:text>req: release_version: string</bpmn:text>
     </bpmn:textAnnotation>
@@ -243,6 +278,19 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-process">
+      <bpmndi:BPMNEdge id="Flow_0v65v05_di" bpmnElement="Flow_0v65v05">
+        <di:waypoint x="1875" y="187" />
+        <di:waypoint x="1942" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qzzlnv_di" bpmnElement="Flow_1qzzlnv">
+        <di:waypoint x="1760" y="320" />
+        <di:waypoint x="1850" y="320" />
+        <di:waypoint x="1850" y="212" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vzb5ay_di" bpmnElement="Flow_0vzb5ay">
+        <di:waypoint x="1480" y="187" />
+        <di:waypoint x="1535" y="187" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0oxw9zk_di" bpmnElement="Flow_0oxw9zk">
         <di:waypoint x="1180" y="187" />
         <di:waypoint x="1240" y="187" />
@@ -314,19 +362,6 @@
         <di:waypoint x="248" y="187" />
         <di:waypoint x="350" y="187" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0vzb5ay_di" bpmnElement="Flow_0vzb5ay">
-        <di:waypoint x="1480" y="187" />
-        <di:waypoint x="1535" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qzzlnv_di" bpmnElement="Flow_1qzzlnv">
-        <di:waypoint x="1760" y="320" />
-        <di:waypoint x="1850" y="320" />
-        <di:waypoint x="1850" y="212" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0v65v05_di" bpmnElement="Flow_0v65v05">
-        <di:waypoint x="1875" y="187" />
-        <di:waypoint x="1942" y="187" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="212" y="169" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -354,8 +389,20 @@
       <bpmndi:BPMNShape id="Activity_1oqpj5t_di" bpmnElement="release-on-maven-central">
         <dc:Bounds x="1380" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1aw1lim_di" bpmnElement="Activity_0ll9m9k">
+        <dc:Bounds x="1660" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0sbhiuc_di" bpmnElement="Event_0sbhiuc">
+        <dc:Bounds x="1942" y="169" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1937" y="212" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_01azq7b_di" bpmnElement="create-code-freeze-backport-label">
         <dc:Bounds x="720" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_076iy65_di" bpmnElement="release-zeebe-process-test">
+        <dc:Bounds x="1660" y="280" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1afx4hl_di" bpmnElement="Gateway_1afx4hl" isMarkerVisible="true">
         <dc:Bounds x="495" y="162" width="50" height="50" />
@@ -366,26 +413,36 @@
       <bpmndi:BPMNShape id="Gateway_15n27wl_di" bpmnElement="Gateway_15n27wl" isMarkerVisible="true">
         <dc:Bounds x="975" y="162" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_15g9k3f_di" bpmnElement="TextAnnotation_15g9k3f">
-        <dc:Bounds x="160" y="120" width="360" height="26" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1t0xcjj_di" bpmnElement="Gateway_0qyx5r4">
         <dc:Bounds x="1535" y="162" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1aw1lim_di" bpmnElement="Activity_0ll9m9k">
-        <dc:Bounds x="1660" y="147" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_076iy65_di" bpmnElement="release-zeebe-process-test">
-        <dc:Bounds x="1660" y="280" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0sbhiuc_di" bpmnElement="Event_0sbhiuc">
-        <dc:Bounds x="1942" y="169" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1937" y="212" width="47" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ibg4oe_di" bpmnElement="Gateway_1wq2h17">
         <dc:Bounds x="1825" y="162" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ofy7ul_di" bpmnElement="Activity_0lywzc8" isExpanded="true">
+        <dc:Bounds x="250" y="420" width="365" height="200" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1oe0aef_di" bpmnElement="Flow_1oe0aef">
+        <di:waypoint x="480" y="520" />
+        <di:waypoint x="542" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1khohx9_di" bpmnElement="Flow_1khohx9">
+        <di:waypoint x="326" y="520" />
+        <di:waypoint x="380" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1lnkrx5_di" bpmnElement="Event_002h8ps">
+        <dc:Bounds x="290" y="502" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_015rjku_di" bpmnElement="Activity_1pj3quo">
+        <dc:Bounds x="380" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09hnipm_di" bpmnElement="Event_09hnipm">
+        <dc:Bounds x="542" y="502" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_15g9k3f_di" bpmnElement="TextAnnotation_15g9k3f">
+        <dc:Bounds x="160" y="120" width="360" height="26" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0uafnuq_di" bpmnElement="Association_0uafnuq">
         <di:waypoint x="224" y="170" />

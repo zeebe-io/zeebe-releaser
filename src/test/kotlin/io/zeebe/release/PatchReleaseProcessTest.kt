@@ -3,28 +3,24 @@ package io.zeebe.release
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
 import io.camunda.zeebe.model.bpmn.Bpmn
-import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent
-import io.camunda.zeebe.protocol.record.value.BpmnElementType
+import io.camunda.zeebe.process.test.api.ZeebeTestEngine
+import io.camunda.zeebe.process.test.assertions.BpmnAssert
+import io.camunda.zeebe.process.test.extension.ZeebeProcessTest
+import java.time.Duration
 import org.assertj.core.api.Assertions.assertThat
-import org.awaitility.kotlin.await
-import org.camunda.community.eze.EmbeddedZeebeEngine
-import org.camunda.community.eze.RecordStream.withElementType
-import org.camunda.community.eze.RecordStream.withIntent
-import org.camunda.community.eze.RecordStream.withProcessInstanceKey
-import org.camunda.community.eze.RecordStreamSource
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@EmbeddedZeebeEngine
+@ZeebeProcessTest
 class PatchReleaseProcessTest {
 
   lateinit var client: ZeebeClient
-  lateinit var recordStream: RecordStreamSource
+  lateinit var engine: ZeebeTestEngine
   lateinit var testHelper: TestHelper
 
   @BeforeEach
   fun beforeEach() {
-    testHelper = TestHelper(client, recordStream)
+    testHelper = TestHelper(client, engine)
     deployProcess()
     deployCallActivityMockProcess()
   }
@@ -44,32 +40,25 @@ class PatchReleaseProcessTest {
     val instanceEvent = createInstance()
 
     // then
-    testHelper.assertThatUserTaskActivated(
-      instanceEvent.processInstanceKey, "collect-required-data")
+    testHelper.assertThatElementIsActive(instanceEvent, "collect-required-data")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "collect-required-data")
 
-    await.untilAsserted {
-      val callActivityRecord =
-        recordStream
-          .processInstanceRecords()
-          .withProcessInstanceKey(instanceEvent.processInstanceKey)
-          .withElementType(BpmnElementType.CALL_ACTIVITY)
-          .withIntent(ProcessInstanceIntent.ELEMENT_COMPLETED)
-          .firstOrNull()
-
-      assertThat(callActivityRecord).isNotNull
-    }
-
-    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+    engine.waitForIdleState(Duration.ofSeconds(1))
+    BpmnAssert.assertThat(instanceEvent).isCompleted
   }
 
   private fun deployProcess() {
-    client.newDeployCommand().addResourceFromClasspath("patch_release.bpmn").send().join()
+    client
+      .newDeployResourceCommand()
+      .addResourceFromClasspath("patch_release.bpmn")
+      .addResourceFromClasspath("get_slack_id.dmn")
+      .send()
+      .join()
   }
 
   private fun deployCallActivityMockProcess() {
     client
-      .newDeployCommand()
+      .newDeployResourceCommand()
       .addProcessModel(
         Bpmn.createExecutableProcess("zeebe-release-process").startEvent().endEvent().done(),
         "zeebe-release-process.bpmn")
@@ -82,6 +71,7 @@ class PatchReleaseProcessTest {
       .newCreateInstanceCommand()
       .bpmnProcessId("zeebe-patch-release-process")
       .latestVersion()
+      .variables(mapOf("release_manager" to "remco"))
       .send()
       .join()
   }

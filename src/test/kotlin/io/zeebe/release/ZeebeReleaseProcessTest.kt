@@ -3,26 +3,26 @@ package io.zeebe.release
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
 import io.camunda.zeebe.model.bpmn.Bpmn
+import io.camunda.zeebe.process.test.api.ZeebeTestEngine
+import io.camunda.zeebe.process.test.extension.ZeebeProcessTest
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import org.assertj.core.api.Assertions
-import org.camunda.community.eze.EmbeddedZeebeEngine
-import org.camunda.community.eze.RecordStreamSource
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@EmbeddedZeebeEngine
+@ZeebeProcessTest
 class ZeebeReleaseProcessTest {
 
   lateinit var client: ZeebeClient
-  lateinit var recordStream: RecordStreamSource
+  lateinit var engine: ZeebeTestEngine
   lateinit var testHelper: TestHelper
   private val dateFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
   @BeforeEach
   fun beforeEach() {
-    testHelper = TestHelper(client, recordStream)
+    testHelper = TestHelper(client, engine)
     deployProcess()
     deployFakeChildProcess("zeebe-release-qa")
     deployFakeChildProcess("zeebe-process-test-release")
@@ -53,73 +53,53 @@ class ZeebeReleaseProcessTest {
   fun `should be able to complete the instance`() {
     // when
     val instanceEvent =
-      createInstance(hashMapOf("release_version" to "1.0.0", "release_type" to "major"))
+      createInstance(
+        hashMapOf(
+          "release_version" to "1.0.0", "release_type" to "major", "release_manager" to "remco"))
 
     // then
-    testHelper.assertThatUserTaskActivated(
-      instanceEvent.processInstanceKey, "create-release-branch")
+    testHelper.assertThatElementIsActive(instanceEvent, "create-release-branch")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "create-release-branch")
-    testHelper.assertThatUserTaskActivated(
-      instanceEvent.processInstanceKey, "create-code-freeze-backport-label")
+    testHelper.assertThatElementIsActive(instanceEvent, "create-code-freeze-backport-label")
     testHelper.completeUserTask(
       instanceEvent.processInstanceKey, "create-code-freeze-backport-label")
-    testHelper.assertThatUserTaskActivated(
-      instanceEvent.processInstanceKey, "collect-release-notes")
+    testHelper.assertThatElementIsActive(instanceEvent, "collect-release-notes")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "collect-release-notes")
-    testHelper.assertThatCalledProcessActivated(
-      instanceEvent.processInstanceKey, "zeebe-release-qa")
-    testHelper.assertThatCalledProcessCompleted(
-      instanceEvent.processInstanceKey, "zeebe-release-qa")
-    testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "trigger-release")
+    testHelper.assertThatCalledProcessCompleted(instanceEvent, "zeebe-release-qa")
+    testHelper.assertThatElementIsActive(instanceEvent, "trigger-release")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "trigger-release")
-    testHelper.assertThatUserTaskActivated(
-      instanceEvent.processInstanceKey, "release-on-maven-central")
+    testHelper.assertThatElementIsActive(instanceEvent, "release-on-maven-central")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "release-on-maven-central")
-    testHelper.assertThatCalledProcessActivated(
-      instanceEvent.processInstanceKey, "zeebe-process-test-release")
-    testHelper.assertThatCalledProcessCompleted(
-      instanceEvent.processInstanceKey, "zeebe-process-test-release")
-    testHelper.assertThatCalledProcessActivated(
-      instanceEvent.processInstanceKey, "zeebe-post-release")
-    testHelper.assertThatCalledProcessCompleted(
-      instanceEvent.processInstanceKey, "zeebe-post-release")
+    testHelper.assertThatCalledProcessCompleted(instanceEvent, "zeebe-process-test-release")
+    testHelper.assertThatCalledProcessCompleted(instanceEvent, "zeebe-post-release")
 
-    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+    testHelper.assertThatProcessIsCompleted(instanceEvent)
   }
 
   @Test
   fun `should be able to complete patch release`() {
     // when
     val instanceEvent =
-      createInstance(hashMapOf("release_version" to "1.0.0", "release_type" to "patch"))
+      createInstance(
+        hashMapOf(
+          "release_version" to "1.0.0", "release_type" to "patch", "release_manager" to "remco"))
 
     // then
-    testHelper.assertThatUserTaskActivated(
-      instanceEvent.processInstanceKey, "create-release-branch")
+    testHelper.assertThatElementIsActive(instanceEvent, "create-release-branch")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "create-release-branch")
-    testHelper.assertThatCalledProcessActivated(
-      instanceEvent.processInstanceKey, "zeebe-release-qa")
-    testHelper.assertThatCalledProcessCompleted(
-      instanceEvent.processInstanceKey, "zeebe-release-qa")
-    testHelper.assertThatUserTaskActivated(instanceEvent.processInstanceKey, "trigger-release")
+    testHelper.assertThatCalledProcessCompleted(instanceEvent, "zeebe-release-qa")
+    testHelper.assertThatElementIsActive(instanceEvent, "trigger-release")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "trigger-release")
-    testHelper.assertThatUserTaskActivated(
-      instanceEvent.processInstanceKey, "release-on-maven-central")
+    testHelper.assertThatElementIsActive(instanceEvent, "release-on-maven-central")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "release-on-maven-central")
-    testHelper.assertThatCalledProcessActivated(
-      instanceEvent.processInstanceKey, "zeebe-process-test-release")
-    testHelper.assertThatCalledProcessCompleted(
-      instanceEvent.processInstanceKey, "zeebe-process-test-release")
-    testHelper.assertThatCalledProcessActivated(
-      instanceEvent.processInstanceKey, "zeebe-post-release")
-    testHelper.assertThatCalledProcessCompleted(
-      instanceEvent.processInstanceKey, "zeebe-post-release")
+    testHelper.assertThatCalledProcessCompleted(instanceEvent, "zeebe-process-test-release")
+    testHelper.assertThatCalledProcessCompleted(instanceEvent, "zeebe-post-release")
 
-    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+    testHelper.assertThatProcessIsCompleted(instanceEvent)
   }
 
   private fun deployProcess() {
-    client.newDeployCommand().addResourceFromClasspath("zeebe_release.bpmn").send().join()
+    client.newDeployResourceCommand().addResourceFromClasspath("zeebe_release.bpmn").send().join()
   }
 
   private fun deployFakeChildProcess(
@@ -129,12 +109,7 @@ class ZeebeReleaseProcessTest {
     val builder = Bpmn.createExecutableProcess(name).startEvent()
     outputVariables.forEach { builder.zeebeOutputExpression(it.value, it.key) }
     val model = builder.done()
-    client
-      .newDeployCommand()
-      .addProcessModel(model, name)
-      .addResourceFromClasspath("zeebe_release.bpmn")
-      .send()
-      .join()
+    client.newDeployResourceCommand().addProcessModel(model, "$name.bpmn").send().join()
   }
 
   private fun createInstance(variables: Map<String, Any>): ProcessInstanceEvent {

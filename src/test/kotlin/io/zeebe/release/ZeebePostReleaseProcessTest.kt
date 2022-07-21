@@ -2,25 +2,22 @@ package io.zeebe.release
 
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
-import java.time.format.DateTimeFormatter
+import io.camunda.zeebe.process.test.api.ZeebeTestEngine
+import io.camunda.zeebe.process.test.extension.ZeebeProcessTest
 import org.assertj.core.api.Assertions
-import org.camunda.community.eze.EmbeddedZeebeEngine
-import org.camunda.community.eze.RecordStreamSource
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@EmbeddedZeebeEngine
+@ZeebeProcessTest
 class ZeebePostReleaseProcessTest {
 
   lateinit var client: ZeebeClient
-  lateinit var recordStream: RecordStreamSource
+  lateinit var engine: ZeebeTestEngine
   lateinit var testHelper: TestHelper
-  private val dateFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
   @BeforeEach
   fun beforeEach() {
-    testHelper = TestHelper(client, recordStream)
+    testHelper = TestHelper(client, engine)
     deployProcess()
   }
 
@@ -41,34 +38,34 @@ class ZeebePostReleaseProcessTest {
 
     // then
     // branch 1
-    completeNextTask(instanceEvent.processInstanceKey, "notify-others")
+    completeNextTask(instanceEvent, "notify-others")
 
     // branch 2
-    completeNextTask(instanceEvent.processInstanceKey, "github-release-labels")
-    completeNextTask(instanceEvent.processInstanceKey, "github-generate-changelog")
+    completeNextTask(instanceEvent, "github-release-labels")
+    completeNextTask(instanceEvent, "github-generate-changelog")
 
     // branch 4
-    completeNextTask(instanceEvent.processInstanceKey, "merge-with-main")
-    completeNextTask(instanceEvent.processInstanceKey, "prepare-next-stable")
+    completeNextTask(instanceEvent, "merge-with-main")
+    completeNextTask(instanceEvent, "prepare-next-stable")
 
     // branch 5
-    //      completeNextTask(instanceEvent.processInstanceKey, "merge-with-stable")
+    //      completeNextTask(instanceEvent, "merge-with-stable")
 
     // branch 6
-    completeNextTask(instanceEvent.processInstanceKey, "update-getting-started")
+    completeNextTask(instanceEvent, "update-getting-started")
 
     // after parallel gateway
-    completeNextTask(instanceEvent.processInstanceKey, "build-benchmark-images")
-    completeNextTask(instanceEvent.processInstanceKey, "update-long-running")
+    completeNextTask(instanceEvent, "build-benchmark-images")
+    completeNextTask(instanceEvent, "update-long-running")
 
     // branch no patch
-    completeNextTask(instanceEvent.processInstanceKey, "invite-team-to-celebrate")
-    completeNextTask(instanceEvent.processInstanceKey, "collect-data")
+    completeNextTask(instanceEvent, "invite-team-to-celebrate")
+    completeNextTask(instanceEvent, "collect-data")
 
     // last task
-    completeNextTask(instanceEvent.processInstanceKey, "create-appointment-for-next")
+    completeNextTask(instanceEvent, "create-appointment-for-next")
 
-    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+    testHelper.assertThatProcessIsCompleted(instanceEvent)
   }
 
   @Test
@@ -79,24 +76,24 @@ class ZeebePostReleaseProcessTest {
 
     // then
     // branch 1
-    completeNextTask(instanceEvent.processInstanceKey, "notify-others")
+    completeNextTask(instanceEvent, "notify-others")
 
     // branch 2
-    completeNextTask(instanceEvent.processInstanceKey, "github-release-labels")
-    completeNextTask(instanceEvent.processInstanceKey, "github-generate-changelog")
+    completeNextTask(instanceEvent, "github-release-labels")
+    completeNextTask(instanceEvent, "github-generate-changelog")
 
     // after parallel gateway
-    completeNextTask(instanceEvent.processInstanceKey, "build-benchmark-images")
-    completeNextTask(instanceEvent.processInstanceKey, "update-long-running")
+    completeNextTask(instanceEvent, "build-benchmark-images")
+    completeNextTask(instanceEvent, "update-long-running")
 
     // branch no patch
-    completeNextTask(instanceEvent.processInstanceKey, "invite-team-to-celebrate")
-    completeNextTask(instanceEvent.processInstanceKey, "collect-data")
+    completeNextTask(instanceEvent, "invite-team-to-celebrate")
+    completeNextTask(instanceEvent, "collect-data")
 
     // last task
-    completeNextTask(instanceEvent.processInstanceKey, "create-appointment-for-next")
+    completeNextTask(instanceEvent, "create-appointment-for-next")
 
-    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+    testHelper.assertThatProcessIsCompleted(instanceEvent)
   }
 
   @Test
@@ -107,31 +104,31 @@ class ZeebePostReleaseProcessTest {
 
     // then
     // branch 1
-    completeNextTask(instanceEvent.processInstanceKey, "notify-others")
+    completeNextTask(instanceEvent, "notify-others")
 
     // branch 2
-    completeNextTask(instanceEvent.processInstanceKey, "github-release-labels")
-    completeNextTask(instanceEvent.processInstanceKey, "github-generate-changelog")
+    completeNextTask(instanceEvent, "github-release-labels")
+    completeNextTask(instanceEvent, "github-generate-changelog")
 
     // branch 5
-    completeNextTask(instanceEvent.processInstanceKey, "merge-with-stable")
+    completeNextTask(instanceEvent, "merge-with-stable")
 
     // branch 6
-    completeNextTask(instanceEvent.processInstanceKey, "update-getting-started")
+    completeNextTask(instanceEvent, "update-getting-started")
 
     // after parallel gateway
-    completeNextTask(instanceEvent.processInstanceKey, "build-benchmark-images")
-    completeNextTask(instanceEvent.processInstanceKey, "update-long-running")
+    completeNextTask(instanceEvent, "build-benchmark-images")
+    completeNextTask(instanceEvent, "update-long-running")
 
     // last task
-    completeNextTask(instanceEvent.processInstanceKey, "create-appointment-for-next")
+    completeNextTask(instanceEvent, "create-appointment-for-next")
 
-    testHelper.assertThatProcessIsCompleted(instanceEvent.processInstanceKey)
+    testHelper.assertThatProcessIsCompleted(instanceEvent)
   }
 
-  private fun completeNextTask(key: Long, elementId: String) {
-    testHelper.assertThatUserTaskActivated(key, elementId)
-    testHelper.completeUserTask(key, elementId)
+  private fun completeNextTask(instanceEvent: ProcessInstanceEvent, elementId: String) {
+    testHelper.assertThatElementIsActive(instanceEvent, elementId)
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, elementId)
   }
 
   private fun deployProcess() {
