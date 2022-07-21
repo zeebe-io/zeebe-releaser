@@ -10,9 +10,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: zeebe-io/zbctl-action@v0.0.7
+        name: Deploy BPMN
         with:
           version: '8.0.4'
-          command: 'deploy resource src/main/resources/*.{bpmn|dmn}'
+          command: 'deploy resource src/main/resources/*.bpmn'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZEEBE_ADDRESS: ${{ secrets.ZEEBE_ADDRESS }}
+          ZEEBE_CLIENT_ID: ${{ secrets.ZEEBE_CLIENT_ID }}
+          ZEEBE_CLIENT_SECRET: ${{ secrets.ZEEBE_CLIENT_SECRET }}
+          ZEEBE_AUTHORIZATION_SERVER_URL: ${{ secrets.ZEEBE_AUTHORIZATION_SERVER_URL }}
+      - uses: zeebe-io/zbctl-action@v0.0.7
+        name: Deploy BPMN
+        with:
+          version: '8.0.4'
+          command: 'deploy resource src/main/resources/*.dmn'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZEEBE_ADDRESS: ${{ secrets.ZEEBE_ADDRESS }}
