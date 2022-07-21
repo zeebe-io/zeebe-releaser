@@ -11,8 +11,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: zeebe-io/zbctl-action@v0.0.7
         with:
-          version: '1.2.1'
-          command: 'deploy src/main/resources/*.bpmn'
+          version: '8.0.4'
+          command: 'deploy resource src/main/resources/*.{bpmn|dmn}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ZEEBE_ADDRESS: ${{ secrets.ZEEBE_ADDRESS }}
