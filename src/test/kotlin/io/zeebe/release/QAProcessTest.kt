@@ -75,11 +75,12 @@ class QAProcessTest {
   fun `should create a benchmark when not a patch release`() {
     // given
     val date = ZonedDateTime.now()
+    val releaseDate = date.plusHours(1)
     val variables =
       hashMapOf(
         "qa_build_success" to "true",
         "release_type" to "minor",
-        "release_date" to date.format(dateFormatter),
+        "release_date" to releaseDate.format(dateFormatter),
         "release_version" to "1.3.0")
 
     // when
@@ -92,7 +93,9 @@ class QAProcessTest {
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
     testHelper.assertThatElementIsActive(instanceEvent, "setup-benchmark")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
-    engine.increaseTime(Duration.ofSeconds(1))
+    engine.waitForIdleState(Duration.ofSeconds(3))
+    engine.increaseTime(Duration.ofHours(1))
+    engine.waitForIdleState(Duration.ofSeconds(3))
     testHelper.assertThatElementIsActive(instanceEvent, "delete-benchmark")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "delete-benchmark")
     testHelper.assertThatProcessIsCompleted(instanceEvent)
