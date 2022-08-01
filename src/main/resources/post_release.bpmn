@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.1.0">
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns0="http://camunda.org/schema/zeebe/1.0" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_9ba7d249-add4-45d1-aa8f-b618042f94ef" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.0.0">
   <process id="zeebe-post-release" name="Zeebe Post Release" isExecutable="true">
     <extensionElements>
       <ns0:userTaskForm id="userTaskForm_115oou5">{
@@ -514,8 +514,8 @@
         <ns0:ioMapping>
           <ns0:input source="chat.postMessage" target="method" />
           <ns0:input source="secrets.SLACK_OAUTH_TOKEN" target="token" />
-          <ns0:input source="= &#34;Hi :wave: team! There is a new Zeebe version &#34; + release_version + &#34;available that you can test against.&#34;" target="data.text" />
           <ns0:input source="#c8-release-announcements" target="data.channel" />
+          <ns0:input source="= &#34;Hi :wave: team! There is a new Zeebe version &#34; + release_version + &#34; available that you can test against.&#34;" target="data.text" />
         </ns0:ioMapping>
         <ns0:taskHeaders>
           <ns0:header key="resultVariable" />
