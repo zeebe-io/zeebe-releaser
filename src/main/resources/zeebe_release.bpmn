@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
   <bpmn:process id="zeebe-release-process" name="Zeebe release" isExecutable="true">
     <bpmn:extensionElements>
       <zeebe:userTaskForm id="userTaskForm_0uh0d7s">{
@@ -248,28 +248,38 @@
           <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle>
         </bpmn:timerEventDefinition>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_1khohx9" sourceRef="Event_002h8ps" targetRef="Activity_1pj3quo" />
+      <bpmn:sequenceFlow id="Flow_1khohx9" sourceRef="Event_002h8ps" targetRef="Gateway_0pprots" />
       <bpmn:serviceTask id="Activity_1pj3quo" name="Remind release manager about release" zeebe:modelerTemplate="io.camunda.connectors.Slack.v1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="io.camunda:slack:1" />
           <zeebe:ioMapping>
             <zeebe:input source="chat.postMessage" target="method" />
             <zeebe:input source="secrets.SLACK_OAUTH_TOKEN" target="token" />
-            <zeebe:input source="= &#34;:warning: The release process is still running. Please have a look if any steps require action!&#10;&#10;\\cc  &#60;@&#34; + slackId + &#34;&#62;&#34;" target="data.text" />
             <zeebe:input source="#ask-zeebe" target="data.channel" />
+            <zeebe:input source="= &#34;:warning: The release process is still running. Please have a look if any steps require action!&#10;&#10;\\cc  &#60;@&#34; + slack_id + &#34;&#62;&#34;" target="data.text" />
           </zeebe:ioMapping>
           <zeebe:taskHeaders>
             <zeebe:header key="resultVariable" />
             <zeebe:header key="resultExpression" />
           </zeebe:taskHeaders>
         </bpmn:extensionElements>
-        <bpmn:incoming>Flow_1khohx9</bpmn:incoming>
+        <bpmn:incoming>Flow_1eq00q6</bpmn:incoming>
         <bpmn:outgoing>Flow_1oe0aef</bpmn:outgoing>
       </bpmn:serviceTask>
       <bpmn:endEvent id="Event_09hnipm">
         <bpmn:incoming>Flow_1oe0aef</bpmn:incoming>
+        <bpmn:incoming>Flow_06yz81p</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_1oe0aef" sourceRef="Activity_1pj3quo" targetRef="Event_09hnipm" />
+      <bpmn:exclusiveGateway id="Gateway_0pprots" name="Is release date &#60; today?" default="Flow_06yz81p">
+        <bpmn:incoming>Flow_1khohx9</bpmn:incoming>
+        <bpmn:outgoing>Flow_1eq00q6</bpmn:outgoing>
+        <bpmn:outgoing>Flow_06yz81p</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_1eq00q6" name="Yes" sourceRef="Gateway_0pprots" targetRef="Activity_1pj3quo">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= date(date and time(release_date)) &lt; today()</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_06yz81p" name="No" sourceRef="Gateway_0pprots" targetRef="Event_09hnipm" />
     </bpmn:subProcess>
     <bpmn:textAnnotation id="TextAnnotation_15g9k3f">
       <bpmn:text>req: release_version: string</bpmn:text>
@@ -420,26 +430,48 @@
         <dc:Bounds x="1825" y="162" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ofy7ul_di" bpmnElement="Activity_0lywzc8" isExpanded="true">
-        <dc:Bounds x="250" y="420" width="365" height="200" />
+        <dc:Bounds x="250" y="420" width="480" height="240" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1oe0aef_di" bpmnElement="Flow_1oe0aef">
-        <di:waypoint x="480" y="520" />
-        <di:waypoint x="542" y="520" />
+        <di:waypoint x="580" y="520" />
+        <di:waypoint x="642" y="520" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1khohx9_di" bpmnElement="Flow_1khohx9">
         <di:waypoint x="326" y="520" />
-        <di:waypoint x="380" y="520" />
+        <di:waypoint x="375" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1eq00q6_di" bpmnElement="Flow_1eq00q6">
+        <di:waypoint x="425" y="520" />
+        <di:waypoint x="480" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="444" y="502" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06yz81p_di" bpmnElement="Flow_06yz81p">
+        <di:waypoint x="400" y="545" />
+        <di:waypoint x="400" y="630" />
+        <di:waypoint x="660" y="630" />
+        <di:waypoint x="660" y="538" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="412" y="553" width="15" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1lnkrx5_di" bpmnElement="Event_002h8ps">
         <dc:Bounds x="290" y="502" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09hnipm_di" bpmnElement="Event_09hnipm">
+        <dc:Bounds x="642" y="502" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_015rjku_di" bpmnElement="Activity_1pj3quo">
-        <dc:Bounds x="380" y="480" width="100" height="80" />
+        <dc:Bounds x="480" y="480" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_09hnipm_di" bpmnElement="Event_09hnipm">
-        <dc:Bounds x="542" y="502" width="36" height="36" />
+      <bpmndi:BPMNShape id="Gateway_0pprots_di" bpmnElement="Gateway_0pprots" isMarkerVisible="true">
+        <dc:Bounds x="375" y="495" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="359" y="465" width="82" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_15g9k3f_di" bpmnElement="TextAnnotation_15g9k3f">
         <dc:Bounds x="160" y="120" width="360" height="26" />
