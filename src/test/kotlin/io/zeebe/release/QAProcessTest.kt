@@ -93,6 +93,8 @@ class QAProcessTest {
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
     testHelper.assertThatElementIsActive(instanceEvent, "setup-benchmark")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
+    testHelper.assertThatElementIsActive(instanceEvent, "start-e2e-test")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "start-e2e-test")
     engine.waitForIdleState(Duration.ofSeconds(3))
     engine.increaseTime(Duration.ofHours(1))
     engine.waitForIdleState(Duration.ofSeconds(3))
@@ -122,6 +124,8 @@ class QAProcessTest {
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "check-qa-results")
     testHelper.assertThatElementIsActive(instanceEvent, "setup-benchmark")
     testHelper.completeUserTask(instanceEvent.processInstanceKey, "setup-benchmark")
+    testHelper.assertThatElementIsActive(instanceEvent, "start-e2e-test")
+    testHelper.completeUserTask(instanceEvent.processInstanceKey, "start-e2e-test")
     client
       .newPublishMessageCommand()
       .messageName("recreate_benchmark")
