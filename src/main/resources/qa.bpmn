@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1pwapqm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1pwapqm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
   <bpmn:process id="zeebe-release-qa" name="Zeebe Release QA" isExecutable="true">
     <bpmn:extensionElements>
       <zeebe:userTaskForm id="userTaskForm_1b9cav3">{
@@ -12,7 +12,7 @@
       "key": "release_version"
     },
     {
-      "text": "# Run CI Pipeline and QA\n\n[https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#perform-quality-assurance](https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#perform-quality-assurance)\n\n\n#### Run the CI pipeline (Automatically triggered when the branch is created)\n\nOur CI pipeline runs in an internal Jenkins, [here](https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/). The first thing you want to verify after creating the release branch is to verify that it builds and passes our CI pipeline. While it may take a little bit, eventually there will be a new Jenkins job which is building your branch, typically at the following URL: https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/job/release-X.Y.Z/. The job should already be building automatically after you pushed the branch, but if it isn't, you can always start a new build manually by clicking on `Run with parameters` and keeping the defaults.\n\n#### Run the Testbench QA\n\nWe make heavy use of [Testbench](https://github.com/zeebe-io/zeebe-cluster-testbench) for our QA as well, and we want to run those tests against the release branch as well. **From the Jenkins job, start a new build via `Run with parameters`, but this time check `SKIP_VERIFY` and also check `RUN_QA`.** This will start a build which will skip the normal automated tests (which we ran in the previous step), and instead just stage the release artifacts and run the tests in Camunda Cloud. You can then track the tests in [Operate](https://bru-3.operate.ultrawombat.com/7b2cd3f5-cfcc-4a65-ab22-0ccaa071e68e/) - filter the running instances by businessKey, with the value being the Jenkins build URL. \n\nHints:\n- The QA run will use the Zeebe image built by Jenkins from your branch. However, it needs to know the equivalent Operate, Tasklist, Elasticsearch, etc., versions to use in conjunction when spinning up a new cluster in the cloud. To solve this, we specify a _template_ generation which has all these things.\n- The template generation is used to set the version of Operate/Elasticsearch for the QA run. This must be a generation which already exists in Cloud on Int stage. It should also fit to the version you release (so if the next release is 0.24.2 the template generation probably is 0.24.1). You can check which generations exist in the Int stage using the cloud console (check under 'Generations' in the Document of Truth).\n- Jenkins will be notified of the result of the tests. If any test fails, the Jenkins build fails and test reports are available in the Google Sheet and a message is posted to Slack. Both Slack and Google Sheet contain a link to the build that started the QA run.\n- If the build gets stuck, have a look at Operate to see whether any incidents were raised. This is the one missing loophole, because Jenkins has no way of knowing when incidents were created\n\n",
+      "text": "# Run CI Pipeline and QA\n\n## Versions &gt; 8.1\n\n- Run the CI pipeline via github actions (Automatically triggered when the branch is created).\n- Run the Testbench QA by running the github workflow [https://github.com/camunda/zeebe/actions/workflows/qa-testbench.yaml](https://github.com/camunda/zeebe/actions/workflows/qa-testbench.yaml)\n\n\n## Previous versions\n\n[https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#perform-quality-assurance](https://github.com/camunda-cloud/zeebe/wiki/Release-protocol#perform-quality-assurance)\n\n\n#### Run the CI pipeline (Automatically triggered when the branch is created)\n\nOur CI pipeline runs in an internal Jenkins, [here](https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/). The first thing you want to verify after creating the release branch is to verify that it builds and passes our CI pipeline. While it may take a little bit, eventually there will be a new Jenkins job which is building your branch, typically at the following URL: https://ci.zeebe.camunda.cloud/job/camunda-cloud/job/zeebe/job/release-X.Y.Z/. The job should already be building automatically after you pushed the branch, but if it isn't, you can always start a new build manually by clicking on `Run with parameters` and keeping the defaults.\n\n#### Run the Testbench QA\n\nWe make heavy use of [Testbench](https://github.com/zeebe-io/zeebe-cluster-testbench) for our QA as well, and we want to run those tests against the release branch as well. **From the Jenkins job, start a new build via `Run with parameters`, but this time check `SKIP_VERIFY` and also check `RUN_QA`.** This will start a build which will skip the normal automated tests (which we ran in the previous step), and instead just stage the release artifacts and run the tests in Camunda Cloud. You can then track the tests in [Operate](https://bru-3.operate.ultrawombat.com/7b2cd3f5-cfcc-4a65-ab22-0ccaa071e68e/) - filter the running instances by businessKey, with the value being the Jenkins build URL. \n\nHints:\n- The QA run will use the Zeebe image built by Jenkins from your branch. However, it needs to know the equivalent Operate, Tasklist, Elasticsearch, etc., versions to use in conjunction when spinning up a new cluster in the cloud. To solve this, we specify a _template_ generation which has all these things.\n- The template generation is used to set the version of Operate/Elasticsearch for the QA run. This must be a generation which already exists in Cloud on Int stage. It should also fit to the version you release (so if the next release is 0.24.2 the template generation probably is 0.24.1). You can check which generations exist in the Int stage using the cloud console (check under 'Generations' in the Document of Truth).\n- Jenkins will be notified of the result of the tests. If any test fails, the Jenkins build fails and test reports are available in the Google Sheet and a message is posted to Slack. Both Slack and Google Sheet contain a link to the build that started the QA run.\n- If the build gets stuck, have a look at Operate to see whether any incidents were raised. This is the one missing loophole, because Jenkins has no way of knowing when incidents were created\n\n",
       "type": "text",
       "id": "Field_17jz7bk"
     },
@@ -271,6 +271,23 @@
   "executionPlatform": "Camunda Cloud",
   "executionPlatformVersion": "1.2"
 }</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="userTaskForm_0h186at">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release version",
+      "type": "textfield",
+      "id": "Field_08yonym",
+      "key": "release_version"
+    },
+    {
+      "text": "# Run E2E test\n\nBuild an image for the release version if it doesn't already exists. Image should be already available if you have setup the benchmark. \n\nRun github action https://github.com/zeebe-io/zeebe-e2e-test/actions/workflows/runtest.yml to start a e2e test on the release branch\n with following parameters:\n\n- Zeebe docker image with version: gcr.io/zeebe-io/zeebe:release-MAJOR-MINOR-PATCH-ALPHA\n- Generation template: Zeebe SNAPSHOT\n- Test duration*: R1/P7D \n- A string to identify the run: E2E Tests : rc-MAJOR-MINOR-PATH-ALPHA\n\nThis will start an e2e test and run it for the given duration. If the test fails, you will get a notification in #zeebe-ci channel. \n\nEnsure the test is started by checking Operate of Testbench-prod cluster https://console.cloud.ultrawombat.com/org/f1155314-5031-4a84-9e29-58f69f8ab242/cluster/7b2cd3f5-cfcc-4a65-ab22-0ccaa071e68e ",
+      "type": "text",
+      "id": "Field_0r53wcj"
+    }
+  ],
+  "type": "default",
+  "id": "qa_e2e_form"</zeebe:userTaskForm>
     </bpmn:extensionElements>
     <bpmn:sequenceFlow id="Flow_1u6won8" sourceRef="build-ci-with-qa" targetRef="check-qa-results" />
     <bpmn:startEvent id="Event_0vq2qf4" name="Code Freezed">
@@ -381,9 +398,9 @@
       <bpmn:sequenceFlow id="Flow_131el46" sourceRef="Gateway_0wm06h0" targetRef="Gateway_0ewpjqn" />
       <bpmn:sequenceFlow id="Flow_18xopoc" sourceRef="Gateway_0ihocqm" targetRef="Gateway_0ewpjqn" />
     </bpmn:subProcess>
-    <bpmn:sequenceFlow id="Flow_0ytbx0r" sourceRef="setup-benchmark" targetRef="Gateway_1sp4w8i" />
+    <bpmn:sequenceFlow id="Flow_0ytbx0r" sourceRef="setup-benchmark" targetRef="start-e2e-test" />
     <bpmn:eventBasedGateway id="Gateway_1sp4w8i">
-      <bpmn:incoming>Flow_0ytbx0r</bpmn:incoming>
+      <bpmn:incoming>Flow_0outxba</bpmn:incoming>
       <bpmn:outgoing>Flow_0epbj3m</bpmn:outgoing>
       <bpmn:outgoing>Flow_1g3lnif</bpmn:outgoing>
     </bpmn:eventBasedGateway>
@@ -473,6 +490,14 @@
       <bpmn:outgoing>Flow_1ewrj5i</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1ewrj5i" sourceRef="Gateway_0qr9yjh" targetRef="Event_0dz2x1t" />
+    <bpmn:sequenceFlow id="Flow_0outxba" sourceRef="start-e2e-test" targetRef="Gateway_1sp4w8i" />
+    <bpmn:userTask id="start-e2e-test" name="Start E2E Tests">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0h186at" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ytbx0r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0outxba</bpmn:outgoing>
+    </bpmn:userTask>
     <bpmn:textAnnotation id="TextAnnotation_1yvenpe">
       <bpmn:text>Pass the Release date</bpmn:text>
     </bpmn:textAnnotation>
@@ -490,15 +515,19 @@ correlation-key: release_version</bpmn:text>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-qa">
+      <bpmndi:BPMNEdge id="Flow_0outxba_di" bpmnElement="Flow_0outxba">
+        <di:waypoint x="1300" y="240" />
+        <di:waypoint x="1365" y="240" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ewrj5i_di" bpmnElement="Flow_1ewrj5i">
-        <di:waypoint x="1645" y="240" />
-        <di:waypoint x="1702" y="240" />
+        <di:waypoint x="1795" y="240" />
+        <di:waypoint x="1852" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1s5mjw5_di" bpmnElement="Flow_1s5mjw5">
         <di:waypoint x="940" y="215" />
         <di:waypoint x="940" y="120" />
-        <di:waypoint x="1620" y="120" />
-        <di:waypoint x="1620" y="215" />
+        <di:waypoint x="1770" y="120" />
+        <di:waypoint x="1770" y="215" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="951" y="188" width="19" height="14" />
         </bpmndi:BPMNLabel>
@@ -508,8 +537,8 @@ correlation-key: release_version</bpmn:text>
         <di:waypoint x="1040" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1g3lnif_di" bpmnElement="Flow_1g3lnif">
-        <di:waypoint x="1240" y="265" />
-        <di:waypoint x="1240" y="350" />
+        <di:waypoint x="1390" y="265" />
+        <di:waypoint x="1390" y="350" />
         <di:waypoint x="578" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cnrtm2_di" bpmnElement="Flow_0cnrtm2">
@@ -542,20 +571,20 @@ correlation-key: release_version</bpmn:text>
         <di:waypoint x="420" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_091kws4_di" bpmnElement="Flow_091kws4">
-        <di:waypoint x="1530" y="240" />
-        <di:waypoint x="1595" y="240" />
+        <di:waypoint x="1680" y="240" />
+        <di:waypoint x="1745" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10auxgf_di" bpmnElement="Flow_10auxgf">
-        <di:waypoint x="1368" y="240" />
-        <di:waypoint x="1430" y="240" />
+        <di:waypoint x="1518" y="240" />
+        <di:waypoint x="1580" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0epbj3m_di" bpmnElement="Flow_0epbj3m">
-        <di:waypoint x="1265" y="240" />
-        <di:waypoint x="1332" y="240" />
+        <di:waypoint x="1415" y="240" />
+        <di:waypoint x="1482" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ytbx0r_di" bpmnElement="Flow_0ytbx0r">
         <di:waypoint x="1140" y="240" />
-        <di:waypoint x="1215" y="240" />
+        <di:waypoint x="1200" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10fj3ib_di" bpmnElement="Flow_10fj3ib">
         <di:waypoint x="268" y="240" />
@@ -572,7 +601,7 @@ correlation-key: release_version</bpmn:text>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1hvqv2b_di" bpmnElement="daily-task-event-subprocess" isExpanded="true">
-        <dc:Bounds x="215" y="420" width="1185" height="600" />
+        <dc:Bounds x="215" y="420" width="1225" height="600" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_18xopoc_di" bpmnElement="Flow_18xopoc">
         <di:waypoint x="1100" y="775" />
@@ -584,7 +613,7 @@ correlation-key: release_version</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o0yeym_di" bpmnElement="Flow_0o0yeym">
         <di:waypoint x="1235" y="580" />
-        <di:waypoint x="1272" y="580" />
+        <di:waypoint x="1302" y="580" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13ht5oh_di" bpmnElement="Flow_13ht5oh">
         <di:waypoint x="440" y="555" />
@@ -665,9 +694,9 @@ correlation-key: release_version</bpmn:text>
         <di:waypoint x="415" y="580" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1bo2qwj_di" bpmnElement="Event_1bo2qwj">
-        <dc:Bounds x="1272" y="562" width="36" height="36" />
+        <dc:Bounds x="1302" y="562" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1263" y="605" width="57" height="27" />
+          <dc:Bounds x="1293" y="605" width="57" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1y2ca4b_di" bpmnElement="daily-timer">
@@ -722,18 +751,18 @@ correlation-key: release_version</bpmn:text>
         <dc:Bounds x="955" y="555" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_09o8vm7_di" bpmnElement="Gateway_1sp4w8i">
-        <dc:Bounds x="1215" y="215" width="50" height="50" />
+        <dc:Bounds x="1365" y="215" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0mblydt_di" bpmnElement="Event_070p6xx">
-        <dc:Bounds x="1332" y="222" width="36" height="36" />
+        <dc:Bounds x="1482" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1311" y="265" width="79" height="14" />
+          <dc:Bounds x="1461" y="265" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dz2x1t_di" bpmnElement="Event_0dz2x1t">
-        <dc:Bounds x="1702" y="222" width="36" height="36" />
+        <dc:Bounds x="1852" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1690" y="265" width="61" height="14" />
+          <dc:Bounds x="1840" y="265" width="61" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0fglwop_di" bpmnElement="Gateway_0fglwop" isMarkerVisible="true">
@@ -761,7 +790,7 @@ correlation-key: release_version</bpmn:text>
         <dc:Bounds x="560" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0vceihq_di" bpmnElement="delete-benchmark">
-        <dc:Bounds x="1430" y="200" width="100" height="80" />
+        <dc:Bounds x="1580" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1wi99se_di" bpmnElement="Gateway_1wi99se" isMarkerVisible="true">
         <dc:Bounds x="915" y="215" width="50" height="50" />
@@ -770,7 +799,10 @@ correlation-key: release_version</bpmn:text>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0qr9yjh_di" bpmnElement="Gateway_0qr9yjh" isMarkerVisible="true">
-        <dc:Bounds x="1595" y="215" width="50" height="50" />
+        <dc:Bounds x="1745" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0w8q78a_di" bpmnElement="start-e2e-test">
+        <dc:Bounds x="1200" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1yvenpe_di" bpmnElement="TextAnnotation_1yvenpe">
         <dc:Bounds x="160" y="130" width="100" height="40" />
