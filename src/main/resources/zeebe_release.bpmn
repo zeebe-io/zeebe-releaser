@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.3.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.3.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
   <bpmn:process id="zeebe-release-process" name="Zeebe release" isExecutable="true">
     <bpmn:extensionElements>
       <zeebe:userTaskForm id="userTaskForm_0uh0d7s">{
@@ -318,10 +318,6 @@
       <bpmn:sequenceFlow id="Flow_06yz81p" name="No" sourceRef="Gateway_0pprots" targetRef="Event_09hnipm" />
     </bpmn:subProcess>
     <bpmn:subProcess id="Activity_0caepsu" name="Release Candidate" triggeredByEvent="true">
-      <bpmn:startEvent id="Event_072g6mg" name="Built release candidate">
-        <bpmn:outgoing>Flow_1c2xzxq</bpmn:outgoing>
-        <bpmn:messageEventDefinition id="MessageEventDefinition_0qd3cau" messageRef="Message_36527rk" />
-      </bpmn:startEvent>
       <bpmn:userTask id="Activity_0wjyoge" name="Trigger release candidate">
         <bpmn:extensionElements>
           <zeebe:formDefinition formKey="camunda-forms:bpmn:UserTaskForm_0106sqk" />
@@ -368,6 +364,10 @@
         <bpmn:incoming>Flow_0ynyan2</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0ynyan2" sourceRef="Activity_1aiu7sp" targetRef="Event_0hfv9hy" />
+      <bpmn:startEvent id="Event_072g6mg" name="Built release candidate" isInterrupting="false">
+        <bpmn:outgoing>Flow_1c2xzxq</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="MessageEventDefinition_0zmenc7" />
+      </bpmn:startEvent>
       <bpmn:textAnnotation id="TextAnnotation_1oejvef">
         <bpmn:text>correlationKey: release-branch-name
 messageName: rc</bpmn:text>
@@ -406,6 +406,7 @@ messageName: rc</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1mxwnsr_di" bpmnElement="Activity_19s3dm7">
         <dc:Bounds x="1080" y="147" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1alb5n9_di" bpmnElement="trigger-release">
         <dc:Bounds x="1240" y="147" width="100" height="80" />
@@ -490,19 +491,13 @@ messageName: rc</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_15g9k3f_di" bpmnElement="TextAnnotation_15g9k3f">
         <dc:Bounds x="160" y="120" width="360" height="26" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05n8qj8_di" bpmnElement="Activity_0caepsu" isExpanded="true">
+      <bpmndi:BPMNShape id="Activity_05n8qj8_di" bpmnElement="Activity_0caepsu" isExpanded="true" bioc:stroke="#1e88e5" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#1e88e5">
         <dc:Bounds x="245" y="690" width="790" height="250" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1oejvef_di" bpmnElement="TextAnnotation_1oejvef">
         <dc:Bounds x="265" y="710" width="250" height="70" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_11h47hx_di" bpmnElement="Event_072g6mg">
-        <dc:Bounds x="285" y="832" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="273" y="875" width="61" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0u0vt45" bpmnElement="Activity_0wjyoge">
         <dc:Bounds x="365" y="810" width="100" height="80" />
@@ -519,6 +514,12 @@ messageName: rc</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0hfv9hy_di" bpmnElement="Event_0hfv9hy">
         <dc:Bounds x="947" y="832" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1pp1hmf_di" bpmnElement="Event_072g6mg">
+        <dc:Bounds x="285" y="832" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="273" y="875" width="61" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1b25zkd_di" bpmnElement="Association_1b25zkd">
         <di:waypoint x="305" y="832" />
