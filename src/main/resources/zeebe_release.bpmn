@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sojgd1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.3.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
   <bpmn:process id="zeebe-release-process" name="Zeebe release" isExecutable="true">
     <bpmn:extensionElements>
       <zeebe:userTaskForm id="userTaskForm_0uh0d7s">{
@@ -108,6 +108,42 @@
   "id": "release_backport_label",
   "executionPlatform": "Camunda Cloud",
   "executionPlatformVersion": "1.2"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="UserTaskForm_0106sqk">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_0zdbd7q",
+      "key": "release_version"
+    },
+    {
+      "text": "# Run the release pipeline\n\nThe Zeebe release pipeline runs on the same Jenkins instance as the CI pipeline, [here](https://ci.zeebe.camunda.cloud/job/zeebe-release/).  The pipeline itself lives in the Zeebe repository, [here](https://github.com/camunda-cloud/zeebe/blob/develop/.ci/pipelines/release_zeebe.groovy). In short, it will build the release branch, stage and deploy Maven and Docker artifacts, tag the release, and update the version for the next development iteration. \n\n[Create a new build](https://ci.zeebe.camunda.cloud/job/zeebe-release/build?delay=0sec), and fill in the parameters accordingly.\n\n  \n**Alpha release**\n```\nRELEASE_VERSION: MAJOR.MINOR.0-ALPHA\nDEVELOPMENT_VERSION: MAJOR.MINOR.0-SNAPSHOT\nPUSH_CHANGES: true\nPUSH_DOCKER: true\nIS_LATEST: false\n```\n\n  \n**Patch release**\n\n&gt; **NOTE**: here the development version is MAJOR.MINOR.PATCH+1-SNAPSHOT. So if you have your release version is `1.2.1`, then the next development version will be `1.2.2-SNAPSHOT`.\n\n&gt; **NOTE**: if you are release a patch release for the latest minor release, then `IS_LATEST` should be set to `true`.\n\n```\nRELEASE_VERSION: MAJOR.MINOR.PATCH\nDEVELOPMENT_VERSION: MAJOR.MINOR.PATCH+1-SNAPSHOT\nPUSH_CHANGES: true\nPUSH_DOCKER: true\nIS_LATEST: false\n```\n\n  \n**Minor release**\n\n&gt; **NOTE**: here the development version is MAJOR.MINOR+1.0-SNAPSHOT. So if you have your release version is `1.2.0`, then the next development version will be `1.3.0-SNAPSHOT`.\n\n```\nRELEASE_VERSION: MAJOR.MINOR.0\nDEVELOPMENT_VERSION: MAJOR.MINOR+1.0-SNAPSHOT\nPUSH_CHANGES: true\nPUSH_DOCKER: true\nIS_LATEST: true\n```\n  \n  \nClick `Build` to start the release process, and wait until the pipeline finishes successfully.\n\nHints:\n- Sometimes the release process will fail. It's currently necessary to manually rollback the changes before restarting again. To roll back the changes, you will need to delete any tags that the job may have created (you can do so via the Github Web UI), and also drop the additional commits that the job added on the release branch, such that it's in the state it was before running the job. You may also have to drop the Maven artifacts on Maven central, [here](https://s01.oss.sonatype.org/).\n- If unsure about anything, ask the team and/or your tech lead.",
+      "type": "text",
+      "id": "Field_05xq34i"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1ituz9d"
+}</zeebe:userTaskForm>
+      <zeebe:userTaskForm id="UserTaskForm_1fmei0t">{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Current release process",
+      "type": "textfield",
+      "id": "Field_01aedoc",
+      "key": "release_version"
+    },
+    {
+      "text": "# Release the Maven artifacts\n\nOnce the pipeline was successfully finished, the Docker artifacts will already be available publicly. We now have to release the Maven central ones.\n\n1. Go to [Maven Central](https://s01.oss.sonatype.org/) and login using the shared `Maven Central` credentials for login `camundabpm` found in [Keeper](https://keepersecurity.eu/vault/) under `Shared-Engineering - Zeebe`. \n2. On the left side, click on the 'Staging Repositories' link.\n3. After it has been loaded, scroll down to the bottom of the list. You should find the relevant Zeebe staging repositories there.\n4. Mark the repository you want to release, which should be one for zeebe.\n\n&gt; io.camunda:zeebe*\n\n\n5. Click on 'Release' at the menu on top of the list. A window will pop up were you can enter a description but it is not necessary. Activate 'Drop repository after release automatically'. Then proceed.\n6. Done.",
+      "type": "text",
+      "id": "Field_10avz1w"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1tx0oak"
 }</zeebe:userTaskForm>
     </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1" name="Release started">
@@ -281,97 +317,75 @@
       </bpmn:sequenceFlow>
       <bpmn:sequenceFlow id="Flow_06yz81p" name="No" sourceRef="Gateway_0pprots" targetRef="Event_09hnipm" />
     </bpmn:subProcess>
+    <bpmn:subProcess id="Activity_0caepsu" name="Release Candidate" triggeredByEvent="true">
+      <bpmn:startEvent id="Event_072g6mg" name="Built release candidate">
+        <bpmn:outgoing>Flow_1c2xzxq</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="MessageEventDefinition_0qd3cau" messageRef="Message_36527rk" />
+      </bpmn:startEvent>
+      <bpmn:userTask id="Activity_0wjyoge" name="Trigger release candidate">
+        <bpmn:extensionElements>
+          <zeebe:formDefinition formKey="camunda-forms:bpmn:UserTaskForm_0106sqk" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1c2xzxq</bpmn:incoming>
+        <bpmn:outgoing>Flow_0laljwe</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="Flow_1c2xzxq" sourceRef="Event_072g6mg" targetRef="Activity_0wjyoge" />
+      <bpmn:userTask id="Activity_0x73wcr" name="Release on Maven Central">
+        <bpmn:extensionElements>
+          <zeebe:formDefinition formKey="camunda-forms:bpmn:UserTaskForm_1fmei0t" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0laljwe</bpmn:incoming>
+        <bpmn:outgoing>Flow_0sjbp2b</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="Flow_0laljwe" sourceRef="Activity_0wjyoge" targetRef="Activity_0x73wcr" />
+      <bpmn:serviceTask id="notify-others" name="Notify other teams" zeebe:modelerTemplate="io.camunda.connectors.Slack.v1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="io.camunda:slack:1" />
+          <zeebe:ioMapping>
+            <zeebe:input source="chat.postMessage" target="method" />
+            <zeebe:input source="secrets.SLACK_OAUTH_TOKEN" target="token" />
+            <zeebe:input source="#c8-release-announcements" target="data.channel" />
+            <zeebe:input source="= &#34;Hi :wave: team! There is a new Zeebe version &#34; + release_version + &#34; available that you can test against.&#34;" target="data.text" />
+          </zeebe:ioMapping>
+          <zeebe:taskHeaders>
+            <zeebe:header key="resultVariable" />
+            <zeebe:header key="resultExpression" />
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0sjbp2b</bpmn:incoming>
+        <bpmn:outgoing>Flow_1g3i425</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_0sjbp2b" sourceRef="Activity_0x73wcr" targetRef="notify-others" />
+      <bpmn:callActivity id="Activity_1aiu7sp" name="Release Zeebe process test">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="zeebe-process-test-release" propagateAllChildVariables="false" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1g3i425</bpmn:incoming>
+        <bpmn:outgoing>Flow_0ynyan2</bpmn:outgoing>
+      </bpmn:callActivity>
+      <bpmn:sequenceFlow id="Flow_1g3i425" sourceRef="notify-others" targetRef="Activity_1aiu7sp" />
+      <bpmn:endEvent id="Event_0hfv9hy">
+        <bpmn:incoming>Flow_0ynyan2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0ynyan2" sourceRef="Activity_1aiu7sp" targetRef="Event_0hfv9hy" />
+      <bpmn:textAnnotation id="TextAnnotation_1oejvef">
+        <bpmn:text>correlationKey: release-branch-name
+messageName: rc</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_1b25zkd" sourceRef="Event_072g6mg" targetRef="TextAnnotation_1oejvef" />
+    </bpmn:subProcess>
     <bpmn:textAnnotation id="TextAnnotation_15g9k3f">
       <bpmn:text>req: release_version: string</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0uafnuq" sourceRef="StartEvent_1" targetRef="TextAnnotation_15g9k3f" />
   </bpmn:process>
+  <bpmn:message id="Message_36527rk" name="rc">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=release_branch_name" />
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zeebe-release-process">
-      <bpmndi:BPMNEdge id="Flow_0v65v05_di" bpmnElement="Flow_0v65v05">
-        <di:waypoint x="1875" y="187" />
-        <di:waypoint x="1942" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qzzlnv_di" bpmnElement="Flow_1qzzlnv">
-        <di:waypoint x="1760" y="320" />
-        <di:waypoint x="1850" y="320" />
-        <di:waypoint x="1850" y="212" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0vzb5ay_di" bpmnElement="Flow_0vzb5ay">
-        <di:waypoint x="1480" y="187" />
-        <di:waypoint x="1535" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0oxw9zk_di" bpmnElement="Flow_0oxw9zk">
-        <di:waypoint x="1180" y="187" />
-        <di:waypoint x="1240" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ca8m5f_di" bpmnElement="Flow_1ca8m5f">
-        <di:waypoint x="665" y="187" />
-        <di:waypoint x="720" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_12ar9lm_di" bpmnElement="Flow_12ar9lm">
-        <di:waypoint x="450" y="187" />
-        <di:waypoint x="495" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fmnken_di" bpmnElement="Flow_0fmnken">
-        <di:waypoint x="1025" y="187" />
-        <di:waypoint x="1080" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1n61zbo_di" bpmnElement="Flow_1n61zbo">
-        <di:waypoint x="520" y="162" />
-        <di:waypoint x="520" y="100" />
-        <di:waypoint x="1000" y="100" />
-        <di:waypoint x="1000" y="160" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="762" y="83" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_12eezq7_di" bpmnElement="Flow_12eezq7">
-        <di:waypoint x="545" y="187" />
-        <di:waypoint x="615" y="187" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="571" y="169" width="19" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1epwomt_di" bpmnElement="Flow_1epwomt">
-        <di:waypoint x="1585" y="187" />
-        <di:waypoint x="1660" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1getqr6_di" bpmnElement="Flow_1getqr6">
-        <di:waypoint x="820" y="187" />
-        <di:waypoint x="875" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zhm3wb_di" bpmnElement="Flow_0zhm3wb">
-        <di:waypoint x="1760" y="187" />
-        <di:waypoint x="1825" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ttdn03_di" bpmnElement="Flow_0ttdn03">
-        <di:waypoint x="1560" y="212" />
-        <di:waypoint x="1560" y="320" />
-        <di:waypoint x="1660" y="320" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05sub3t_di" bpmnElement="Flow_05sub3t">
-        <di:waypoint x="1340" y="187" />
-        <di:waypoint x="1380" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0s1b66d_di" bpmnElement="Flow_0s1b66d">
-        <di:waypoint x="925" y="187" />
-        <di:waypoint x="975" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1edl8wf_di" bpmnElement="Flow_1edl8wf">
-        <di:waypoint x="820" y="300" />
-        <di:waypoint x="900" y="300" />
-        <di:waypoint x="900" y="212" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1oxyoos_di" bpmnElement="Flow_1oxyoos">
-        <di:waypoint x="640" y="212" />
-        <di:waypoint x="640" y="300" />
-        <di:waypoint x="720" y="300" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ew46h4_di" bpmnElement="Flow_1ew46h4">
-        <di:waypoint x="248" y="187" />
-        <di:waypoint x="350" y="187" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="212" y="169" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -433,30 +447,6 @@
         <dc:Bounds x="250" y="420" width="480" height="240" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_06yz81p_di" bpmnElement="Flow_06yz81p">
-        <di:waypoint x="400" y="545" />
-        <di:waypoint x="400" y="630" />
-        <di:waypoint x="660" y="630" />
-        <di:waypoint x="660" y="538" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="412" y="553" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1eq00q6_di" bpmnElement="Flow_1eq00q6">
-        <di:waypoint x="425" y="520" />
-        <di:waypoint x="480" y="520" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="444" y="502" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1oe0aef_di" bpmnElement="Flow_1oe0aef">
-        <di:waypoint x="580" y="520" />
-        <di:waypoint x="642" y="520" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1khohx9_di" bpmnElement="Flow_1khohx9">
-        <di:waypoint x="326" y="520" />
-        <di:waypoint x="375" y="520" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1lnkrx5_di" bpmnElement="Event_002h8ps">
         <dc:Bounds x="290" y="502" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -473,9 +463,171 @@
           <dc:Bounds x="359" y="465" width="82" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1khohx9_di" bpmnElement="Flow_1khohx9">
+        <di:waypoint x="326" y="520" />
+        <di:waypoint x="375" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oe0aef_di" bpmnElement="Flow_1oe0aef">
+        <di:waypoint x="580" y="520" />
+        <di:waypoint x="642" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1eq00q6_di" bpmnElement="Flow_1eq00q6">
+        <di:waypoint x="425" y="520" />
+        <di:waypoint x="480" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="444" y="502" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06yz81p_di" bpmnElement="Flow_06yz81p">
+        <di:waypoint x="400" y="545" />
+        <di:waypoint x="400" y="630" />
+        <di:waypoint x="660" y="630" />
+        <di:waypoint x="660" y="538" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="412" y="553" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_15g9k3f_di" bpmnElement="TextAnnotation_15g9k3f">
         <dc:Bounds x="160" y="120" width="360" height="26" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05n8qj8_di" bpmnElement="Activity_0caepsu" isExpanded="true">
+        <dc:Bounds x="245" y="690" width="790" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1oejvef_di" bpmnElement="TextAnnotation_1oejvef">
+        <dc:Bounds x="265" y="710" width="250" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11h47hx_di" bpmnElement="Event_072g6mg">
+        <dc:Bounds x="285" y="832" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="273" y="875" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0u0vt45" bpmnElement="Activity_0wjyoge">
+        <dc:Bounds x="365" y="810" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1xi5jc4" bpmnElement="Activity_0x73wcr">
+        <dc:Bounds x="515" y="810" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v48l92_di" bpmnElement="notify-others">
+        <dc:Bounds x="645" y="810" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0uy2zq2" bpmnElement="Activity_1aiu7sp">
+        <dc:Bounds x="795" y="810" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hfv9hy_di" bpmnElement="Event_0hfv9hy">
+        <dc:Bounds x="947" y="832" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1b25zkd_di" bpmnElement="Association_1b25zkd">
+        <di:waypoint x="305" y="832" />
+        <di:waypoint x="310" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c2xzxq_di" bpmnElement="Flow_1c2xzxq">
+        <di:waypoint x="321" y="850" />
+        <di:waypoint x="365" y="850" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0laljwe_di" bpmnElement="Flow_0laljwe">
+        <di:waypoint x="465" y="850" />
+        <di:waypoint x="515" y="850" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sjbp2b_di" bpmnElement="Flow_0sjbp2b">
+        <di:waypoint x="615" y="850" />
+        <di:waypoint x="645" y="850" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g3i425_di" bpmnElement="Flow_1g3i425">
+        <di:waypoint x="745" y="850" />
+        <di:waypoint x="795" y="850" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ynyan2_di" bpmnElement="Flow_0ynyan2">
+        <di:waypoint x="895" y="850" />
+        <di:waypoint x="947" y="850" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ew46h4_di" bpmnElement="Flow_1ew46h4">
+        <di:waypoint x="248" y="187" />
+        <di:waypoint x="350" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oxyoos_di" bpmnElement="Flow_1oxyoos">
+        <di:waypoint x="640" y="212" />
+        <di:waypoint x="640" y="300" />
+        <di:waypoint x="720" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1edl8wf_di" bpmnElement="Flow_1edl8wf">
+        <di:waypoint x="820" y="300" />
+        <di:waypoint x="900" y="300" />
+        <di:waypoint x="900" y="212" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s1b66d_di" bpmnElement="Flow_0s1b66d">
+        <di:waypoint x="925" y="187" />
+        <di:waypoint x="975" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05sub3t_di" bpmnElement="Flow_05sub3t">
+        <di:waypoint x="1340" y="187" />
+        <di:waypoint x="1380" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ttdn03_di" bpmnElement="Flow_0ttdn03">
+        <di:waypoint x="1560" y="212" />
+        <di:waypoint x="1560" y="320" />
+        <di:waypoint x="1660" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zhm3wb_di" bpmnElement="Flow_0zhm3wb">
+        <di:waypoint x="1760" y="187" />
+        <di:waypoint x="1825" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1getqr6_di" bpmnElement="Flow_1getqr6">
+        <di:waypoint x="820" y="187" />
+        <di:waypoint x="875" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1epwomt_di" bpmnElement="Flow_1epwomt">
+        <di:waypoint x="1585" y="187" />
+        <di:waypoint x="1660" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12eezq7_di" bpmnElement="Flow_12eezq7">
+        <di:waypoint x="545" y="187" />
+        <di:waypoint x="615" y="187" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="571" y="169" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n61zbo_di" bpmnElement="Flow_1n61zbo">
+        <di:waypoint x="520" y="162" />
+        <di:waypoint x="520" y="100" />
+        <di:waypoint x="1000" y="100" />
+        <di:waypoint x="1000" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="762" y="83" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fmnken_di" bpmnElement="Flow_0fmnken">
+        <di:waypoint x="1025" y="187" />
+        <di:waypoint x="1080" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12ar9lm_di" bpmnElement="Flow_12ar9lm">
+        <di:waypoint x="450" y="187" />
+        <di:waypoint x="495" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ca8m5f_di" bpmnElement="Flow_1ca8m5f">
+        <di:waypoint x="665" y="187" />
+        <di:waypoint x="720" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oxw9zk_di" bpmnElement="Flow_0oxw9zk">
+        <di:waypoint x="1180" y="187" />
+        <di:waypoint x="1240" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vzb5ay_di" bpmnElement="Flow_0vzb5ay">
+        <di:waypoint x="1480" y="187" />
+        <di:waypoint x="1535" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qzzlnv_di" bpmnElement="Flow_1qzzlnv">
+        <di:waypoint x="1760" y="320" />
+        <di:waypoint x="1850" y="320" />
+        <di:waypoint x="1850" y="212" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v65v05_di" bpmnElement="Flow_0v65v05">
+        <di:waypoint x="1875" y="187" />
+        <di:waypoint x="1942" y="187" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0uafnuq_di" bpmnElement="Association_0uafnuq">
         <di:waypoint x="224" y="170" />
         <di:waypoint x="216" y="146" />
