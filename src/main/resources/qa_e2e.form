@@ -1,5 +1,4 @@
 {
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release version",
@@ -8,11 +7,16 @@
       "key": "release_version"
     },
     {
-      "text": "# Run E2E test\n\nBuild an image for the release version if it doesn't already exists. Image should be already available if you have setup the benchmark. \n\nRun github action https://github.com/zeebe-io/zeebe-e2e-test/actions/workflows/runtest.yml to start a e2e test on the release branch\n with following parameters:\n\n- Zeebe docker image with version: gcr.io/zeebe-io/zeebe:release-MAJOR-MINOR-PATCH-ALPHA\n- Generation template: Zeebe SNAPSHOT\n- Test duration*: R1/P7D \n- A string to identify the run: E2E Tests : rc-MAJOR-MINOR-PATH-ALPHA\n\nThis will start an e2e test and run it for the given duration. If the test fails, you will get a notification in #zeebe-ci channel. \n\nEnsure the test is started by checking Operate of Testbench-prod cluster https://console.cloud.ultrawombat.com/org/f1155314-5031-4a84-9e29-58f69f8ab242/cluster/7b2cd3f5-cfcc-4a65-ab22-0ccaa071e68e ",
+      "text": "# Run E2E test\n\nUse release candidate to test against.\n\nRun github action https://github.com/zeebe-io/zeebe-e2e-test/actions/workflows/runtest.yml to start a e2e test on the release branch\n with following parameters:\n\n- Zeebe docker image with version: camunda:zeebe:MAJOR-MINOR-PATCH-rc\n- Generation template: Zeebe SNAPSHOT\n- Test duration*: R1/P7D \n- A string to identify the run: E2E Tests : rc-MAJOR-MINOR-PATH-ALPHA\n\nThis will start an e2e test and run it for the given duration. If the test fails, you will get a notification in #zeebe-ci channel. \n\nEnsure the test is started by checking Operate of Testbench-prod cluster https://console.cloud.ultrawombat.com/org/f1155314-5031-4a84-9e29-58f69f8ab242/cluster/7b2cd3f5-cfcc-4a65-ab22-0ccaa071e68e ",
       "type": "text",
       "id": "Field_0r53wcj"
     }
   ],
+  "schemaVersion": 4,
   "type": "default",
-  "id": "qa_e2e_form"
+  "id": "qa_e2e_form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.3.0"
+  }
 }
