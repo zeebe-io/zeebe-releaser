@@ -1,18 +1,25 @@
 {
-  "schemaVersion": 2,
   "components": [
     {
       "label": "Current release version",
       "type": "textfield",
-      "id": "Field_08yonym",
-      "key": "release_version"
+      "id": "Field_1dgizuw",
+      "key": "release_version",
+      "properties": {}
     },
     {
-      "text": "# Run E2E test\n\nBuild an image for the release version if it doesn't already exists. Image should be already available if you have setup the benchmark. \n\nRun github action https://github.com/zeebe-io/zeebe-e2e-test/actions/workflows/runtest.yml to start a e2e test on the release branch\n with following parameters:\n\n- Zeebe docker image with version: gcr.io/zeebe-io/zeebe:release-MAJOR-MINOR-PATCH-ALPHA\n- Generation template: Zeebe SNAPSHOT\n- Test duration*: R1/P7D \n- A string to identify the run: E2E Tests : rc-MAJOR-MINOR-PATH-ALPHA\n\nThis will start an e2e test and run it for the given duration. If the test fails, you will get a notification in #zeebe-ci channel. \n\nEnsure the test is started by checking Operate of Testbench-prod cluster https://console.cloud.ultrawombat.com/org/f1155314-5031-4a84-9e29-58f69f8ab242/cluster/7b2cd3f5-cfcc-4a65-ab22-0ccaa071e68e ",
+      "text": "# Run E2E test\n\nBuild an image for the release version if it doesn't already exist. Image should be already available if you have setup the benchmark. You must re-tag the image to make it a valid SemVer. \n\nTAG=MAJOR.MINOR.PATCH-ALPHA-rc1  \ndocker tag BENCHMARK-IMAGE  gcr.io/zeebe-io/zeebe:TAG  \ndocker push gcr.io/zeebe-io/zeebe:TAG\n\n\nRun [github action](https://github.com/zeebe-io/zeebe-e2e-test/actions/workflows/runtest.yml) to start a e2e test on the release branch with following parameters:\n\n- Zeebe docker image with version: gcr.io/zeebe-io/zeebe:TAG\n- Generation template: Zeebe SNAPSHOT\n- Test duration: P7D (Run until the release day)\n- A string to identify the run: E2E Tests : rc-MAJOR-MINOR-PATCH-ALPHA\n\nThis will start an e2e test and run it for the given duration. If the test fails, you will get a notification in #zeebe-ci channel. \n\nEnsure the test is started by checking Operate of [Testbench Prod](https://console.cloud.ultrawombat.com/org/f1155314-5031-4a84-9e29-58f69f8ab242/cluster/7b2cd3f5-cfcc-4a65-ab22-0ccaa071e68e)  cluster. Check for incidents.\n  ",
       "type": "text",
-      "id": "Field_0r53wcj"
+      "id": "Field_0ckjl46"
     }
   ],
   "type": "default",
-  "id": "qa_e2e_form"
+  "id": "qa_e2e_form",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.1.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.4.2"
+  },
+  "schemaVersion": 5
 }
