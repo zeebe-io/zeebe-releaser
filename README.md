@@ -1,8 +1,9 @@
 # Zeebe Releaser
 Project to automate and visualise the Zeebe release process.
 
-* [Camunda Cloud Cluster](https://console.cloud.ultrawombat.com/org/6ff582aa-a62e-4a28-aac7-4d2224d8c58a/cluster/b051f158-2779-479f-84dc-1f16c8f808df)
-* [Camunda Cloud Tasklist](https://bru-3.tasklist.ultrawombat.com/b051f158-2779-479f-84dc-1f16c8f808df)
+The Zeebe teams' Zeebe Releaser processes run on Camunda Platform 8 SaaS:
+* [Cluster](https://console.cloud.ultrawombat.com/org/6ff582aa-a62e-4a28-aac7-4d2224d8c58a/cluster/3953a05c-7c20-41fb-8231-ec283dd2138b)
+* [Tasklist](https://bru-3.tasklist.ultrawombat.com/3953a05c-7c20-41fb-8231-ec283dd2138b/)
 
 ## Getting started
 To deploy the release process to Camunda Cloud (or Zeebe), run:
