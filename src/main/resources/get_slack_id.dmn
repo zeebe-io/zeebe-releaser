@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Definitions_0zpzfne" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Definitions_0zpzfne" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
   <decision id="get-slack-id" name="Get release manager slack id">
     <informationRequirement id="InformationRequirement_1uv87qn">
       <requiredInput href="#InputData_1r8lc3k" />
@@ -73,6 +73,14 @@
         </inputEntry>
         <outputEntry id="LiteralExpression_0muxhfg">
           <text>"USQLJAMDJ"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0i95uid">
+        <inputEntry id="UnaryTests_1nre9ss">
+          <text>"nikola"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_17wy3v0">
+          <text>"U901YBPR9"</text>
         </outputEntry>
       </rule>
     </decisionTable>
