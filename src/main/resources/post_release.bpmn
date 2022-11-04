@@ -48,7 +48,7 @@
 }</ns0:userTaskForm>
       <ns0:userTaskForm id="userTaskForm_31lqr6i">{
   "schemaVersion": 2,
-  "components": [    
+  "components": [
     {
       "label": "Current release process",
       "type": "textfield",
@@ -245,6 +245,10 @@
         {
           "label": "Nicolas",
           "value": "nicolas"
+        },
+        {
+          "label": "Nikola",
+          "value": "nikola"
         }
       ],
       "label": "Release Manager",

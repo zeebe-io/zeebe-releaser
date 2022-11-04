@@ -59,6 +59,10 @@
         {
           "label": "Nicolas",
           "value": "nicolas"
+        },
+        {
+          "label": "Nikola",
+          "value": "nikola"
         }
       ],
       "label": "Release Manager",
